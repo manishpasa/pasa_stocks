@@ -2,7 +2,7 @@
 session_start();
 include 'db.php';
 if (!isset($_SESSION['id']) || !isset($_SESSION['company_code']) || !isset($_SESSION['role'])) {
-    header("Location: login.php");
+    header("Location: ../../Sign/login.php");
     exit();
 }
 $emp_id = $_SESSION['id'];
@@ -204,19 +204,19 @@ $user_role = $_SESSION['role'];
 </nav>
 
   <div class="sidebar" id="sidebar">   
-    <a href="dashboard.php">Dashboard</a>
+    <a href="../dashboard/dashboard.php">Dashboard</a>
     <?php if ($erole == 'admin'): ?>
-      <a href="inventory.php">Inventory</a>
+      <a href="../inventory/inventory.php">Inventory</a>
       <a href="employee.php">Employee</a>
-      <a href="sales.php" class="active">Sales today</a>
-      <a href="reports.php">Reports</a>
+      <a href="../report/sales.php" class="active">Sales today</a>
+      <a href="../report/reports.php">Reports</a>
     <?php elseif ($erole == 'storekeeper'): ?>
-      <a href="inventory.php">Inventory</a>
-      <a href="add_item.php">Purchase</a>
-      <a href="restock.php">Re-Stock</a>
+      <a href="../inventory/inventory.php">Inventory</a>
+      <a href="../purchase/add_item.php">Purchase</a>
+      <a href="../report/restock.php">Re-Stock</a>
     <?php elseif ($erole == 'cashier'): ?>
-      <a href="sell_item.php">sales</a>
-      <a href="receipts.php">Returns</a>
+      <a href="../sales/sell_item.php">sales</a>
+      <a href="../return/returns.php">Returns</a>
     <?php endif; ?>
   </div>
 
