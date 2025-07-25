@@ -1,20 +1,20 @@
 <?php
 session_start();
 if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
+    header("Location: ../../Sign/login.php");
     exit();
 }
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $_SESSION['expire_time'])) {
     session_unset();
     session_destroy();
-    header("Location: login.php?message=Session Expired. Please log in again.");
+    header("Location: ../../Sign/login.php?message=Session Expired. Please log in again.");
     exit();
 }
 $_SESSION['last_activity'] = time();
 
-include 'db.php';
+include '../../db.php';
 $company_id = $_SESSION['company_id'];
-$role = $_SESSION['role'];
+$erole = $_SESSION['role'];
 $name = $_SESSION['name'];
 $emp_id = $_SESSION['id'];
 
@@ -180,34 +180,35 @@ $monthOptions = $conn->query("SELECT DISTINCT DATE_FORMAT(sale_date, '%Y-%m') as
     <span class="navbar-brand mb-0 h4">📦 PasaStocks</span>
   </div>
   <div class="dropdown">
-    <button class="btn " type="button" data-bs-toggle="dropdown">
-    <img src="uploads/<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+    <button class="btn " type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+     <img src="uploads/<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
     </button>
-    <ul class="dropdown-menu dropdown-menu-end">
-      <li><a class="dropdown-item" href="profile.php">👤 View Profile</a></li>
-      <li><a class="dropdown-item" href="settings.php">⚙️ Settings</a></li>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+      <li><a class="dropdown-item" href="../profile/profile.php">👤 View Profile</a></li>
+      <li><a class="dropdown-item" href="../setting/settings.php">⚙️ Settings</a></li>
       <li><hr class="dropdown-divider"></li>
       <li><button class="btn btn-danger" onclick="showLogoutPopup()">🚪 Logout</button></li>
     </ul>
   </div>
 </nav>
 
-<div class="sidebar" id="sidebar">
-  <a href="dashboard.php">Dashboard</a>
-  <?php if ($role == 'admin'): ?>
-    <a href="inventory.php">Inventory</a>
-    <a href="employee.php">Employee</a>
-    <a href="sales.php" class="active">Sales</a>
-    <a href="reports.php">Reports</a>
-  <?php elseif ($role == 'storekeeper'): ?>
-    <a href="inventory.php">Inventory</a>
-    <a href="add_item.php">Purchase</a>
-    <a href="restock.php">Re-Stock</a>
-  <?php elseif ($role == 'cashier'): ?>
-    <a href="sell_item.php">Sales</a>
-    <a href="returns.php">Returns</a>
-  <?php endif; ?>
-</div>
+
+   <div class="sidebar" id="sidebar">   
+    <a href="../dashboard/dashboard.php">Dashboard</a>
+    <?php if ($erole == 'admin'): ?>
+      <a href="../inventory/inventory.php">Inventory</a>
+      <a href="../employee/employee.php">Employee</a>
+      <a href="../report/sales.php" class="active">Sales today</a>
+      <a href="../report/reports.php">Reports</a>
+    <?php elseif ($erole == 'storekeeper'): ?>
+      <a href="../inventory/inventory.php">Inventory</a>
+      <a href="../purchase/add_item.php">Purchase</a>
+      <a href="../report/restock.php">Re-Stock</a>
+    <?php elseif ($erole == 'cashier'): ?>
+      <a href="../sales/sell_item.php">sales</a>
+      <a href="../return/returns.php">Returns</a>
+    <?php endif; ?>
+  </div>
 
 <div class="content" id="content">
   <h2>Sales Summary (Monthly)</h2>
@@ -267,7 +268,7 @@ $monthOptions = $conn->query("SELECT DISTINCT DATE_FORMAT(sale_date, '%Y-%m') as
     <h5>Confirm Logout</h5>
     <p>Are you sure you want to log out?</p>
     <div class="popup-buttons">
-      <a href="logout.php" class="btn btn-danger">Yes, Logout</a>
+      <a href="../../Sign/logout.php" class="btn btn-danger">Yes, Logout</a>
       <button class="btn btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
     </div>
   </div>

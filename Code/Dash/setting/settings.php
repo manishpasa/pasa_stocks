@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 
 if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
+    header("Location: ../../Sign/login.php");
     exit();
 }
 
@@ -61,7 +61,7 @@ $stmt->close();
     <div style="display:flex; margin-bottom:10px;">
 
       <div class="text-center mt-4">
-        <a href="dashboard.php" ><img src="../image/leftarrow.png" height="24px" alt="" ></a>
+        <a href="../dashboard/dashboard.php" ><img src="../../../image/leftarrow.png" height="24px" alt="" ></a>
       </div>
       <h2 class="mb-4 text-center" style="margin-left:30%;margin-top:16px;">Settings</h2>
     </div>
@@ -84,9 +84,9 @@ $stmt->close();
   <div class="card-body">
     <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?>
       <?php if ($email_verified): ?>
-        <img src="../image/tick.png" alt="not verified " height="24px">
+        <img src="../../image/tick.png" alt="not verified " height="24px">
       <?php else: ?>
-       <img src="../image/exclamation.png" alt="not verified " height="24px"> 
+       <img src="../../../image/exclamation.png" alt="not verified " height="24px"> 
         <a href="send_email_verification.php" class="btn btn-sm btn-outline-primary ms-3" >Verify Email</a>
       <?php endif; ?>
     </p>

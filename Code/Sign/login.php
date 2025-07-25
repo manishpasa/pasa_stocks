@@ -110,7 +110,7 @@ $conn->close();
             <input type="submit" value="Login"><br> 
         </form>
         
-        <div class="link"><a href="forgot_password.php">forgot password?</a>
+        <div class="link"><a href="../pass/forgot_password.php">forgot password?</a>
             <p>Don't have an account? <a href="signup.php">Sign Up</a></p>
         </div>
     </div>

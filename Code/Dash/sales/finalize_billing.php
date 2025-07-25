@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 
 $company_id = $_SESSION['company_id'];
 $emp_id = $_SESSION['id'];

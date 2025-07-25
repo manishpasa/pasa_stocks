@@ -3,15 +3,15 @@ session_start();
 include 'db.php';
 
 // PHPMailer files
-require 'PHPMailer/PHPMailer.php';
-require 'PHPMailer/SMTP.php';
-require 'PHPMailer/Exception.php';
+require '../PHPMailer/PHPMailer.php';
+require '../PHPMailer/SMTP.php';
+require '../PHPMailer/Exception.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+use ../PHPMailer\PHPMailer\PHPMailer;
+use ../PHPMailer\PHPMailer\Exception;
 
 if (!isset($_SESSION['reset_emp_id'])) {
-    header("Location: login.php");
+    header("Location: ../../Sign/login.php");
     exit();
 }
 
@@ -55,7 +55,7 @@ try {
     exit();
 } catch (Exception $e) {
     $_SESSION['otp_error'] = "Failed to send email. Mailer Error: " . $mail->ErrorInfo;
-    header("Location: settings.php");
+    header("Location: ../setting/settings.php");
     exit();
 }
 ?>

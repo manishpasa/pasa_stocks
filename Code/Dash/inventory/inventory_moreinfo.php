@@ -1,16 +1,16 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 
 if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
+    header("Location: ../../Sign/login.php");
     exit();
 }
 
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $_SESSION['expire_time'])) {
     session_unset();
     session_destroy();
-    header("Location: login.php?message=Session Expired. Please log in again.");
+    header("Location: ../../Sign/login.php?message=Session Expired. Please log in again.");
     exit();
 }
 $_SESSION['last_activity'] = time();
@@ -368,8 +368,8 @@ nav.navbar {
      <img src="uploads/<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
     </button>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-      <li><a class="dropdown-item" href="profile.php">👤 View Profile</a></li>
-      <li><a class="dropdown-item" href="settings.php">⚙️ Settings</a></li>
+      <li><a class="dropdown-item" href="../profile/profile.php">👤 View Profile</a></li>
+      <li><a class="dropdown-item" href="../setting/settings.php">⚙️ Settings</a></li>
       <li><hr class="dropdown-divider"></li>
       <li><button class="btn btn-danger" onclick="showLogoutPopup()">🚪 Logout</button></li>
     </ul>
@@ -379,16 +379,16 @@ nav.navbar {
 
    <div class="sidebar" id="sidebar">   
     <a href="../dashboard/dashboard.php">Dashboard</a>
-    <?php if ($erole == 'admin'): ?>
+    <?php if ($role == 'admin'): ?>
       <a href="../inventory/inventory.php">Inventory</a>
-      <a href="employee.php">Employee</a>
+      <a href="../employee/employee.php">Employee</a>
       <a href="../report/sales.php" class="active">Sales today</a>
       <a href="../report/reports.php">Reports</a>
-    <?php elseif ($erole == 'storekeeper'): ?>
+    <?php elseif ($role == 'storekeeper'): ?>
       <a href="../inventory/inventory.php">Inventory</a>
       <a href="../purchase/add_item.php">Purchase</a>
       <a href="../report/restock.php">Re-Stock</a>
-    <?php elseif ($erole == 'cashier'): ?>
+    <?php elseif ($role == 'cashier'): ?>
       <a href="../sales/sell_item.php">sales</a>
       <a href="../return/returns.php">Returns</a>
     <?php endif; ?>
@@ -443,7 +443,7 @@ nav.navbar {
     <h5>Confirm Logout</h5>
     <p>Are you sure you want to log out?</p>
     <div class="popup-buttons">
-      <a href="logout.php" class="btn btn-danger">Yes, Logout</a>
+      <a href="../../Sign/logout.php" class="btn btn-danger">Yes, Logout</a>
       <button class="btn btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
     </div>
   </div>

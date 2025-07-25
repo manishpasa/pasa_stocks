@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+include '../../db.php';
 session_start();
 
 $company_id = $_SESSION['company_id'];

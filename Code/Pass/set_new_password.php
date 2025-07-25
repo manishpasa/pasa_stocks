@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
 
         unset($_SESSION['reset_emp_id']);
-        header("Location: login.php");
+        header("Location: ../../Sign/login.php");
         exit();
     } else {
         $error = "Passwords do not match.";

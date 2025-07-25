@@ -1,15 +1,15 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 
 if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
+    header("Location: ../../Sign/login.php");
     exit();
 }
 
 $emp_id = $_SESSION['id'];
 $company_id = $_SESSION['company_id'];
-$role = $_SESSION['role'];
+$erole = $_SESSION['role'];
 $refund_amount = $_SESSION['returncost'] ?? 0;
 unset($_SESSION['returncost']); // prevent reusing on refresh
 

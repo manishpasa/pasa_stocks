@@ -12,7 +12,7 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 
 }
 $_SESSION['last_activity'] = time();
 
-include 'db.php';
+include '../../db.php';
 $emp_id = $_SESSION['id'];
 
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
@@ -21,7 +21,7 @@ $stmt->execute();
 $stmt->bind_result($profile_pic);
 $stmt->fetch();
 $stmt->close();
-$role = $_SESSION['role'];
+$erole = $_SESSION['role'];
 $company_id = $_SESSION['company_id'];
 $name=$_SESSION['name'];
 // Get company_code
@@ -300,7 +300,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_employee'])) {
     <h5>Confirm Logout</h5>
     <p>Are you sure you want to log out?</p>
     <div class="popup-buttons">
-      <a href="logout.php" class="btn btn-danger">Yes, Logout</a>
+      <a href="../../Sign/logout.php" class="btn btn-danger">Yes, Logout</a>
       <button class="btn btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
     </div>
   </div>

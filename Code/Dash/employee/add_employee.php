@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 if (!isset($_SESSION['id']) || !isset($_SESSION['company_code']) || !isset($_SESSION['role'])) {
     header("Location: ../../Sign/login.php");
     exit();

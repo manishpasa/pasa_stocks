@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 
 if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
+    header("Location: ../../Sign/login.php");
     exit();
 }
 
@@ -256,7 +256,68 @@ canvas {
   border-radius: 10px;
   padding: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}.popup-overlay {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
 }
+
+/* Popup Box */
+.popup-box {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+/* Popup Buttons */
+.popup-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.popup-buttons .btn {
+  width: 48%;
+  cursor: pointer;
+}
+
+
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .popup-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .popup-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .popup-buttons .btn {
+      width: 48%;
+    }
 /* Responsive sidebar behavior */
 @media (max-width: 991.98px) {
   .sidebar {
@@ -297,36 +358,36 @@ canvas {
     <span class="navbar-brand mb-0 h4">📦 PasaStocks</span>
   </div>
 
-  <div class="dropdown ms-auto">
-    <button class="btn" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-      <img src="uploads/<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+    <div class="dropdown">
+    <button class="btn " type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+     <img src="uploads/<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
     </button>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-      <li><a class="dropdown-item" href="profile.php">👤 View Profile</a></li>
-      <li><a class="dropdown-item" href="settings.php">⚙️ Settings</a></li>
+      <li><a class="dropdown-item" href="../profile/profile.php">👤 View Profile</a></li>
+      <li><a class="dropdown-item" href="../setting/settings.php">⚙️ Settings</a></li>
       <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item text-danger" href="logout.php">🚪 Logout</a></li>
+      <li><button class="btn btn-danger" onclick="showLogoutPopup()">🚪 Logout</button></li>
     </ul>
   </div>
 </nav>
 
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-  <a href="dashboard.php">Dashboard</a>
-  <?php if ($_SESSION['role'] === 'admin'): ?>
-    <a href="inventory.php">Inventory</a>
-    <a href="employee.php">Employee</a>
-    <a href="sales.php">Sales today</a>
-    <a href="reports.php" class="active">Reports</a>
-  <?php elseif ($_SESSION['role'] === 'storekeeper'): ?>
-    <a href="inventory.php">Inventory</a>
-    <a href="add_item.php">Purchase</a>
-    <a href="restock.php">Re-Stock</a>
-  <?php elseif ($_SESSION['role'] === 'cashier'): ?>
-    <a href="sell_item.php">Sales</a>
-    <a href="receipts.php">Returns</a>
-  <?php endif; ?>
-</div>
+
+   <div class="sidebar" id="sidebar">   
+    <a href="../dashboard/dashboard.php">Dashboard</a>
+    <?php if ($erole == 'admin'): ?>
+      <a href="../inventory/inventory.php">Inventory</a>
+      <a href="../employee/employee.php">Employee</a>
+      <a href="../report/sales.php" class="active">Sales today</a>
+      <a href="../report/reports.php">Reports</a>
+    <?php elseif ($erole == 'storekeeper'): ?>
+      <a href="../inventory/inventory.php">Inventory</a>
+      <a href="../purchase/add_item.php">Purchase</a>
+      <a href="../report/restock.php">Re-Stock</a>
+    <?php elseif ($erole == 'cashier'): ?>
+      <a href="../sales/sell_item.php">sales</a>
+      <a href="../return/returns.php">Returns</a>
+    <?php endif; ?>
+  </div>
 
 <!-- Content -->
 <div class="content" id="content">
@@ -539,6 +600,31 @@ canvas {
     if (window.innerWidth < 992) {
       content.classList.toggle('shift');
     }
+  }
+</script>
+ <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('show');
+      document.getElementById('content').classList.toggle('shift');
+    }
+  </script>
+  <div id="logoutPopup" class="popup-overlay">
+  <div class="popup-box">
+    <h5>Confirm Logout</h5>
+    <p>Are you sure you want to log out?</p>
+    <div class="popup-buttons">
+      <a href="../../Sign/logout.php" class="btn btn-danger">Yes, Logout</a>
+      <button class="btn btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+  function showLogoutPopup() {
+    document.getElementById('logoutPopup').style.display = 'flex';
+  }
+
+  function hideLogoutPopup() {
+    document.getElementById('logoutPopup').style.display = 'none';
   }
 </script>
 </body>

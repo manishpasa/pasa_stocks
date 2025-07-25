@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 
 if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
+    header("Location: ../../Sign/login.php");
     exit();
 }
 
@@ -24,12 +24,12 @@ if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPL
 
     // Validate file extension and size
     if (!in_array($fileExtension, $allowedExtensions)) {
-        header("Location: settings.php?error=Invalid file type.");
+        header("Location: ../setting/settings.php?error=Invalid file type.");
         exit();
     }
 
     if ($fileSize > $maxFileSize) {
-        header("Location: settings.php?error=File too large. Max 2MB.");
+        header("Location: ../setting/settings.php?error=File too large. Max 2MB.");
         exit();
     }
 

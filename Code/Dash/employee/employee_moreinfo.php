@@ -9,12 +9,12 @@ if (!isset($_SESSION['id'])) {
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $_SESSION['expire_time'])) {
     session_unset();
     session_destroy();
-    header("Location: login.php?message=Session Expired. Please log in again.");
+    header("Location: ../../Sign/login.php?message=Session Expired. Please log in again.");
     exit();
 }
 $_SESSION['last_activity'] = time();
 
-$role = $_SESSION['role'];
+$erole = $_SESSION['role'];
 $company_id = $_SESSION['company_id'];
 
 if (!isset($_GET['id'])) {
@@ -147,8 +147,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <img src="uploads/<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
     </button>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-      <li><a class="dropdown-item" href="profile.php">👤 View Profile</a></li>
-      <li><a class="dropdown-item" href="settings.php">⚙️ Settings</a></li>
+      <li><a class="dropdown-item" href="../profile/profile.php">👤 View Profile</a></li>
+      <li><a class="dropdown-item" href="../setting/settings.php">⚙️ Settings</a></li>
       <li><hr class="dropdown-divider"></li>
       <li><button class="btn btn-danger" onclick="showLogoutPopup()">🚪 Logout</button></li>
     </ul>

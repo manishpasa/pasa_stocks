@@ -1,14 +1,14 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 
 // PHPMailer files
-require 'PHPMailer/PHPMailer.php';
-require 'PHPMailer/SMTP.php';
-require 'PHPMailer/Exception.php';
+require '../PHPMailer/PHPMailer.php';
+require '../PHPMailer/SMTP.php';
+require '../PHPMailer/Exception.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+use ../PHPMailer\PHPMailer\PHPMailer;
+use ../PHPMailer\PHPMailer\Exception;
 
 if (!isset($_SESSION['id'])) {
     header("Location: login.php");

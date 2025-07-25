@@ -516,7 +516,7 @@ if ($role == 'admin') {
     <h5>Confirm Logout</h5>
     <p>Are you sure you want to log out?</p>
     <div class="popup-buttons">
-      <a href="logout.php" class="btn btn-danger">Yes, Logout</a>
+      <a href="../../Sign/logout.php" class="btn btn-danger">Yes, Logout</a>
       <button class="btn btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
     </div>
   </div>

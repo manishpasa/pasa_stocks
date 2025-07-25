@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 
 if (!isset($_SESSION['new_customer_phone']) || !isset($_SESSION['company_id'])) {
     header("Location: billing.php");
