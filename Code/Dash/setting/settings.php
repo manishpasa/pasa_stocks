@@ -84,7 +84,7 @@ $stmt->close();
   <div class="card-body">
     <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?>
       <?php if ($email_verified): ?>
-        <img src="../../image/tick.png" alt="not verified " height="24px">
+        <img src="../../../image/tick.png" alt="verified " height="24px">
       <?php else: ?>
        <img src="../../../image/exclamation.png" alt="not verified " height="24px"> 
         <a href="send_email_verification.php" class="btn btn-sm btn-outline-primary ms-3" >Verify Email</a>
