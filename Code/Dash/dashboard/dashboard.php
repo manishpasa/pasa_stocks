@@ -328,6 +328,7 @@ if ($role == 'admin') {
     <a href="dashboard.php">Dashboard</a>
     <?php if($issolo):?>
       <a href="../inventory/inventory.php">Inventory</a>
+      <a href="../live_inventory/live_inventory.php">Live-Inventory</a>
       <a href="../employee/employee.php">Employee</a>
       <a href="../report/sales.php" class="active">Sales today</a>
       <a href="../report/reports.php">Reports</a>

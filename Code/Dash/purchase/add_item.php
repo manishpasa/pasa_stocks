@@ -275,21 +275,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php if($issolo):?>
       <a href="../inventory/inventory.php">Inventory</a>
       <a href="../employee/employee.php">Employee</a>
-      <a href="../report/sales.php" class="active">Sales today</a>
+      <a href="../report/sales.php" >Sales today</a>
       <a href="../report/reports.php">Reports</a>
       <a href="../purchase/add_item.php">Purchase</a>
+      <a href="../purchase/add_live_inventory.php">Purchase-live</a>
       <a href="../report/restock.php">Re-Stock</a>
       <a href="../sales/sell_item.php">sales</a>
       <a href="../return/returns.php">Returns</a>
       <?php else:?>
-    <?php if ($role == 'admin'): ?>
-      <a href="../inventory/inventory.php">Inventory</a>
-      <a href="../employee/employee.php">Employee</a>
-      <a href="../report/sales.php" class="active">Sales today</a>
-      <a href="../report/reports.php">Reports</a>
-    <?php elseif ($role == 'storekeeper'): ?>
-      <a href="../inventory/inventory.php">Inventory</a>
-      <a href="../purchase/add_item.php">Purchase</a>
+        <?php if ($role == 'admin'): ?>
+          <a href="../inventory/inventory.php">Inventory</a>
+          <a href="../employee/employee.php">Employee</a>
+          <a href="../report/sales.php" >Sales today</a>
+          <a href="../report/reports.php">Reports</a>
+          <?php elseif ($role == 'storekeeper'): ?>
+            <a href="../inventory/inventory.php">Inventory</a>
+            <a href="../purchase/add_item.php">Purchase</a>
+            <a href="../purchase/add_live_inventory.php">Purchase-live</a>
       <a href="../report/restock.php">Re-Stock</a>
     <?php elseif ($role == 'cashier'): ?>
       <a href="../sales/sell_item.php">sales</a>

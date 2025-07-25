@@ -3,7 +3,7 @@ session_start();
 include '../../db.php';
 
 if (!isset($_SESSION['reset_emp_id'])) {
-    header("Location: ../../Sign/login.php");
+    header("Location: ../Sign/login.php");
     exit();
 }
 
@@ -54,7 +54,7 @@ $stmt->close();
     <button type="submit" class="btn btn-primary w-100">Verify Email</button>
   </form>
   <div class="text-center mt-3">
-    <a href="send_email_verification.php">Resend OTP</a>
+    <a href="reset_password.php">Resend OTP</a>
   </div>
 </div>
 </body>
