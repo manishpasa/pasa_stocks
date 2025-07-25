@@ -7,8 +7,8 @@ require '../PHPMailer/PHPMailer.php';
 require '../PHPMailer/SMTP.php';
 require '../PHPMailer/Exception.php';
 
-use ../PHPMailer\PHPMailer\PHPMailer;
-use ../PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 if (!isset($_SESSION['reset_emp_id'])) {
     header("Location: ../../Sign/login.php");

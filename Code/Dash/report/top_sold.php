@@ -9,7 +9,7 @@ if (!isset($_SESSION['id'])) {
 
 $company_id = $_SESSION['company_id'];
 $emp_id = $_SESSION['id'];
-
+$issolo=$_SESSION['issolo'];
 // Get profile pic and role for UI
 $stmt = $conn->prepare("SELECT profile_pic, role FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
@@ -226,21 +226,32 @@ $result = $stmt->get_result();
 </nav>
 
 
-   <div class="sidebar" id="sidebar">   
-    <a href="../dashboard/dashboard.php">Dashboard</a>
-    <?php if ($erole == 'admin'): ?>
+  <div class="sidebar" id="sidebar">   
+    <a href="dashboard.php">Dashboard</a>
+    <?php if($issolo):?>
       <a href="../inventory/inventory.php">Inventory</a>
       <a href="../employee/employee.php">Employee</a>
       <a href="../report/sales.php" class="active">Sales today</a>
       <a href="../report/reports.php">Reports</a>
-    <?php elseif ($erole == 'storekeeper'): ?>
+      <a href="../purchase/add_item.php">Purchase</a>
+      <a href="../report/restock.php">Re-Stock</a>
+      <a href="../sales/sell_item.php">sales</a>
+      <a href="../return/returns.php">Returns</a>
+      <?php else:?>
+    <?php if ($role == 'admin'): ?>
+      <a href="../inventory/inventory.php">Inventory</a>
+      <a href="../employee/employee.php">Employee</a>
+      <a href="../report/sales.php" class="active">Sales today</a>
+      <a href="../report/reports.php">Reports</a>
+    <?php elseif ($role == 'storekeeper'): ?>
       <a href="../inventory/inventory.php">Inventory</a>
       <a href="../purchase/add_item.php">Purchase</a>
       <a href="../report/restock.php">Re-Stock</a>
-    <?php elseif ($erole == 'cashier'): ?>
+    <?php elseif ($role == 'cashier'): ?>
       <a href="../sales/sell_item.php">sales</a>
       <a href="../return/returns.php">Returns</a>
     <?php endif; ?>
+    <?php endif;?>
   </div>
 
 <!-- Content -->

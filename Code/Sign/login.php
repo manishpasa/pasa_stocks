@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['company_code'] = $employee['company_code'];
             $_SESSION['name']=$employee['emp_name'];
             $_SESSION['phone']=$employee['phone'];
-
+            $_SESSION['issolo']=$employee['issolo'];
             $_SESSION['role'] = $employee['role'];
             $_SESSION['last_activity'] = time();
             $_SESSION['expire_time'] = 14400;

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../../db.php';
+include '../db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (
@@ -23,7 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $company_location = $_POST['company_location'];
         $company_number = $_POST['company_number'];
         $number_of_employees = $_POST['number_of_employees'];
-
+        if($number_of_employees==1){
+            $issolo=1;
+        }
         // Check for existing company code
         $checkCompanyCode = "SELECT * FROM company WHERE company_code = '$company_code'";
         $result = $conn->query($checkCompanyCode);
@@ -38,8 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($conn->query($sql_company) === TRUE) {
 
             // Insert into employee table with role as admin
-            $sql_employee = "INSERT INTO employee (emp_name, role, email, password, phone,DOB, company_code, join_date)
-                             VALUES ('$emp_name', 'admin', '$email', '$password', '$phone','$dob', '$company_code', CURDATE())";
+            $sql_employee = "INSERT INTO employee (emp_name, role, email, password, phone,DOB, company_code, join_date,issolo)
+                             VALUES ('$emp_name', 'admin', '$email', '$password', '$phone','$dob', '$company_code', CURDATE(),'$issolo')";
 
             if ($conn->query($sql_employee) === TRUE) {
                 header("location:login.php");

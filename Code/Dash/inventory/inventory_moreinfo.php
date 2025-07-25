@@ -15,7 +15,7 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 
 }
 $_SESSION['last_activity'] = time();
 $emp_id = $_SESSION['id'];
-
+$issolo=$_SESSION['issolo'];
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
 $stmt->execute();
@@ -377,8 +377,18 @@ nav.navbar {
 </nav>
 
 
-   <div class="sidebar" id="sidebar">   
-    <a href="../dashboard/dashboard.php">Dashboard</a>
+     <div class="sidebar" id="sidebar">   
+    <a href="dashboard.php">Dashboard</a>
+    <?php if($issolo):?>
+      <a href="../inventory/inventory.php">Inventory</a>
+      <a href="../employee/employee.php">Employee</a>
+      <a href="../report/sales.php" class="active">Sales today</a>
+      <a href="../report/reports.php">Reports</a>
+      <a href="../purchase/add_item.php">Purchase</a>
+      <a href="../report/restock.php">Re-Stock</a>
+      <a href="../sales/sell_item.php">sales</a>
+      <a href="../return/returns.php">Returns</a>
+      <?php else:?>
     <?php if ($role == 'admin'): ?>
       <a href="../inventory/inventory.php">Inventory</a>
       <a href="../employee/employee.php">Employee</a>
@@ -392,6 +402,7 @@ nav.navbar {
       <a href="../sales/sell_item.php">sales</a>
       <a href="../return/returns.php">Returns</a>
     <?php endif; ?>
+    <?php endif;?>
   </div>
 
   <div class="content" id="content">
