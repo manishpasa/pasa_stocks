@@ -14,16 +14,17 @@ if (!$customer_id || empty($cart)) {
 // Insert into bills table
 $conn->query("INSERT INTO bills (company_id, customer_id,bill_date, emp_id) VALUES ($company_id, $customer_id,now(), $emp_id)");
 $bill_id = $conn->insert_id;
+
 foreach ($cart as $item) {
-    $item_id = $item['item_id'];
+    $item_id = $item['live_id'];
     $qty = $item['quantity'];
     $price = $item['price'];
 
     // Normal inventory: Insert into sold_list and update inventory
-    $conn->query("INSERT INTO sold_list (company_id, emp_id, item_id, quantity, price, sale_date, customer_id, bill_id)
+    $conn->query("INSERT INTO live_inventory_sales (company_id, emp_id, live_id, quantity_sold, sold_price_per_unit, sale_date, customer_id, bill_id)
                   VALUES ($company_id, $emp_id, $item_id, $qty, $price, NOW(), $customer_id, $bill_id)");
 
-    $conn->query("UPDATE inventory SET Quantity_sold = Quantity_sold + $qty, quantity = quantity - $qty WHERE item_id = $item_id");
+    $conn->query("UPDATE live_inventory SET total_sold = total_sold + $qty WHERE live_id = $item_id");
 }
 
 // Clear cart

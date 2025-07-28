@@ -21,19 +21,19 @@ if (!$bill) {
 // Fetch customer info
 $customer = $conn->query("SELECT * FROM customer WHERE customer_id = {$bill['customer_id']}")->fetch_assoc();
 
-// Fetch sold inventory items for this bill
+// Fetch sold live inventory items for this bill
 $sold_items = $conn->query("
-    SELECT s.*, i.item_name 
-    FROM sold_list s
-    JOIN inventory i ON s.item_id = i.item_id
-    WHERE s.bill_id = $bill_id
+    SELECT b.*, l.item_name 
+    FROM live_inventory_sales b
+    JOIN live_inventory l ON b.live_id = l.live_id
+    WHERE b.bill_id = $bill_id
 ");
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Receipt</title>
+    <title>Live Inventory Receipt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <style>
         .receipt-box {
@@ -49,7 +49,7 @@ $sold_items = $conn->query("
 </head>
 <body class="bg-light p-4">
 <div class="receipt-box">
-    <h2><?= htmlspecialchars($company['company_name']) ?> - Receipt</h2>
+    <h2><?= htmlspecialchars($company['company_name']) ?> - Live Item Receipt</h2>
     <p><strong>Phone:</strong> <?= htmlspecialchars($company['contact_number']) ?> <br>
        <strong>Location:</strong> <?= htmlspecialchars($company['location']) ?></p>
     <hr>
@@ -61,7 +61,7 @@ $sold_items = $conn->query("
     <?php 
     if ($sold_items && $sold_items->num_rows > 0):
     ?>
-    <h4>🛒 Sold Items</h4>
+    <h4>🛒 Live Items Sold</h4>
     <table class="table table-bordered mt-3">
         <thead>
             <tr><th>Item</th><th>Qty</th><th>Price (Rs.)</th><th>Total (Rs.)</th></tr>
@@ -70,13 +70,13 @@ $sold_items = $conn->query("
             <?php 
             $grand_total = 0;
             while($row = $sold_items->fetch_assoc()):
-                $total = $row['quantity'] * $row['price'];
+                $total = $row['quantity_sold'] * $row['sold_price_per_unit'];
                 $grand_total += $total;
             ?>
             <tr>
                 <td><?= htmlspecialchars($row['item_name']) ?></td>
-                <td><?= (int)$row['quantity'] ?></td>
-                <td><?= number_format($row['price'], 2) ?></td>
+                <td><?= (int)$row['quantity_sold'] ?></td>
+                <td><?= number_format($row['sold_price_per_unit'], 2) ?></td>
                 <td><?= number_format($total, 2) ?></td>
             </tr>
             <?php endwhile; ?>
@@ -87,7 +87,7 @@ $sold_items = $conn->query("
         </tbody>
     </table>
     <?php else: ?>
-        <p>No items found for this bill.</p>
+        <p>No live items found for this bill.</p>
     <?php endif; ?>
 
     <div class="text-center mt-3 mb-4">

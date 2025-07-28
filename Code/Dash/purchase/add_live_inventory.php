@@ -255,6 +255,7 @@ $stmt->bind_param("siddids", $item_name, $company_id, $cost_per_unit, $sell_pric
       <a href="../purchase/add_item.php">Purchase</a>
       <a href="../report/restock.php">Re-Stock</a>
       <a href="../sales/sell_item.php">sales</a>
+      <a href="../sales_live/sell_item.php">live-sales</a>
       <a href="../return/returns.php">Returns</a>
       <?php else:?>
     <?php if ($role == 'admin'): ?>
@@ -267,6 +268,7 @@ $stmt->bind_param("siddids", $item_name, $company_id, $cost_per_unit, $sell_pric
       <a href="../purchase/add_item.php">Purchase</a>
       <a href="../report/restock.php">Re-Stock</a>
     <?php elseif ($role == 'cashier'): ?>
+      <a href="../sales_live/sell_item.php">live-sales</a>
       <a href="../sales/sell_item.php">sales</a>
       <a href="../return/returns.php">Returns</a>
     <?php endif; ?>

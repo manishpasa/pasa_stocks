@@ -5,7 +5,7 @@ include '../../db.php';
 $company_id = $_SESSION['company_id'];
 $erole = $_SESSION['role'];
 $name = $_SESSION['name'];
-
+$issolo=$_SESSION['issolo'];
 if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
     echo "<script>alert('Cart is empty!'); window.location.href='sell_item.php';</script>";
     exit();

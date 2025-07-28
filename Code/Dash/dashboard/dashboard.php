@@ -81,8 +81,8 @@ if ($role == 'admin') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="stylesheet" href="../style/darkmode.css">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -325,7 +325,7 @@ if ($role == 'admin') {
 </nav>
 
   <div class="sidebar" id="sidebar">   
-    <a href="dashboard.php">Dashboard</a>
+    <a href="../dashboard/dashboard.php">Dashboard</a>
     <?php if($issolo):?>
       <a href="../inventory/inventory.php">Inventory</a>
       <a href="../live_inventory/live_inventory.php">Live-Inventory</a>
@@ -335,6 +335,7 @@ if ($role == 'admin') {
       <a href="../purchase/add_item.php">Purchase</a>
       <a href="../report/restock.php">Re-Stock</a>
       <a href="../sales/sell_item.php">sales</a>
+      <a href="../sales_live/sell_item.php">live-sales</a>
       <a href="../return/returns.php">Returns</a>
       <?php else:?>
     <?php if ($role == 'admin'): ?>
@@ -347,6 +348,7 @@ if ($role == 'admin') {
       <a href="../purchase/add_item.php">Purchase</a>
       <a href="../report/restock.php">Re-Stock</a>
     <?php elseif ($role == 'cashier'): ?>
+      <a href="../sales_live/sell_item.php">live-sales</a>
       <a href="../sales/sell_item.php">sales</a>
       <a href="../return/returns.php">Returns</a>
     <?php endif; ?>
