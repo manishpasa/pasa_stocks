@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db.php';
+include '../../db.php';
 
 if (!isset($_SESSION['id'])) {
     header("Location: ../../Sign/login.php");
@@ -63,16 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
         body { background-color: #f8f9fa; }
-        .content { padding: 20px; transition: margin-left 0.3s ease; margin-top:60px;margin-left: 0; }
-        .sidebar {  
-            width: 250px; background: #fff; height: 100vh;
-            position: fixed; top: 0; left: -250px; transition: left 0.3s ease; z-index: 1000;
-        }
-        .sidebar.show { left: 0; }
-        .sidebar a {
-            padding: 15px; display: block; color: #333; text-decoration: none;
-        }
-        .sidebar a:hover { background: #f1f1f1; }
+        .content { padding: 20px; transition: margin-left 0.3s ease; padding-left:85px;
+    padding-top:75px;margin-left: 0; }
         .content.shift { margin-left: 250px; }
         .header {
             display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
@@ -94,98 +86,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         .btn-edit { background-color: #ff9800; color: white; }
         .btn-save { background-color: #4CAF50; color: white; display: none; }
-        .menu-toggle-btn {
-  width: 40px;
-  height: 30px;
-  background: white;
-  border: 2px solid #007bff;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  padding: 3px;
-}
-
-.menu-toggle-btn:hover {
-  background-color: #007bff;
-}
-
-.menu-toggle-btn:hover .bar {
-  background-color: white;
-}
-
-.menu-toggle-btn .bar {
-  height: 3px;
-  width: 20px;
-  background-color: #007bff;
-  margin: 3px 0;
-  border-radius: 2px;
-  transition: all 0.3s ease-in-out;
-}
     </style>
 </head>
 <body>
-
-<!-- Sidebar -->
- <!-- Top Navbar -->
-<nav class="navbar navbar-light bg-light px-4 justify-content-between" 
-     style="position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 1050; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-<div class="d-flex align-items-center gap-3">
-  <button class="menu-toggle-btn" onclick="toggleSidebar()">
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-  </button>
-  <span class="navbar-brand mb-0 h4">📦 PasaStocks</span>
-</div>
-
-  <div class="dropdown">
-    <button class="btn btn-outline   " type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-      <img src="uploads/<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-      <li><a class="dropdown-item" href="../profile/profile.php">👤 View Profile</a></li>
-      <li><a class="dropdown-item" href="../setting/settings.php">⚙️ Settings</a></li>
-      <li><hr class="dropdown-divider"></li>
-      <li><button class="btn btn-danger" onclick="showLogoutPopup()">🚪 Logout</button></li>
-    </ul>
-  </div>
-</nav>
-
-     <div class="sidebar" id="sidebar">   
-    <a href="../dashboard/dashboard.php">Dashboard</a>
-    <?php if($issolo):?>
-      <a href="../inventory/inventory.php">Inventory</a>
-      <a href="../live_inventory/live_inventory.php">Live-Inventory</a>
-      <a href="../employee/employee.php">Employee</a>
-      <a href="../report/sales.php" class="active">Sales today</a>
-      <a href="../report/reports.php">Reports</a>
-      <a href="../purchase/add_item.php">Purchase</a>
-      <a href="../report/restock.php">Re-Stock</a>
-      <a href="../sales/sell_item.php">sales</a>
-      <a href="../sales_live/sell_item.php">live-sales</a>
-      <a href="../return/returns.php">Returns</a>
-      <?php else:?>
-    <?php if ($role == 'admin'): ?>
-      <a href="../inventory/inventory.php">Inventory</a>
-      <a href="../employee/employee.php">Employee</a>
-      <a href="../report/sales.php" class="active">Sales today</a>
-      <a href="../report/reports.php">Reports</a>
-    <?php elseif ($role == 'storekeeper'): ?>
-      <a href="../inventory/inventory.php">Inventory</a>
-      <a href="../purchase/add_item.php">Purchase</a>
-      <a href="../report/restock.php">Re-Stock</a>
-    <?php elseif ($role == 'cashier'): ?>
-      <a href="../sales_live/sell_item.php">live-sales</a>
-      <a href="../sales/sell_item.php">sales</a>
-      <a href="../return/returns.php">Returns</a>
-    <?php endif; ?>
-    <?php endif;?>
-  </div>
-
+  
+  <?php include('../fixedphp/sidebar.php') ?>
+  <?php include('../fixedphp/navbar.php') ?>
 <!-- Content -->
 <div class="content" id="content">
     <div class="header">
@@ -217,23 +123,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     </div>
 </div>
-
-<script>
-function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('show');
-    document.getElementById('content').classList.toggle('shift');
-}
-
-function enableEdit() {
-    document.querySelectorAll('input').forEach(input => {
-        if (!['company_code'].includes(input.name)) {
-            input.readOnly = false;
-        }
-    });
-    document.querySelector('.btn-edit').style.display = 'none';
-    document.getElementById('saveBtn').style.display = 'inline-block';
-}
-</script>
-<script src="../js/darkmode.js"></script>
 </body>
 </html>

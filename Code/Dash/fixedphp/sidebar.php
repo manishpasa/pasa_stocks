@@ -1,211 +1,278 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Responsive Sidebar</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-      text-decoration: none;
-    }
 
-    :root {
-      --sidebar-width: 210px;
-      --sidebar-collapsed-width: 80px;
-      --padding-bottom:11px;
-      --primary-color: #695CFE;
-      --sidebar-bg: #fff;
-      --text-color: #333;
-      --body-bg: #f4f4f4;
-      --transition: all 0.3s ease;
-    }
+<?php
+$role = $_SESSION['role'] ?? '';
+$issolo = $_SESSION['solo'] ?? 0;
+?>
+<!-- WRAPPER FOR SCOPING -->
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<style>
+  .custom-sidebar-wrapper {
+    --sidebar-width: 220px;
+    --sidebar-collapsed-width: 70px;
+    --primary-color: #695CFE;
+    --sidebar-bg: #fff;
+    --text-color: #333;
+    --body-bg: #f4f4f4;
+    --transition: all 0.3s ease;
+  }
 
-    #sidebar {
-      background: var(--body-bg);
-      transition: var(--transition);
-    }
+  .custom-menu-toggle-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 32px;
+    background: white;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+    padding: 0;
+    position: fixed;
+    top: 8px;
+    left: 12px;
+    z-index: 1000;
+  }
 
-    nav.sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      
-      width: var(--sidebar-width);
-      height: 90%;
-      background: var(--sidebar-bg);
-      padding: 1px;
-      transition: var(--transition);
-      border-right: 1px solid #ddd;
-    }
+  .custom-menu-toggle-btn:hover {
+    background-color: #007bff;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+  }
 
-    nav.sidebar.close {
-      width: var(--sidebar-collapsed-width);
-    }
+  .custom-menu-toggle-btn i {
+    color: #007bff;
+    transition: var(--transition);
+  }
 
-    nav .toggle-btn {
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 6px 5px;
-      border-radius: 3px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-      display: flex;
-      align-items: left;
-      justify-content: left;
-    }
+  .custom-menu-toggle-btn:hover i {
+    color: white;
+  }
 
-    nav.sidebar.close .toggle-btn i {
-      transform: rotate(90deg);
-    }
+  .custom-sidebar {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: var(--sidebar-width);
+    height: calc(100% - 50px);
+    background: var(--sidebar-bg);
+    transition: var(--transition);
+    z-index: 999;
+    overflow-y: auto;
+  }
 
-    nav ul {
-      list-style: none;
-      margin-top: 5px;
-    }
+  .custom-sidebar.collapsed {
+    width: var(--sidebar-collapsed-width);
+  }
 
-    nav ul li {
-      display: flex;
-      align-items: left;
-      padding:12px;
-      padding-bottom:1px;
-      transition: background 0.3s;
-      border-radius: 6px;
-    }
+  .custom-sidebar-list {
+    list-style: none;
+    margin-top: 0;
+    padding-left: 0;
+  }
 
-    nav ul li:hover {
-      background: #007bff;
-    }
+  .custom-sidebar-item {
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    gap: 12px;
+    transition: var(--transition);
+  }
 
-    nav ul li i {
-      font-size: 20px;
-      min-width: 90px;
-      text-align: left;
-      color: var(--text-color);
-    }
+  .custom-sidebar-item a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 10px 0;
+    transition: var(--transition);
+  }
 
-    nav ul li .text {
-      color: var(--text-color);
-      white-space: nowrap;
-      transition: opacity 0.3s;
-      opacity: 1;
-    }
+  .custom-sidebar-item a:hover {
+    background: #0056b3;
+    color: white;
+    transform: scale(1.02);
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 86, 179, 0.2);
+  }
 
-    nav.sidebar.close ul li .text {
-      opacity: 0;
-      pointer-events: none;
-      text-decoration:none;
-    }
+  .custom-sidebar-item a:hover i,
+  .custom-sidebar-item a:hover .custom-text {
+    color: white;
+  }
 
-    .main {
-  margin-left: 20px; 
-  padding: 0px;
-  transition: var(--transition);
-}
+  .custom-sidebar-item i {
+    font-size: 24px;
+    min-width: 34px;
+    color: var(--text-color);
+    transition: var(--transition);
+  }
 
-nav.sidebar.close ~ .main {
-  margin-left: 40px; 
-}
-#sidebar{
-  margin-top:50px;
-}.menu-toggle-btn {
-  width: 40px;
-  height: 40px;
-  margin-left:5px;
-  margin-top:2px;
-  background: white;
-  border: 2px solid #007bff;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  padding: 3px;
-}
+  .custom-sidebar-item .custom-text {
+    color: var(--text-color);
+    white-space: nowrap;
+    transition: opacity 0.3s;
+    opacity: 1;
+    font-size: 16px;
+  }
 
-.menu-toggle-btn:hover {
-  background-color: #007bff;
-}
+  .custom-sidebar.collapsed .custom-sidebar-item .custom-text {
+    opacity: 0;
+    pointer-events: none;
+  }
 
-.menu-toggle-btn:hover .bar {
-  background-color: white;
-}
+  .custom-sidebar-item a.active {
+    background: #007bff;
+    color: white;
+    border-radius: 4px;
+  }
 
-.menu-toggle-btn .bar {
-  height: 3px;
-  width: 20px;
-  background-color: #007bff;
-  margin: 3px 0;
-  border-radius: 2px;
-  transition: all 0.3s ease-in-out;
-}
-  </style>
-</head>
-<body>
- 
-         <button id="toggleBtn"class="menu-toggle-btn" onclick="toggleSidebar()">
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
- 
-      </button>
-  <nav class="sidebar close" id="sidebar">
-    <ul><li class="nav-link">
-  <a href="dashboard.php"><i class='bx bx-home-alt'></i><span class="text">Dashboard</span></a>
-</li>
+  .custom-sidebar-item a.active i,
+  .custom-sidebar-item a.active .custom-text {
+    color: white;
+  }
 
-<li class="nav-link">
-  <a href="inventory.php"><i class='bx bx-box'></i><span class="text">Inventory</span></a>
-</li>
+  .main.shift {
+    margin-left: var(--sidebar-collapsed-width);
+    transition: var(--transition);
+  }
+</style>
 
-<li class="nav-link">
-  <a href="employee.php"><i class='bx bx-group'></i><span class="text">Employee</span></a>
-</li>
-
-<li class="nav-link">
-  <a href="sales.php" class="active"><i class='bx bx-bar-chart-alt'></i><span class="text">Sales Today</span></a>
-</li>
-
-<li class="nav-link">
-  <a href="reports.php"><i class='bx bx-file'></i><span class="text">Reports</span></a>
-</li>
-
-<li class="nav-link">
-  <a href="add_item.php"><i class='bx bx-cart'></i><span class="text">Purchase</span></a>
-</li>
-
-<li class="nav-link">
-  <a href="restock.php"><i class='bx bx-refresh'></i><span class="text">Re-Stock</span></a>
-</li>
-
-<li class="nav-link">
-  <a href="sell_item.php"><i class='bx bx-shopping-bag'></i><span class="text">Sales</span></a>
-</li>
-
-<li class="nav-link">
-  <a href="returns.php"><i class='bx bx-undo'></i><span class="text">Returns</span></a>
-</li>
-
+<div class="custom-sidebar-wrapper">
+  <!-- Toggle Button -->
+  <button id="customToggleBtn" class="custom-menu-toggle-btn">
+    <i class='bx bx-menu'></i>
+  </button>
+  <!-- Sidebar -->
+  <nav class="custom-sidebar collapsed" id="customSidebar">
+    <ul class="custom-sidebar-list">
+      <li class="custom-sidebar-item">
+        <a href="../dashboard/dashboard.php">
+          <i class='bx bx-home-alt'></i><span class="custom-text">Dashboard</span>
+        </a>
+      </li>
+      <?php if ($issolo): ?>
+        <li class="custom-sidebar-item">
+          <a href="../inventory/inventory.php">
+            <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../live_inventory/live_inventory.php">
+            <i class='bx bx-bar-chart'></i><span class="custom-text">Live-Inventory</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../employee/employee.php">
+            <i class='bx bx-group'></i><span class="custom-text">Employee</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../report/sales.php">
+            <i class='bx bx-bar-chart-alt'></i><span class="custom-text">Sales Today</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../report/reports.php">
+            <i class='bx bx-file'></i><span class="custom-text">Reports</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../purchase/add_item.php">
+            <i class='bx bx-cart'></i><span class="custom-text">Purchase</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../report/restock.php">
+            <i class='bx bx-refresh'></i><span class="custom-text">Re-Stock</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../sales/sell_item.php">
+            <i class='bx bx-shopping-bag'></i><span class="custom-text">Sales</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../sales_live/sell_item.php">
+            <i class='bx bx-basket'></i><span class="custom-text">Live-Sales</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../return/returns.php">
+            <i class='bx bx-undo'></i><span class="custom-text">Returns</span>
+          </a>
+        </li>
+      <?php else: ?>
+        <?php if ($role == 'admin'): ?>
+          <li class="custom-sidebar-item">
+            <a href="../inventory/inventory.php">
+              <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
+            </a>
+          </li>
+          <li class="custom-sidebar-item">
+            <a href="../employee/employee.php">
+              <i class='bx bx-group'></i><span class="custom-text">Employee</span>
+            </a>
+          </li>
+          <li class="custom-sidebar-item">
+            <a href="../report/sales.php" >
+              <i class='bx bx-bar-chart-alt'></i><span class="custom-text">Sales Today</span>
+            </a>
+          </li>
+          <li class="custom-sidebar-item">
+            <a href="../report/reports.php">
+              <i class='bx bx-file'></i><span class="custom-text">Reports</span>
+            </a>
+          </li>
+        <?php elseif ($role == 'storekeeper'): ?>
+          <li class="custom-sidebar-item">
+            <a href="../inventory/inventory.php">
+              <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
+            </a>
+          </li>
+          <li class="custom-sidebar-item">
+            <a href="../purchase/add_item.php">
+              <i class='bx bx-cart'></i><span class="custom-text">Purchase</span>
+            </a>
+          </li>
+          <li class="custom-sidebar-item">
+            <a href="../report/restock.php">
+              <i class='bx bx-refresh'></i><span class="custom-text">Re-Stock</span>
+            </a>
+          </li>
+        <?php elseif ($role == 'cashier'): ?>
+          <li class="custom-sidebar-item">
+            <a href="../sales_live/sell_item.php">
+              <i class='bx bx-basket'></i><span class="custom-text">Live-Sales</span>
+            </a>
+          </li>
+          <li class="custom-sidebar-item">
+            <a href="../sales/sell_item.php">
+              <i class='bx bx-shopping-bag'></i><span class="custom-text">Sales</span>
+            </a>
+          </li>
+          <li class="custom-sidebar-item">
+            <a href="../return/returns.php">
+              <i class='bx bx-undo'></i><span class="custom-text">Returns</span>
+            </a>
+          </li>
+        <?php endif; ?>
+      <?php endif; ?>
     </ul>
   </nav>
+</div>
 
-  <div class="main">
-  </div>
-  <script>
-    const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('toggleBtn');
-
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('close');
-    });
-  </script>
-
-</body>
-</html>
+<script>
+  const customSidebar = document.getElementById('customSidebar');
+  const customToggleBtn = document.getElementById('customToggleBtn');
+  customToggleBtn.addEventListener('click', () => {
+    customSidebar.classList.toggle('collapsed');
+    document.querySelector('.main')?.classList.toggle('shift');
+  });
+</script>

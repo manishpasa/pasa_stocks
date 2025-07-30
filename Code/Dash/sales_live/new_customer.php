@@ -53,6 +53,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button class="btn btn-success">Save & Continue</button>
         </form>
     </div>
-    <script src="../js/darkmode.js"></script>
 </body>
 </html>

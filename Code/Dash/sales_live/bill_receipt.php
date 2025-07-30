@@ -95,7 +95,5 @@ $sold_items = $conn->query("
         <a href="sell_item.php" class="btn btn-secondary">← Back</a>
     </div>
 </div>
-
-<script src="../js/darkmode.js"></script>
 </body>
 </html>

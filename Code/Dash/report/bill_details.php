@@ -200,6 +200,5 @@ $items = $conn->query("
       <a href="sales.php" class="btn btn-secondary">← Back to Sales</a>
     </div>
   </div>
-  <script src="../js/darkmode.js"></script>
 </body>
 </html>

@@ -12,7 +12,7 @@ if (!$customer_id || empty($cart)) {
 }
 
 // Insert into bills table
-$conn->query("INSERT INTO bills (company_id, customer_id,bill_date, emp_id) VALUES ($company_id, $customer_id,now(), $emp_id)");
+$conn->query("INSERT INTO bills (company_id, customer_id,bill_date, emp_id,islive) VALUES ($company_id, $customer_id,now(), $emp_id,1)");
 $bill_id = $conn->insert_id;
 
 foreach ($cart as $item) {
