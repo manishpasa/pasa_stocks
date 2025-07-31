@@ -73,7 +73,6 @@ function sort_link($col, $label, $current_sort, $current_order, $search_code) {
   <meta charset="UTF-8">
   <title>Inventory - Admin Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <style>
     body { background-color: #f8f9fa; }

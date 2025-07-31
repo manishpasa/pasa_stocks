@@ -1,7 +1,7 @@
 
 <?php
-$role = $_SESSION['role'] ?? '';
-$issolo = $_SESSION['solo'] ?? 0;
+$role = $_SESSION['role'] ;
+$issolo = $_SESSION['issolo']; 
 ?>
 <!-- WRAPPER FOR SCOPING -->
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -157,7 +157,7 @@ $issolo = $_SESSION['solo'] ?? 0;
           <i class='bx bx-home-alt'></i><span class="custom-text">Dashboard</span>
         </a>
       </li>
-      <?php if ($issolo): ?>
+      <?php if ($issolo==1): ?>
         <li class="custom-sidebar-item">
           <a href="../inventory/inventory.php">
             <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
@@ -208,8 +208,7 @@ $issolo = $_SESSION['solo'] ?? 0;
             <i class='bx bx-undo'></i><span class="custom-text">Returns</span>
           </a>
         </li>
-      <?php else: ?>
-        <?php if ($role == 'admin'): ?>
+      <?php elseif ($role == 'admin'): ?>
           <li class="custom-sidebar-item">
             <a href="../inventory/inventory.php">
               <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
@@ -263,7 +262,6 @@ $issolo = $_SESSION['solo'] ?? 0;
             </a>
           </li>
         <?php endif; ?>
-      <?php endif; ?>
     </ul>
   </nav>
 </div>
