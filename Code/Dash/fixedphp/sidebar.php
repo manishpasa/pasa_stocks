@@ -1,16 +1,20 @@
-
 <?php
-$role = $_SESSION['role'] ;
-$issolo = $_SESSION['issolo']; 
+$role = $_SESSION['role'];
+$issolo = $_SESSION['issolo'];
+
+// Get the current page's filename for comparison
+$current_page = basename($_SERVER['PHP_SELF']);
 ?>
+
 <!-- WRAPPER FOR SCOPING -->
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 <style>
   .custom-sidebar-wrapper {
     --sidebar-width: 220px;
-    --sidebar-collapsed-width: 70px;
+    --sidebar-collapsed-width: 80px; /* Increased from 70px for better visibility */
     --primary-color: #695CFE;
     --sidebar-bg: #fff;
+    --sidebar-collapsed-bg: #f8f9fa; /* Lighter background for collapsed state */
     --text-color: #333;
     --body-bg: #f4f4f4;
     --transition: all 0.3s ease;
@@ -61,10 +65,13 @@ $issolo = $_SESSION['issolo'];
     transition: var(--transition);
     z-index: 999;
     overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   }
 
   .custom-sidebar.collapsed {
     width: var(--sidebar-collapsed-width);
+    background: var(--sidebar-collapsed-bg); /* Lighter background when collapsed */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05); /* Softer shadow for collapsed state */
   }
 
   .custom-sidebar-list {
@@ -76,12 +83,14 @@ $issolo = $_SESSION['issolo'];
   .custom-sidebar-item {
     display: flex;
     align-items: center;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding: 15px 15px; /* Simplified padding for consistency */
     gap: 12px;
     transition: var(--transition);
+  }
+
+  .custom-sidebar.collapsed .custom-sidebar-item {
+    padding: 12px 10px; /* Slightly reduced padding for collapsed state */
+    justify-content: center; /* Center icons when collapsed */
   }
 
   .custom-sidebar-item a {
@@ -92,14 +101,19 @@ $issolo = $_SESSION['issolo'];
     color: var(--text-color);
     padding: 10px 0;
     transition: var(--transition);
+    border-radius: 4px; /* Moved border-radius here for consistency */
   }
 
   .custom-sidebar-item a:hover {
     background: #0056b3;
     color: white;
     transform: scale(1.02);
-    border-radius: 4px;
     box-shadow: 0 2px 6px rgba(0, 86, 179, 0.2);
+  }
+
+  .custom-sidebar.collapsed .custom-sidebar-item a:hover {
+    background: rgba(0, 86, 179, 0.1); /* Subtle hover effect in collapsed state */
+    transform: none; /* Disable scale in collapsed state for cleaner look */
   }
 
   .custom-sidebar-item a:hover i,
@@ -107,11 +121,19 @@ $issolo = $_SESSION['issolo'];
     color: white;
   }
 
+  .custom-sidebar.collapsed .custom-sidebar-item a:hover i {
+    color: #007bff; /* Keep icon color distinct on hover in collapsed state */
+  }
+
   .custom-sidebar-item i {
     font-size: 24px;
     min-width: 34px;
     color: var(--text-color);
     transition: var(--transition);
+  }
+
+  .custom-sidebar.collapsed .custom-sidebar-item i {
+    font-size: 26px; /* Slightly larger icons in collapsed state for emphasis */
   }
 
   .custom-sidebar-item .custom-text {
@@ -133,9 +155,18 @@ $issolo = $_SESSION['issolo'];
     border-radius: 4px;
   }
 
+  .custom-sidebar.collapsed .custom-sidebar-item a.active {
+    background: rgba(0, 123, 255, 0.2); /* Lighter active background in collapsed state */
+    color: #007bff;
+  }
+
   .custom-sidebar-item a.active i,
   .custom-sidebar-item a.active .custom-text {
     color: white;
+  }
+
+  .custom-sidebar.collapsed .custom-sidebar-item a.active i {
+    color: #007bff; /* Match active icon color to primary color in collapsed state */
   }
 
   .main.shift {
@@ -153,115 +184,125 @@ $issolo = $_SESSION['issolo'];
   <nav class="custom-sidebar collapsed" id="customSidebar">
     <ul class="custom-sidebar-list">
       <li class="custom-sidebar-item">
-        <a href="../dashboard/dashboard.php">
+        <a href="../dashboard/dashboard.php" class="<?php echo $current_page == 'dashboard.php' ? 'active' : ''; ?>">
           <i class='bx bx-home-alt'></i><span class="custom-text">Dashboard</span>
         </a>
       </li>
-      <?php if ($issolo==1): ?>
+      <?php if ($issolo == 1): ?>
         <li class="custom-sidebar-item">
-          <a href="../inventory/inventory.php">
+          <a href="../inventory/inventory.php" class="<?php echo $current_page == 'inventory.php' ? 'active' : ''; ?>">
             <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
           </a>
         </li>
         <li class="custom-sidebar-item">
-          <a href="../live_inventory/live_inventory.php">
-            <i class='bx bx-bar-chart'></i><span class="custom-text">Live-Inventory</span>
+          <a href="../live_inventory/live_inventory.php" class="<?php echo $current_page == 'live_inventory.php' ? 'active' : ''; ?>">
+            <i class='bx bx-pulse'></i><span class="custom-text">Live-Inventory</span>
           </a>
         </li>
         <li class="custom-sidebar-item">
-          <a href="../employee/employee.php">
-            <i class='bx bx-group'></i><span class="custom-text">Employee</span>
+          <a href="../employee/employee.php" class="<?php echo $current_page == 'employee.php' ? 'active' : ''; ?>">
+            <i class='bx bx-user'></i><span class="custom-text">Employee</span>
           </a>
         </li>
         <li class="custom-sidebar-item">
-          <a href="../report/sales.php">
-            <i class='bx bx-bar-chart-alt'></i><span class="custom-text">Sales Today</span>
+          <a href="../report/sales.php" class="<?php echo $current_page == 'sales.php' ? 'active' : ''; ?>">
+            <i class='bx bx-chart'></i><span class="custom-text">Sales Today</span>
           </a>
         </li>
         <li class="custom-sidebar-item">
-          <a href="../report/reports.php">
-            <i class='bx bx-file'></i><span class="custom-text">Reports</span>
+          <a href="../report/reports.php" class="<?php echo $current_page == 'reports.php' ? 'active' : ''; ?>">
+            <i class='bx bx-file-find'></i><span class="custom-text">Reports</span>
           </a>
         </li>
         <li class="custom-sidebar-item">
-          <a href="../purchase/add_item.php">
-            <i class='bx bx-cart'></i><span class="custom-text">Purchase</span>
+          <a href="../purchase/add_item.php" class="<?php echo $current_page == 'add_item.php' ? 'active' : ''; ?>">
+            <i class='bx bx-purchase-tag'></i><span class="custom-text">Purchase</span>
           </a>
         </li>
         <li class="custom-sidebar-item">
-          <a href="../report/restock.php">
-            <i class='bx bx-refresh'></i><span class="custom-text">Re-Stock</span>
+          <a href="../report/restock.php" class="<?php echo $current_page == 'restock.php' ? 'active' : ''; ?>">
+            <i class='bx bx-rotate-left'></i><span class="custom-text">Re-Stock</span>
           </a>
         </li>
         <li class="custom-sidebar-item">
-          <a href="../sales/sell_item.php">
-            <i class='bx bx-shopping-bag'></i><span class="custom-text">Sales</span>
+          <a href="../sales/sell_item.php" class="<?php echo $current_page == 'sell_item.php' && dirname($_SERVER['PHP_SELF']) == dirname('../sales/sell_item.php') ? 'active' : ''; ?>">
+            <i class='bx bx-dollar'></i><span class="custom-text">Sales</span>
           </a>
         </li>
         <li class="custom-sidebar-item">
-          <a href="../sales_live/sell_item.php">
-            <i class='bx bx-basket'></i><span class="custom-text">Live-Sales</span>
+          <a href="../sales_live/sell_item.php" class="<?php echo $current_page == 'sell_item.php' && dirname($_SERVER['PHP_SELF']) == dirname('../sales_live/sell_item.php') ? 'active' : ''; ?>">
+            <i class='bx bx-cart-alt'></i><span class="custom-text">Live-Sales</span>
           </a>
         </li>
         <li class="custom-sidebar-item">
-          <a href="../return/returns.php">
-            <i class='bx bx-undo'></i><span class="custom-text">Returns</span>
+          <a href="../return/returns.php" class="<?php echo $current_page == 'returns.php' ? 'active' : ''; ?>">
+            <i class='bx bx-reply'></i><span class="custom-text">Returns</span>
           </a>
         </li>
       <?php elseif ($role == 'admin'): ?>
-          <li class="custom-sidebar-item">
-            <a href="../inventory/inventory.php">
-              <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
-            </a>
-          </li>
-          <li class="custom-sidebar-item">
-            <a href="../employee/employee.php">
-              <i class='bx bx-group'></i><span class="custom-text">Employee</span>
-            </a>
-          </li>
-          <li class="custom-sidebar-item">
-            <a href="../report/sales.php" >
-              <i class='bx bx-bar-chart-alt'></i><span class="custom-text">Sales Today</span>
-            </a>
-          </li>
-          <li class="custom-sidebar-item">
-            <a href="../report/reports.php">
-              <i class='bx bx-file'></i><span class="custom-text">Reports</span>
-            </a>
-          </li>
-        <?php elseif ($role == 'storekeeper'): ?>
-          <li class="custom-sidebar-item">
-            <a href="../inventory/inventory.php">
-              <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
-            </a>
-          </li>
-          <li class="custom-sidebar-item">
-            <a href="../purchase/add_item.php">
-              <i class='bx bx-cart'></i><span class="custom-text">Purchase</span>
-            </a>
-          </li>
-          <li class="custom-sidebar-item">
-            <a href="../report/restock.php">
-              <i class='bx bx-refresh'></i><span class="custom-text">Re-Stock</span>
-            </a>
-          </li>
-        <?php elseif ($role == 'cashier'): ?>
-          <li class="custom-sidebar-item">
-            <a href="../sales_live/sell_item.php">
-              <i class='bx bx-basket'></i><span class="custom-text">Live-Sales</span>
-            </a>
-          </li>
-          <li class="custom-sidebar-item">
-            <a href="../sales/sell_item.php">
-              <i class='bx bx-shopping-bag'></i><span class="custom-text">Sales</span>
-            </a>
-          </li>
-          <li class="custom-sidebar-item">
-            <a href="../return/returns.php">
-              <i class='bx bx-undo'></i><span class="custom-text">Returns</span>
-            </a>
-          </li>
-        <?php endif; ?>
+        <li class="custom-sidebar-item">
+          <a href="../inventory/inventory.php" class="<?php echo $current_page == 'inventory.php' ? 'active' : ''; ?>">
+            <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../live_inventory/live_inventory.php" class="<?php echo $current_page == 'live_inventory.php' ? 'active' : ''; ?>">
+            <i class='bx bx-pulse'></i><span class="custom-text">Live-Inventory</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../employee/employee.php" class="<?php echo $current_page == 'employee.php' ? 'active' : ''; ?>">
+            <i class='bx bx-user'></i><span class="custom-text">Employee</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../report/sales.php" class="<?php echo $current_page == 'sales.php' ? 'active' : ''; ?>">
+            <i class='bx bx-chart'></i><span class="custom-text">Sales Today</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../report/reports.php" class="<?php echo $current_page == 'reports.php' ? 'active' : ''; ?>">
+            <i class='bx bx-file-find'></i><span class="custom-text">Reports</span>
+          </a>
+        </li>
+      <?php elseif ($role == 'storekeeper'): ?>
+        <li class="custom-sidebar-item">
+          <a href="../inventory/inventory.php" class="<?php echo $current_page == 'inventory.php' ? 'active' : ''; ?>">
+            <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../live_inventory/live_inventory.php" class="<?php echo $current_page == 'live_inventory.php' ? 'active' : ''; ?>">
+            <i class='bx bx-pulse'></i><span class="custom-text">Live-Inventory</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../purchase/add_item.php" class="<?php echo $current_page == 'add_item.php' ? 'active' : ''; ?>">
+            <i class='bx bx-purchase-tag'></i><span class="custom-text">Purchase</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../report/restock.php" class="<?php echo $current_page == 'restock.php' ? 'active' : ''; ?>">
+            <i class='bx bx-rotate-left'></i><span class="custom-text">Re-Stock</span>
+          </a>
+        </li>
+      <?php elseif ($role == 'cashier'): ?>
+        <li class="custom-sidebar-item">
+          <a href="../sales/sell_item.php" class="<?php echo $current_page == 'sell_item.php' && dirname($_SERVER['PHP_SELF']) == dirname('../sales/sell_item.php') ? 'active' : ''; ?>">
+            <i class='bx bx-dollar'></i><span class="custom-text">Sales</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../sales_live/sell_item.php" class="<?php echo $current_page == 'sell_item.php' && dirname($_SERVER['PHP_SELF']) == dirname('../sales_live/sell_item.php') ? 'active' : ''; ?>">
+            <i class='bx bx-cart-alt'></i><span class="custom-text">Live-Sales</span>
+          </a>
+        </li>
+        <li class="custom-sidebar-item">
+          <a href="../return/returns.php" class="<?php echo $current_page == 'returns.php' ? 'active' : ''; ?>">
+            <i class='bx bx-reply'></i><span class="custom-text">Returns</span>
+          </a>
+        </li>
+      <?php endif; ?>
     </ul>
   </nav>
 </div>

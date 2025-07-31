@@ -158,7 +158,7 @@ function sort_link($col, $label, $current_sort, $current_order, $search_code) {
       </div>
       <form class="search-box" method="GET" style="display:flex; align-items:center; gap:10px;">
         <input
-          type="text"
+          type="number"
           name="search_code"
           class="search-input"
           placeholder="Search by Item Code"

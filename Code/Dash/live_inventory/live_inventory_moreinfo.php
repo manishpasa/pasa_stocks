@@ -31,7 +31,7 @@ if (!isset($_GET['code'])) {
 $item_id = intval($_GET['code']);
 
 // Fetch item details
-$sql = "SELECT * FROM inventory WHERE item_id = ? LIMIT 1";
+$sql = "SELECT * FROM live_inventory WHERE live_id = ? LIMIT 1";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $item_id);
 $stmt->execute();
@@ -47,14 +47,14 @@ $item = $result->fetch_assoc();
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_name = $_POST['item_name'] ?? $item['item_name'];
-    $new_price = $_POST['price'] ?? $item['price'];
+    $new_price = $_POST['price'] ?? $item['sell_price'];
 
-    $update_sql = "UPDATE inventory SET item_name = ?, price = ? WHERE item_id = ?";
+    $update_sql = "UPDATE live_inventory SET item_name = ?, sell_price = ? WHERE live_id = ?";
     $update_stmt = $conn->prepare($update_sql);
     $update_stmt->bind_param("sdi", $new_name, $new_price, $item_id);
 
     if ($update_stmt->execute()) {
-        echo "<script> window.location.href='inventory_moreinfo.php?code=$item_id';</script>";
+        echo "<script>window.location.href='live_inventory_moreinfo.php?code=$item_id';</script>";
         exit();
     } else {
         $error = "Error updating item: " . $conn->error;
@@ -220,7 +220,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .content {
   padding-left:85px;
     padding-top:75px;
-}#backbtn{
+}
+#backbtn{
  margin-left:30%;
  margin-top:15px;
  padding:10px;
@@ -247,20 +248,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="text" id="item_name" name="item_name" value="<?php echo htmlspecialchars($item['item_name']); ?>" readonly>
 
       <label for="price">Selling Price (Rs.)</label>
-      <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($item['price']); ?>" step="0.01" readonly>
+      <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($item['sell_price']); ?>" step="0.01" readonly>
 
-      <label>Quantity Left</label>
-      <input type="number" value="<?php echo htmlspecialchars($item['quantity']); ?>" readonly>
+      <label>Quantity sold</label>
+      <input type="number" value="<?php echo htmlspecialchars($item['total_sold']); ?>" readonly>
 
       <label>Cost Price (Rs.)</label>
-      <input type="number" value="<?php echo htmlspecialchars($item['cost_price']); ?>" readonly step="0.01">
+      <input type="number" value="<?php echo htmlspecialchars($item['cost_per_unit']); ?>" readonly step="0.01">
 
       <div class="buttons">
         <button type="button" id="editBtn" onclick="enableEdit()">Edit</button>
         <button type="submit" id="saveBtn">Save</button>
       </div>
-      
-      <a href="inventory.php"><button type="button" id="backbtn">back to inventory </button></a>
+      <a href="live_inventory.php"><button type="button"id="backbtn">back to inventory </button></a>
     </form>
   </div>
 
