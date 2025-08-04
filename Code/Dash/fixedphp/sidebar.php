@@ -1,7 +1,7 @@
 <?php
 $role = $_SESSION['role'];
 $issolo = $_SESSION['issolo'];
-
+$has_live=$_SESSION['has_live'];
 // Get the current page's filename for comparison
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
@@ -194,11 +194,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
           </a>
         </li>
+        <?php if ($has_live == 1): ?>
         <li class="custom-sidebar-item">
           <a href="../live_inventory/live_inventory.php" class="<?php echo $current_page == 'live_inventory.php' ? 'active' : ''; ?>">
             <i class='bx bx-pulse'></i><span class="custom-text">Live-Inventory</span>
           </a>
         </li>
+        <?php endif;?>
         <li class="custom-sidebar-item">
           <a href="../employee/employee.php" class="<?php echo $current_page == 'employee.php' ? 'active' : ''; ?>">
             <i class='bx bx-user'></i><span class="custom-text">Employee</span>
@@ -229,11 +231,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class='bx bx-dollar'></i><span class="custom-text">Sales</span>
           </a>
         </li>
+<?php if ($has_live == 1): ?>
         <li class="custom-sidebar-item">
           <a href="../sales_live/sell_item.php" class="<?php echo $current_page == 'sell_item.php' && dirname($_SERVER['PHP_SELF']) == dirname('../sales_live/sell_item.php') ? 'active' : ''; ?>">
             <i class='bx bx-cart-alt'></i><span class="custom-text">Live-Sales</span>
           </a>
         </li>
+        <?php endif;?>
         <li class="custom-sidebar-item">
           <a href="../return/returns.php" class="<?php echo $current_page == 'returns.php' ? 'active' : ''; ?>">
             <i class='bx bx-reply'></i><span class="custom-text">Returns</span>
@@ -245,11 +249,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class='bx bx-box'></i><span class="custom-text">Inventory</span>
           </a>
         </li>
+        <?php if ($has_live == 1): ?>
         <li class="custom-sidebar-item">
           <a href="../live_inventory/live_inventory.php" class="<?php echo $current_page == 'live_inventory.php' ? 'active' : ''; ?>">
             <i class='bx bx-pulse'></i><span class="custom-text">Live-Inventory</span>
           </a>
         </li>
+        <?php endif;?>
         <li class="custom-sidebar-item">
           <a href="../employee/employee.php" class="<?php echo $current_page == 'employee.php' ? 'active' : ''; ?>">
             <i class='bx bx-user'></i><span class="custom-text">Employee</span>
@@ -292,11 +298,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class='bx bx-dollar'></i><span class="custom-text">Sales</span>
           </a>
         </li>
+        <?php if ($has_live == 1): ?>
         <li class="custom-sidebar-item">
           <a href="../sales_live/sell_item.php" class="<?php echo $current_page == 'sell_item.php' && dirname($_SERVER['PHP_SELF']) == dirname('../sales_live/sell_item.php') ? 'active' : ''; ?>">
             <i class='bx bx-cart-alt'></i><span class="custom-text">Live-Sales</span>
           </a>
         </li>
+        <?php endif;?>
         <li class="custom-sidebar-item">
           <a href="../return/returns.php" class="<?php echo $current_page == 'returns.php' ? 'active' : ''; ?>">
             <i class='bx bx-reply'></i><span class="custom-text">Returns</span>

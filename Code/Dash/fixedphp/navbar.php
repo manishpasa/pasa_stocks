@@ -1,131 +1,214 @@
- <!DOCTYPE html>
- <html lang="en">
- <head>
+<?php
+if (!isset($_SESSION['id'])) {
+    header("Location: ../../Sign/login.php");
+    exit();
+}
+$emp_id = $_SESSION['id'];
+$stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
+$stmt->bind_param("i", $emp_id);
+$stmt->execute();
+$stmt->bind_result($profile_pic);
+$stmt->fetch();
+$stmt->close();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <title>Document</title>
- </head>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
- <style>
-/* Dropdown button */
-.dropdown-toggle {
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-.dropdown-toggle:hover {
-  background-color: #007bff !important;
-  color: #fff !important;
-  border-color: #007bff !important;
+    <style>
+        /* Reset default margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #f8f9fa;
+            padding: 0 1rem;
+            position: fixed;
+            top: 0;
+            left: 65px;
+            right: 0;
+            height: 55px;
+            width: calc(100% - 65px);
+            z-index: 1050;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Flex container for navbar items */
+        .d-flex {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Navbar brand */
+        .navbar-brand {
+            margin-bottom: 0;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+.profile-container {
+  position: relative;
+  display: inline-block;
 }
 
-/* Dropdown menu items */
-.dropdown-menu .dropdown-item {
-  transition: background-color 0.3s, color 0.3s;
-  cursor: pointer;
-}
-.dropdown-menu .dropdown-item:hover {
-  color: #fff;
-}
-.popup-overlay {
+.dropdown-menu {
   display: none;
-  position: fixed;
-  z-index: 9999;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  right: 0;
+  background-color: #fff;
+  min-width: 220px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  z-index: 99;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-/* Popup Box */
-.popup-box {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  width: 300px;
-  box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
-  text-align: center;
+.dropdown-menu a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
 }
 
-/* Popup Buttons */
-.popup-buttons {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-}
-.popup-buttons .btn {
-  width: 48%;
-  cursor: pointer;
+.dropdown-menu a:hover {
+  background-color: #f0f0f0;
 }
 
 
-    .popup-overlay {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      justify-content: center;
-      align-items: center;
-    }
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
 
-    .popup-box {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      width: 300px;
-      box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
-      text-align: center;
-    }
+        .btn-danger {
+            background-color: #ffffffff;
+            color:black;
+            border-color: #ffffffff;
+            width:100%;
+        }
 
-    .popup-buttons {
-      margin-top: 20px;
-      display: flex;
-      justify-content: space-between;
-    }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
 
-    .popup-buttons .btn {
-      width: 48%;
-    }
- </style>
- <body>
-    
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+            border-color: #6c757d;
+        }
 
-<nav class="navbar navbar-light bg-light px-4 justify-content-between" 
-     style="position: fixed; top: 0; left: 0; margin-left:65px; margin-right:0px; right: 0;height:55px; width: 96%; z-index: 1050; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-<div class="d-flex align-items-center gap-3">
-  <span class="navbar-brand mb-0 h4"><h3>📦 PasaStocks</h3></span>
-</div>
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
 
-  <div class="dropdown">
-    <button class="btn btn-outline   " type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-      <img src="uploads/<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-      <li><a class="dropdown-item" href="../profile/profile.php">👤 View Profile</a></li>
-      <li><a class="dropdown-item" href="../setting/settings.php">⚙️ Settings</a></li>
-      <li><hr class="dropdown-divider" ></li>
-      <li><button class="btn btn-danger" onclick="showLogoutPopup()">🚪 Logout</button></li>
-    </ul>
+        /* Popup overlay */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Popup box */
+        .popup-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        /* Popup buttons */
+        .popup-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .popup-buttons .btn {
+            width: 48%;
+        }
+
+        /* Profile image */
+        .profile-img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="d-flex">
+            <span class="navbar-brand"><h3>📦 PasaStocks</h3></span>
+        </div>
+        <div class="profile-container">
+  <img src="../profile/uploads/<?php echo htmlspecialchars($profile_pic); ?>" class="profile-img" id="profileBtn" alt="Profile" onerror="this.src='../../../image/profile.png';"> 
+  <div class="dropdown-menu" id="profileDropdown">
+    <a href="../profile/profile.php">My Profile</a>
+    <a href="../setting/settings.php">Settings</a>
+    <a onclick="showLogoutPopup()">Logout</a>
   </div>
-</nav> 
-  <div id="logoutPopup" class="popup-overlay">
-  <div class="popup-box">
-    <h5>Confirm Logout</h5>
-    <p>Are you sure you want to log out?</p>
-    <div class="popup-buttons">
-      <a href="../../Sign/logout.php" class="btn btn-danger">Yes, Logout</a>
-      <button class="btn btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
+</div>
+    </nav>
+    <div id="logoutPopup" class="popup-overlay">
+        <div class="popup-box">
+            <h5>Confirm Logout</h5>
+            <p>Are you sure you want to log out?</p>
+            <div class="popup-buttons">
+                <a href="../../Sign/logout.php" class="btn btn-danger">Yes, Logout</a>
+                <button class="btn btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-<script>
-  function showLogoutPopup() {
-    document.getElementById('logoutPopup').style.display = 'flex';
-  }
+    <script>
+        function showLogoutPopup() {
+            document.getElementById('logoutPopup').style.display = 'flex';
+        }
 
-  function hideLogoutPopup() {
-    document.getElementById('logoutPopup').style.display = 'none';
-  }
+        function hideLogoutPopup() {
+            document.getElementById('logoutPopup').style.display = 'none';
+        }
+    
+  const profileBtn = document.getElementById('profileBtn');
+  const dropdown = document.getElementById('profileDropdown');
+
+  profileBtn.addEventListener('click', () => {
+    dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+  });
+
+  // Optional: Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.style.display = 'none';
+    }
+  });
 </script>
+
 </body>
- </html>
+</html>

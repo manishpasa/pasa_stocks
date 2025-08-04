@@ -20,12 +20,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $company_code = $_POST['company_code'];
         $password = $_POST['password']; // You can hash this if needed
         $company_name = $_POST['company_name'];
-        $company_location = $_POST['company_location'];
-        $company_number = $_POST['company_number'];
-        $number_of_employees = $_POST['number_of_employees'];
-        if($number_of_employees==1){
-            $issolo=1;
-        }
+$company_location = $_POST['company_location'];
+$company_number = $_POST['company_number'];
+$number_of_employees = $_POST['number_of_employees'];
+$has_live = isset($_POST['has_live']) && $_POST['has_live'] === 'yes' ? 1 : 0;
+
+$issolo = ($number_of_employees == 1) ? 1 : 0;
+
         // Check for existing company code
         $checkCompanyCode = "SELECT * FROM company WHERE company_code = '$company_code'";
         $result = $conn->query($checkCompanyCode);
@@ -33,10 +34,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "This company code is already taken. Please choose another one.";
             exit();
         }
+$sql_company = "INSERT INTO company (company_code, company_name, location, contact_number, total_employees, has_live) 
+                VALUES ('$company_code', '$company_name', '$company_location', '$company_number', '$number_of_employees', '$has_live')";
 
-        // Insert into company table first
-        $sql_company = "INSERT INTO company (company_code, company_name, location, contact_number, total_employees) 
-                        VALUES ('$company_code', '$company_name', '$company_location', '$company_number', '$number_of_employees')";
         if ($conn->query($sql_company) === TRUE) {
 
             // Insert into employee table with role as admin
@@ -104,7 +104,25 @@ $conn->close();
             color: red;
             font-size: 14px;
             display: none;
-        }
+        }.radio-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 10px 0;
+    text-align: left;
+}
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+.radio-label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
     </style>
 </head>
 <body>
@@ -136,7 +154,14 @@ $conn->close();
                 <input type="text" name="company_location" placeholder="Company Location" required>
                 <input type="tel" name="company_number" placeholder="Company Number" required>
                 <input type="number" name="number_of_employees" placeholder="Number of Employees" required>
-                <input type="button" value="Back" onclick="prevStep()">
+                <div class="radio-group">
+    <label class="radio-label">Has live inventory:</label>
+    <label><input type="radio" name="has_live" value="yes" required> Yes</label>
+    <label><input type="radio" name="has_live" value="no"> No</label>
+</div>
+
+
+                    <input type="button" value="Back" onclick="prevStep()">
                 <input type="submit" value="Sign Up">
             </div>
         </form>

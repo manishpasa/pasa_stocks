@@ -33,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $company = $res_company->fetch_assoc();
                 $_SESSION['company_name'] = $company['company_name'];
                 $_SESSION['company_id'] = $company['company_id'];
+                $_SESSION['has_live'] = $company['has_live'];
             }
                 header("location:../dash/dashboard/dashboard.php");
             

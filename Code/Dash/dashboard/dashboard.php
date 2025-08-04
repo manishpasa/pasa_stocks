@@ -85,9 +85,10 @@ if ($role == 'admin') {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+    
    #full{
-    padding-left:85px;
-    padding-top:75px;
+    padding-left:105px;
+    padding-top:85px;
    }
   </style>
 </head>
@@ -103,8 +104,8 @@ if ($role == 'admin') {
     
     <?php if ($role == 'admin'): ?>
       <div class="content" id="content">
-        <div class="row mb-4">
-          <div class="col-md-3">
+        <div class="row mb-3">
+          <div style="width:24.5%;">
             <a href="../report/sales.php" style="text-decoration:none;">
               <div class="card p-3">
                 <h5>Total Sales</h5>
@@ -112,7 +113,7 @@ if ($role == 'admin') {
               </div>
             </a>
           </div>
-          <div class="col-md-3">
+          <div style="width:24.5%;">
             <a href="../report/profit.php" style="text-decoration:none;">
               <div class="card p-3">
                 <h5>Total Profit</h5>
@@ -120,7 +121,7 @@ if ($role == 'admin') {
               </div>
             </a>
       </div>
-      <div class="col-md-3">
+      <div style="width:24.5%;">
         <a href="../report/orders.php" style="text-decoration:none;">
           <div class="card p-3">
             <h5>Total Orders</h5>
@@ -128,7 +129,7 @@ if ($role == 'admin') {
           </div>
         </a>
       </div>
-      <div class="col-md-3">
+      <div style="width:24.5%;">
         <a href="../report/return.php" style="text-decoration:none;">
         <div class="card p-3">
           <h5>Total Returns</h5>
@@ -139,7 +140,7 @@ if ($role == 'admin') {
   </div>
   
     <div class="row">
-      <div class="col-md-8">
+      <div style="width:65%;">
         <a href="../report/sales_chart.php"style="text-decoration:none;">
           <div class="card p-3">
             <h5>Sales Record (Last 7 Days)</h5>
