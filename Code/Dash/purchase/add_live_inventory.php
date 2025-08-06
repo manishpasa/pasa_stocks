@@ -125,6 +125,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+  
+  <?php include('../fixedphp/sidebar.php') ?>
+  <?php include('../fixedphp/navbar.php') ?>
   <div class="container mt-4 pt-5 ">
   <div class="row justify-content-center">
     <div class="col-md-6">

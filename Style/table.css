@@ -1,0 +1,72 @@
+body { background-color: #f8f9fa; margin-left:70px}
+    .content { margin-left: 0; padding: 20px; transition: margin-left 0.3s ease; }
+    .content.shift { margin-left: 200px; }
+    .card { box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: none; border-radius: 10px; }
+    .close-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .menu-btn { margin-right: 10px; }
+   table {
+  width: 100%;
+  table-layout: fixed; /* forces equal-width columns */
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+    th {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    tr:hover {
+      background-color: #eaf5ff;
+    }
+    .add-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .add-btn:hover {
+      background-color: #0056b3;
+    }
+    .search-box {
+      margin-bottom: 10px;
+      
+    }
+    .search-input {
+      width: 200px;
+      padding: 7px 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .search-button {
+      padding: 7px 15px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .search-button:hover {
+      background-color: #0056b3;
+    }
+.content {
+  padding-left:85px;
+    padding-top:75px;
+}

@@ -26,7 +26,7 @@ $name=$_SESSION['name'];
 $valid_columns = ['live_id', 'item_name', 'sell_price', 'cost_per_unit', 'total_sold'];
 $sort_col = $_GET['sort'] ?? 'live_id';
 $sort_order = $_GET['order'] ?? 'asc'; // asc or desc
-$search_code = $_GET['search_code'] ?? '';
+$search_name = $_GET['search_name'] ?? '';
 
 if (!in_array($sort_col, $valid_columns)) {
     $sort_col = 'live_id';
@@ -36,11 +36,11 @@ if ($sort_order !== 'asc' && $sort_order !== 'desc') {
 }
 
 // Prepare SQL with filtering and sorting
-$search_code_esc = mysqli_real_escape_string($conn, $search_code);
+$search_name_esc = mysqli_real_escape_string($conn, $search_name);
 
 $sql = "SELECT * FROM live_inventory WHERE company_id = '$company_id'";
-if ($search_code_esc !== '') {
-    $sql .= " AND live_id LIKE '%$search_code_esc%'";
+if ($search_name_esc !== '') {
+    $sql .= " AND live_id LIKE '%$search_name_esc%'";
 }
 $sql .= " ORDER BY $sort_col $sort_order";
 
@@ -49,22 +49,6 @@ if (!$result) {
     die("Query failed: " . mysqli_error($conn));
 }
 
-// Helper function for sorting links (toggle order)
-function sort_link($col, $label, $current_sort, $current_order, $search_code) {
-    $order = 'asc';
-    $arrow = '';
-    if ($col === $current_sort) {
-        if ($current_order === 'asc') {
-            $order = 'desc';
-            $arrow = ' ▲';
-        } else {
-            $order = 'asc';
-            $arrow = ' ▼';
-        }
-    }
-    $search_param = $search_code ? '&search_code=' . urlencode($search_code) : '';
-    return "<a href=\"?sort=$col&order=$order$search_param\" style=\"color:white; text-decoration:none;\">$label$arrow</a>";
-}
 ?>
 
 <!DOCTYPE html>
@@ -74,111 +58,50 @@ function sort_link($col, $label, $current_sort, $current_order, $search_code) {
   <title>Inventory - Admin Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <style>
-    body { background-color: #f8f9fa; }
-    .content { margin-left: 0; padding: 20px; transition: margin-left 0.3s ease; }
-    .content.shift { margin-left: 250px; }
-    .card { box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: none; border-radius: 10px; }
-    .close-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px; }
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .menu-btn { margin-right: 10px; }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 15px;
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 12px 15px;
-      text-align: center;
-      border: 1px solid #ddd;
-    }
-    th {
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-      user-select: none;
-    }
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-    tr:hover {
-      background-color: #eaf5ff;
-    }
-    .add-btn {
-      background-color: #007bff;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .add-btn:hover {
-      background-color: #0056b3;
-    }
-    .search-box {
-      margin-bottom: 10px;
-    }
-    .search-input {
-      width: 250px;
-      padding: 7px 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .search-button {
-      padding: 7px 15px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .search-button:hover {
-      background-color: #0056b3;
-    }
-.content {
-  padding-left:85px;
-    padding-top:75px;
-}
-
-  </style>
+  <link rel="stylesheet" href="../../../Style/table.css">
 </head>
 <body>
   
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
   <div class="content" id="content">
-    <div class="header">
-      <div>
-        <h2 style="display:inline;">Live-Inventory</h2>
-      </div>
-      <form class="search-box" method="GET" style="display:flex; align-items:center; gap:10px;">
-        <input
-          type="number"
-          name="search_code"
-          class="search-input"
-          placeholder="Search by Item Code"
-          value="<?php echo htmlspecialchars($search_code); ?>"
-        />
-        <input type="hidden" name="sort" value="<?php echo htmlspecialchars($sort_col); ?>">
-        <input type="hidden" name="order" value="<?php echo htmlspecialchars($sort_order); ?>">
-        <button type="submit" class="search-button">Search</button>
-      </form>
-    </div>
+      <div class="header">
+  <h2 >Live_Inventory</h2>
+  <form class="search-box" method="GET" >
+    <input
+      type="text"
+      name="search_name"
+      class="search-input"
+      placeholder="Search by Item Name"
+      value="<?php echo htmlspecialchars($search_name); ?>"
+    />
+
+    <select name="sort" class="search-input" onchange="this.form.submit()">
+      <option value="item_id" <?php if ($sort_col == 'live_id') echo 'selected'; ?>>live id</option>
+      <option value="item_name" <?php if ($sort_col == 'item_name') echo 'selected'; ?>>Name</option>
+      <option value="price" <?php if ($sort_col == 'sell_price') echo 'selected'; ?>>Selling Price</option>
+      <option value="cost_price" <?php if ($sort_col == 'cost_per_unit') echo 'selected'; ?>>Cost Price</option>
+      <option value="quantity_sold" <?php if ($sort_col == 'total_sold') echo 'selected'; ?>>Total Sold</option>
+    </select>
+
+    <select name="order" class="search-input" onchange="this.form.submit()">
+      <option value="asc" <?php if ($sort_order == 'asc') echo 'selected'; ?>>Ascending</option>
+      <option value="desc" <?php if ($sort_order == 'desc') echo 'selected'; ?>>Descending</option>
+    </select>
+
+    <button type="submit" class="search-button" hidden>Search</button>
+  </form>
+</div>
     <div class="card p-3">
-      <table>
+      <table style="width:100%;">
         <thead>
           <tr>
-            <th><?php echo sort_link('live_id', 'Item Code', $sort_col, $sort_order, $search_code); ?></th>
-            <th><?php echo sort_link('item_name', 'Item Name', $sort_col, $sort_order, $search_code); ?></th>
-            <th><?php echo sort_link('sell_price', 'Selling Price', $sort_col, $sort_order, $search_code); ?></th>
-            <th><?php echo sort_link('cost_per_unit', 'Cost Price', $sort_col, $sort_order, $search_code); ?></th>
-            <th><?php echo sort_link('total_sold', 'Total Sold', $sort_col, $sort_order, $search_code); ?></th>
-            <th>Actions</th>
+            <th>live id</th>
+            <th>Name</th>
+            <th>Sell price</th>
+            <th>Cost price</th>
+            <th>Total sold</th>
+            <th >Actions</th>
           </tr>
         </thead>
         <tbody>

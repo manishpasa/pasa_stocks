@@ -28,7 +28,7 @@ $role = $_SESSION['role'];
 
 $threshold = isset($_GET['threshold']) && is_numeric($_GET['threshold']) ? intval($_GET['threshold']) : 10;
 
-$low_stock_items = $conn->query("SELECT item_name, quantity FROM inventory WHERE company_id = $company_id AND quantity < $threshold ORDER BY quantity ASC");
+$low_stock_items = $conn->query("SELECT item_name, quantity FROM inventory WHERE company_id = $company_id AND quantity <= $threshold ORDER BY quantity ASC");
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,11 +69,11 @@ $low_stock_items = $conn->query("SELECT item_name, quantity FROM inventory WHERE
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
 <div class="content" id="content">
-  <h2>Low Stock Items (Less Than <?php echo $threshold; ?>)</h2>
+  <h2>Low Stock Items ( <?php echo $threshold; ?>)</h2>
 
   <form method="GET" class="mb-4 d-flex gap-2">
     <input type="number" name="threshold" class="form-control" placeholder="Enter quantity threshold" value="<?php echo $threshold; ?>" min="1" required>
-    <button type="submit" class="btn btn-success">Search</button>
+    <button type="submit" class="btn btn-success"hidden>Search</button>
   </form>
 
   <?php if ($low_stock_items && $low_stock_items->num_rows > 0): ?>

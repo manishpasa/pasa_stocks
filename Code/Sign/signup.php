@@ -31,7 +31,7 @@ $issolo = ($number_of_employees == 1) ? 1 : 0;
         $checkCompanyCode = "SELECT * FROM company WHERE company_code = '$company_code'";
         $result = $conn->query($checkCompanyCode);
         if ($result->num_rows > 0) {
-            echo "This company code is already taken. Please choose another one.";
+            echo "<script>alert('This company code is already taken. Please choose another one.');</script>";
             exit();
         }
 $sql_company = "INSERT INTO company (company_code, company_name, location, contact_number, total_employees, has_live) 
@@ -47,13 +47,13 @@ $sql_company = "INSERT INTO company (company_code, company_name, location, conta
                 header("location:login.php");
                 exit(); 
             } else {
-                echo "Error inserting employee: " . $conn->error;
+                echo "<script>alert('Error while inserting employee,try again')</script";
             }
         } else {
-            echo "Error inserting company: " . $conn->error;
+            echo "<script>alert('Error while inserting company, try again ')</script";
         }
     } else {
-        echo "Please fill in all fields.";
+        echo "<script>alert('Please fill in all fields.')</script";
     }
 }
 $conn->close();

@@ -67,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <button type="submit" class="btn btn-primary w-100">Continue</button>
         </form>
+        <a href="../sign/login.php"><button type ="button "class="btn btn-primary w-100" style="margin-top:20px" >back to log in </button></a>
     </div>
 </body>
 </html>

@@ -109,45 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <link rel="stylesheet" href="../style/darkmode.css">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    body {
-      background: #f4f4f4;
-      font-family: Arial, sans-serif;
-      margin: 0;
-    }
-    /* Content */
-    .content {
-      margin-left: 0;
-      margin-top:-40px;
-      padding: 2rem 1rem;
-      transition: margin-left 0.3s ease;
-      min-height: 100vh;
-    }
-    .content.shift {
-      margin-left: 250px;
-    }
-    
-    /* Form container */
-    .form-container {
-      max-width: 480px;
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
-      margin: auto;
-    }
-    /* Button group */
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 1rem;
-    }
-
-.content {
-  padding-top: 65px;
-}
-
-  </style>
+  <link rel="stylesheet" href="../../../Style/sell.css">
 </head>
 <body>
 
@@ -167,44 +129,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php endif; ?>
 
     <form method="POST" novalidate>
-      <div class="mb-3">
-        <label for="item_name" class="form-label">Item Name:</label>
-        <input type="text" id="item_name" name="item_name" class="form-control" required />
-      </div>
+      <div class="form-layout">
 
-      <div class="mb-3">
+        <div>
+           <label for="item_name" class="form-label">Item Name:</label>
+        <input type="text" id="item_name" name="item_name" class="form-control" required />
+      
         <label for="category" class="form-label">Category:</label>
         <input type="text" id="category" name="category" class="form-control" required />
-      </div>
-
-      <div class="mb-3">
+      
         <label for="supplier" class="form-label">Supplier:</label>
         <input type="text" id="supplier" name="supplier" class="form-control" required />
-      </div>
-
-      <div class="mb-3">
+      
         <label for="total_cost" class="form-label">Total Cost:</label>
         <input type="number" id="total_cost" name="total_cost" step="0.01" class="form-control" required oninput="calculateCostPerUnit()" />
-      </div>
+      
+        </div>
+       <div>
 
-      <div class="mb-3">
-        <label for="quantity" class="form-label">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" class="form-control" required oninput="calculateCostPerUnit()" />
-      </div>
-
-      <div class="mb-3">
+         <label for="quantity" class="form-label">Quantity:</label>
+         <input type="number" id="quantity" name="quantity" class="form-control" required oninput="calculateCostPerUnit()" />
+      
         <label for="cost_per_unit" class="form-label">Cost Per Unit:</label>
         <input type="text" id="cost_per_unit" class="form-control" readonly />
-      </div>
-
-      <div class="mb-3">
+      
         <label for="marked_price" class="form-label">Marked Price:</label>
         <input type="number" id="marked_price" name="marked_price" step="0.01" class="form-control" required />
-      </div>
-
-      <div class="mb-3">
+        
         <label for="date" class="form-label">Date:</label>
         <input type="date" id="date" name="date" class="form-control" required />
+      </div>
       </div>
 
       <div class="btn-group">
