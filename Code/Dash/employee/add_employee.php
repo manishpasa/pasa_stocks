@@ -1,10 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/../fixedphp/protect.php';
 include '../../db.php';
-if (!isset($_SESSION['id']) || !isset($_SESSION['company_code']) || !isset($_SESSION['role'])) {
-    header("Location: ../../Sign/login.php");
-    exit();
-}
 $emp_id = $_SESSION['id'];
 $issolo=$_SESSION['issolo'];
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");

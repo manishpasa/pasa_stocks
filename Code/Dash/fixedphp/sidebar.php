@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../fixedphp/protect.php';
 $role = $_SESSION['role'];
 $issolo = $_SESSION['issolo'];
 $has_live=$_SESSION['has_live'];

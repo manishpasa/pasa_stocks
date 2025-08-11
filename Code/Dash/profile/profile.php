@@ -1,11 +1,6 @@
 <?php
-session_start();
 include '../../db.php';
-
-if (!isset($_SESSION['id'])) {
-    header("Location: ../../Sign/login.php");
-    exit();
-}
+require_once __DIR__ . '/../fixedphp/protect.php';
 
 $emp_id = $_SESSION['id'];
 $name = $_SESSION['name'];
@@ -26,8 +21,8 @@ $stmt->close();
   <meta charset="UTF-8">
   <title>Your Profile - PasaStocks</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .profile-container {
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <style>.profile-container {
       max-width: 500px;
       margin: 50px auto;
       margin-top:60 px;
@@ -69,12 +64,6 @@ $stmt->close();
       text-align: center;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
-  </style>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
     body { background-color: #f8f9fa; padding-left:85px;
     padding-top:15px;}
     .content { margin-left: 0; padding: 20px; transition: margin-left 0.3s ease; }
@@ -166,7 +155,6 @@ $stmt->close();
 }
 
   </style>
-  <link rel="stylesheet" href="../style/darkmode.css">
 </head>
 <body class="bg-light">
   

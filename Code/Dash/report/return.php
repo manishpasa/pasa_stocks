@@ -1,11 +1,7 @@
 <?php
 session_start();
 include '../../db.php';
-
-if (!isset($_SESSION['id'])) {
-    header("Location: ../../Sign/login.php");
-    exit();
-}
+require_once __DIR__ . '/../fixedphp/protect.php';
 $erole=$_SESSION['role'];
 $issolo=$_SESSION['issolo'];
 $company_id = $_SESSION['company_id'];

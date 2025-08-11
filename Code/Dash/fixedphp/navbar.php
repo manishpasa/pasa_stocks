@@ -1,8 +1,7 @@
 <?php
-if (!isset($_SESSION['id'])) {
-    header("Location: ../../Sign/login.php");
-    exit();
-}
+require_once __DIR__ . '/../fixedphp/protect.php';
+
+
 $emp_id = $_SESSION['id'];
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
@@ -14,17 +13,15 @@ $stmt->close();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Document</title>
     <style>
-        /* Reset default margins and padding */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        /* Navbar styles */
-        .navbar {
+        
+        .custom-navbar {
+            text-decoration:none;
             background-color: #f8f9fa;
             padding: 0 1rem;
             position: fixed;
@@ -40,50 +37,47 @@ $stmt->close();
             align-items: center;
         }
 
-        /* Flex container for navbar items */
-        .d-flex {
+        .custom-d-flex {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
 
-        /* Navbar brand */
-        .navbar-brand {
+        .custom-navbar-brand {
             margin-bottom: 0;
             font-size: 1.5rem;
             font-weight: 500;
         }
-.profile-container {
-  position: relative;
-  display: inline-block;
-}
 
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  background-color: #fff;
-  min-width: 220px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  z-index: 99;
-  border-radius: 8px;
-  overflow: hidden;
-}
+        .custom-profile-container {
+            position: relative;
+            display: inline-block;
+        }
 
-.dropdown-menu a {
-  display: block;
-  padding: 10px;
-  color: #333;
-  text-decoration: none;
-}
+        .custom-dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #fff;
+            min-width: 220px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 99;
+            border-radius: 8px;
+            overflow: hidden;
+        }
 
-.dropdown-menu a:hover {
-  background-color: #f0f0f0;
-}
+        .custom-dropdown-menu a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+        }
 
+        .custom-dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
 
-        /* Button styles */
-        .btn {
+        .custom-btn {
             display: inline-block;
             padding: 0.375rem 0.75rem;
             font-size: 1rem;
@@ -95,31 +89,30 @@ $stmt->close();
             transition: all 0.3s;
         }
 
-        .btn-danger {
-            background-color: #ffffffff;
-            color:black;
-            border-color: #ffffffff;
-            width:100%;
+        .custom-btn-danger {
+            background-color: #ffffff;
+            color: black;
+            border-color: #ffffff;
+            width: 100%;
         }
 
-        .btn-danger:hover {
+        .custom-btn-danger:hover {
             background-color: #c82333;
             border-color: #bd2130;
         }
 
-        .btn-secondary {
+        .custom-btn-secondary {
             background-color: #6c757d;
             color: #fff;
             border-color: #6c757d;
         }
 
-        .btn-secondary:hover {
+        .custom-btn-secondary:hover {
             background-color: #5a6268;
             border-color: #545b62;
         }
 
-        /* Popup overlay */
-        .popup-overlay {
+        .custom-popup-overlay {
             display: none;
             position: fixed;
             z-index: 9999;
@@ -132,8 +125,7 @@ $stmt->close();
             align-items: center;
         }
 
-        /* Popup box */
-        .popup-box {
+        .custom-popup-box {
             background: white;
             padding: 30px;
             border-radius: 10px;
@@ -142,19 +134,17 @@ $stmt->close();
             text-align: center;
         }
 
-        /* Popup buttons */
-        .popup-buttons {
+        .custom-popup-buttons {
             margin-top: 20px;
             display: flex;
             justify-content: space-between;
         }
 
-        .popup-buttons .btn {
+        .custom-popup-buttons .custom-btn {
             width: 48%;
         }
 
-        /* Profile image */
-        .profile-img {
+        .custom-profile-img {
             width: 24px;
             height: 24px;
             border-radius: 50%;
@@ -163,29 +153,31 @@ $stmt->close();
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="d-flex">
-            <span class="navbar-brand"><h3>📦 PasaStocks</h3></span>
+    <nav class="custom-navbar">
+        <div class="custom-d-flex">
+            <a href="../dashboard/dashboard.php"style="text-decoration:none; color:black;" ><span class="custom-navbar-brand"><h3 >📦 PasaStocks</h3></span></a>
         </div>
-        <div class="profile-container">
-  <img src="../profile/uploads/<?php echo htmlspecialchars($profile_pic); ?>" class="profile-img" id="profileBtn" alt="Profile" onerror="this.src='../../../image/profile.png';"> 
-  <div class="dropdown-menu" id="profileDropdown">
-    <a href="../profile/profile.php">My Profile</a>
-    <a href="../setting/settings.php">Settings</a>
-    <a onclick="showLogoutPopup()">Logout</a>
-  </div>
-</div>
+        <div class="custom-profile-container">
+            <img src="../profile/uploads/<?php echo htmlspecialchars($profile_pic); ?>" class="custom-profile-img" id="profileBtn" alt="Profile" onerror="this.src='../../../image/profile.png';"> 
+            <div class="custom-dropdown-menu" id="profileDropdown">
+                <a href="../profile/profile.php">My Profile</a>
+                <a href="../setting/settings.php">Settings</a>
+                <a onclick="showLogoutPopup()">Logout</a>
+            </div>
+        </div>
     </nav>
-    <div id="logoutPopup" class="popup-overlay">
-        <div class="popup-box">
+
+    <div id="logoutPopup" class="custom-popup-overlay">
+        <div class="custom-popup-box">
             <h5>Confirm Logout</h5>
             <p>Are you sure you want to log out?</p>
-            <div class="popup-buttons">
-                <a href="../../Sign/logout.php" class="btn btn-danger">Yes, Logout</a>
-                <button class="btn btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
+            <div class="custom-popup-buttons">
+                <a href="../../Sign/logout.php" class="custom-btn custom-btn-danger">Yes, Logout</a>
+                <button class="custom-btn custom-btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
             </div>
         </div>
     </div>
+
     <script>
         function showLogoutPopup() {
             document.getElementById('logoutPopup').style.display = 'flex';
@@ -194,21 +186,19 @@ $stmt->close();
         function hideLogoutPopup() {
             document.getElementById('logoutPopup').style.display = 'none';
         }
-    
-  const profileBtn = document.getElementById('profileBtn');
-  const dropdown = document.getElementById('profileDropdown');
 
-  profileBtn.addEventListener('click', () => {
-    dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
-  });
+        const profileBtn = document.getElementById('profileBtn');
+        const dropdown = document.getElementById('profileDropdown');
 
-  // Optional: Close when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
-      dropdown.style.display = 'none';
-    }
-  });
-</script>
+        profileBtn.addEventListener('click', () => {
+            dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+        });
 
+        document.addEventListener('click', (e) => {
+            if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

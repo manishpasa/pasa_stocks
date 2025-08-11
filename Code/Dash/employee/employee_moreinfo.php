@@ -1,18 +1,6 @@
 <?php
-session_start();
 include '../../db.php';
-
-if (!isset($_SESSION['id'])) {
-    header("Location: ../../Sign/login.php");
-    exit();
-}
-if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $_SESSION['expire_time'])) {
-    session_unset();
-    session_destroy();
-    header("Location: ../../Sign/login.php?message=Session Expired. Please log in again.");
-    exit();
-}
-$_SESSION['last_activity'] = time();
+require_once __DIR__ . '/../fixedphp/protect.php';
 $erole = $_SESSION['role'];
 $company_id = $_SESSION['company_id'];
 
