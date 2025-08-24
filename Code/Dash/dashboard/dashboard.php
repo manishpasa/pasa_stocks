@@ -84,7 +84,6 @@ if ($role == 'admin') {
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
 <div id="full">
-
   <div class="main">
     <div class="header">
       <h4>Dashboard</h4>
