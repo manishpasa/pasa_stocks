@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../fixedphp/protect.php';
 $role = $_SESSION['role'];
 $issolo = $_SESSION['issolo'];
-$has_live=$_SESSION['has_live'];
 // Get the current page's filename for comparison
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
@@ -29,14 +28,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
           <a href="../inventory/inventory.php" class="<?php echo $current_page == 'inventory.php' ? 'active' : ''; ?>">
             <img src="../../../image/inventory.png" height="30px"><span class="custom-text">Inventory</span>
           </a>
-        </li>
-        <?php if ($has_live == 1): ?>
-        <li class="custom-sidebar-item">
-          <a href="../live_inventory/live_inventory.php" class="<?php echo $current_page == 'live_inventory.php' ? 'active' : ''; ?>">
-            <img src="../../../image/livestock.png" height="30px"><span class="custom-text">Live-Inventory</span>
-          </a>
-        </li>
-        <?php endif; ?>
         <li class="custom-sidebar-item">
           <a href="../employee/employee.php" class="<?php echo $current_page == 'employee.php' ? 'active' : ''; ?>">
             <img src="../../../image/employee.png" height="30px"><span class="custom-text">Employee</span>
@@ -57,13 +48,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <img src="../../../image/purchase.png" height="30px"><span class="custom-text">Purchase</span>
           </a>
         </li>
-        <?php if ($has_live == 1): ?>
-        <li class="custom-sidebar-item">
-          <a href="../purchase/add_live_inventory.php" class="<?php echo $current_page == 'add_live_inventory.php' ? 'active' : ''; ?>">
-            <img src="../../../image/livepurchase.png" height="30px"><span class="custom-text">Purchase live stocks</span>
-          </a>
-        </li>
-        <?php endif; ?>
         <li class="custom-sidebar-item">
           <a href="../report/restock.php" class="<?php echo $current_page == 'restock.php' ? 'active' : ''; ?>">
             <img src="../../../image/restock.png" height="30px"><span class="custom-text">Re-Stock</span>
@@ -74,32 +58,17 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <img src="../../../image/sell.png" height="30px"><span class="custom-text">Sales</span>
           </a>
         </li>
-        <?php if ($has_live == 1): ?>
-        <li class="custom-sidebar-item">
-          <a href="../sales_live/sell_item.php" class="<?php echo $current_page == 'sell_item.php' && dirname($_SERVER['PHP_SELF']) == dirname('../sales_live/sell_item.php') ? 'active' : ''; ?>">
-            <img src="../../../image/selllive.png" height="30px"><span class="custom-text">Live-Sales</span>
-          </a>
-        </li>
-        <?php endif; ?>
         <li class="custom-sidebar-item">
           <a href="../return/returns.php" class="<?php echo $current_page == 'returns.php' ? 'active' : ''; ?>">
             <img src="../../../image/return.png" height="30px"><span class="custom-text">Returns</span>
           </a>
         </li>
-
       <?php elseif ($role == 'admin'): ?>
         <li class="custom-sidebar-item">
           <a href="../inventory/inventory.php" class="<?php echo $current_page == 'inventory.php' ? 'active' : ''; ?>">
             <img src="../../../image/inventory.png" height="30px"><span class="custom-text">Inventory</span>
           </a>
         </li>
-        <?php if ($has_live == 1): ?>
-        <li class="custom-sidebar-item">
-          <a href="../live_inventory/live_inventory.php" class="<?php echo $current_page == 'live_inventory.php' ? 'active' : ''; ?>">
-            <img src="../../../image/livestock.png" height="30px"><span class="custom-text">Live-Inventory</span>
-          </a>
-        </li>
-        <?php endif; ?>
         <li class="custom-sidebar-item">
           <a href="../employee/employee.php" class="<?php echo $current_page == 'employee.php' ? 'active' : ''; ?>">
             <img src="../../../image/employee.png" height="30px"><span class="custom-text">Employee</span>
@@ -123,11 +92,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
           </a>
         </li>
         <li class="custom-sidebar-item">
-          <a href="../live_inventory/live_inventory.php" class="<?php echo $current_page == 'live_inventory.php' ? 'active' : ''; ?>">
-            <img src="../../../image/livestock.png" height="30px"><span class="custom-text">Live-Inventory</span>
-          </a>
-        </li>
-        <li class="custom-sidebar-item">
           <a href="../purchase/add_item.php" class="<?php echo $current_page == 'add_item.php' ? 'active' : ''; ?>">
             <img src="../../../image/purchase.png" height="30px"><span class="custom-text">Purchase</span>
           </a>
@@ -144,13 +108,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <img src="../../../image/sell.png" height="30px"><span class="custom-text">Sales</span>
           </a>
         </li>
-        <?php if ($has_live == 1): ?>
-        <li class="custom-sidebar-item">
-          <a href="../sales_live/sell_item.php" class="<?php echo $current_page == 'sell_item.php' && dirname($_SERVER['PHP_SELF']) == dirname('../sales_live/sell_item.php') ? 'active' : ''; ?>">
-            <img src="../../../image/selllive.png" height="30px"><span class="custom-text">Live-Sales</span>
-          </a>
-        </li>
-        <?php endif; ?>
         <li class="custom-sidebar-item">
           <a href="../return/returns.php" class="<?php echo $current_page == 'returns.php' ? 'active' : ''; ?>">
             <img src="../../../image/return.png" height="30px"><span class="custom-text">Returns</span>

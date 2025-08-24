@@ -1,4 +1,3 @@
-```php
 <?php
 session_start();
 include '../../db.php';
@@ -16,8 +15,7 @@ $company_id = $_SESSION['company_id'];
 // Verify database connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
-}
-
+}   
 // Fetch employee info
 $stmt = $conn->prepare("SELECT email, phone, email_verified FROM employee WHERE emp_id = ?");
 if ($stmt === false) {
@@ -32,18 +30,7 @@ $_SESSION['email'] = $email;
 $stmt->fetch();
 $stmt->close();
 
-// Fetch current has_live status
-$stmt = $conn->prepare("SELECT has_live FROM company WHERE company_id = ?");
-if ($stmt === false) {
-    die("Prepare failed: " . $conn->error);
-}
-$stmt->bind_param("i", $company_id);
-if (!$stmt->execute()) {
-    die("Execute failed: " . $stmt->error);
-}
-$stmt->bind_result($has_live);
-$stmt->fetch();
-$stmt->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -229,43 +216,10 @@ $stmt->close();
                 <a href="change_number.php" class="list-group-item">Change Phone Number</a>
                 <a href="change_password.php" class="list-group-item">Change Password</a>
             </div>
-            <div class="radio-group">
-                <strong>Include live inventory:</strong>
-                <label>
-                    <input type="radio" name="has_live" value="1" <?php echo $has_live == 1 ? 'checked' : ''; ?> onclick="updateLiveInventory(1)"> Yes
-                </label>
-                <label>
-                    <input type="radio" name="has_live" value="0" <?php echo $has_live == 0 ? 'checked' : ''; ?> onclick="updateLiveInventory(0)"> No
-                </label>
-            </div>
+           
         </div>
     </div>
 
-    <script>
-        function updateLiveInventory(value) {
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'update_live_inventory.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        try {
-                            const response = JSON.parse(xhr.responseText);
-                            if (response.success) {
-                                location.reload();
-                            } else {
-                                alert('Error updating live inventory: ' + response.error);
-                            }
-                        } catch (e) {
-                            alert('Invalid response from server');
-                        }
-                    } else {
-                        alert('Error updating live inventory: HTTP ' + xhr.status);
-                    }
-                }
-            };
-            xhr.send('has_live=' + encodeURIComponent(value));
-        }
-    </script>
+   
 </body>
 </html>

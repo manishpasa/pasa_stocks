@@ -114,7 +114,7 @@ $stmt->close();
 <title>Simple Sell and Billing</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 <style>
-  body { padding: 20px; background: #f8f9fa; }
+  body { padding: 20px; background: #f8f9fa; margin-left:80px;margin-top:70px;}
   .container-flex { display: flex; gap: 20px; }
   .left-column { width: 40%; display: flex; flex-direction: column; gap: 20px; }
   .right-column { width: 60%; background: white; padding: 20px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
@@ -124,6 +124,8 @@ $stmt->close();
 </head>
 <body>
 
+  <?php include('../fixedphp/sidebar.php') ?>
+  <?php include('../fixedphp/navbar.php') ?>
 <div class="container-flex">
 
   <div class="left-column">

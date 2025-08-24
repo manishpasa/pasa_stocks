@@ -23,7 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $company_location = $_POST['company_location'];
 $company_number = $_POST['company_number'];
 $number_of_employees = $_POST['number_of_employees'];
-$has_live = isset($_POST['has_live']) && $_POST['has_live'] === 'yes' ? 1 : 0;
 
 $issolo = ($number_of_employees == 1) ? 1 : 0;
 
@@ -34,8 +33,8 @@ $issolo = ($number_of_employees == 1) ? 1 : 0;
             echo "<script>alert('This company code is already taken. Please choose another one.');</script>";
             exit();
         }
-$sql_company = "INSERT INTO company (company_code, company_name, location, contact_number, total_employees, has_live) 
-                VALUES ('$company_code', '$company_name', '$company_location', '$company_number', '$number_of_employees', '$has_live')";
+$sql_company = "INSERT INTO company (company_code, company_name, location, contact_number, total_employees) 
+                VALUES ('$company_code', '$company_name', '$company_location', '$company_number', '$number_of_employees')";
 
         if ($conn->query($sql_company) === TRUE) {
 
@@ -154,13 +153,6 @@ $conn->close();
                 <input type="text" name="company_location" placeholder="Company Location" required>
                 <input type="tel" name="company_number" placeholder="Company Number" required>
                 <input type="number" name="number_of_employees" placeholder="Number of Employees" required>
-                <div class="radio-group">
-    <label class="radio-label">Has live inventory:</label>
-    <label><input type="radio" name="has_live" value="yes" required> Yes</label>
-    <label><input type="radio" name="has_live" value="no"> No</label>
-</div>
-
-
                     <input type="button" value="Back" onclick="prevStep()">
                 <input type="submit" value="Sign Up">
             </div>
