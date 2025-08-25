@@ -45,12 +45,12 @@ $profitQuery = $conn->query("
     background-color: #f8f9fa;
     font-family: Arial, sans-serif;
     margin: 0;
-    padding-left: 0px;
+    padding-left: 10px;
     padding-top: 75px;
     min-height: 100vh;
   }
   .content {
-    max-width: 1000px;
+    width: 90%;
     margin: 0 auto;
     padding: 20px;
   }

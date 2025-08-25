@@ -155,7 +155,7 @@ $stmt->close();
 <body>
     <nav class="custom-navbar">
         <div class="custom-d-flex">
-            <a href="../dashboard/dashboard.php"style="text-decoration:none; color:black;" ><span class="custom-navbar-brand"><h3 >📦 PasaStocks</h3></span></a>
+            <a href="../dashboard/dashboard.php"style="text-decoration:none; color:black;" ><span class="custom-navbar-brand"><h3 >📦 <?php echo $_SESSION['company_name']?></h3></span></a>
         </div>
         <div class="custom-profile-container">
             <img src="../profile/uploads/<?php echo htmlspecialchars($profile_pic); ?>" class="custom-profile-img" id="profileBtn" alt="Profile" onerror="this.src='../../../image/profile.png';"> 

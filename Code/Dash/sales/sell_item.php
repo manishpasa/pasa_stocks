@@ -2,12 +2,8 @@
 session_start();
 include '../../db.php';
 
-$company_id = $_SESSION['company_id'] ?? 1; // replace with your actual logic
+$company_id = $_SESSION['company_id'];
 $message = '';
-$customer_name = '';
-$phone_checked = false;
-$phone_number = '';
-$need_name_input = false;
 
 // Initialize cart
 if (!isset($_SESSION['cart'])) {
@@ -58,44 +54,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_item'])) {
     }
 }
 
-
-// PHONE NUMBER SUBMIT - CHECK CUSTOMER
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['phone_submit'])) {
-    $phone_number = trim($_POST['phone']);
-    if (preg_match('/^\d{10}$/', $phone_number)) {
-        $stmt = $conn->prepare("SELECT cust_name FROM customer WHERE phone = ? LIMIT 1");
-        $stmt->bind_param("i", $phone_number);
-        $stmt->execute();
-        $stmt->bind_result($customer_name);
-        if (!$stmt->fetch()) {
-            $customer_name = '';
-            $need_name_input = true;
-        }
-        $stmt->close();
-        $phone_checked = true;
-    } else {
-        $message = "Enter a valid 10-digit phone number.";
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['phonenumber'])) {
+  $number=$_POST['phonenumber'];
+  $stmt = $conn->prepare("SELECT customer_id FROM customer WHERE phone = ?");
+$stmt->bind_param("i", $number);
+$stmt->execute();
+$res = $stmt->get_result();
+if ($row = $res->fetch_assoc()) {
+    $_SESSION['customer_id'] = $row['customer_id'];
+    header("Location: finalize_billing.php");
+    exit();
+} else {
+    $message = "Customer not found!";
 }
+$stmt->close();
 
-// PROCEED TO BILLING - INSERT NEW CUSTOMER IF NEEDED
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proceed_billing'])) {
-    $phone_number = trim($_POST['phone']);
-    $customer_name = trim($_POST['customer_name'] ?? '');
-
-    if (empty($phone_number) || !preg_match('/^\d{10}$/', $phone_number)) {
-        $message = "Invalid phone number.";
-    } else {
-        if (!empty($customer_name)) {
-            $stmt = $conn->prepare("INSERT INTO customer (phone, cust_name) VALUES (?, ?) ON DUPLICATE KEY UPDATE cust_name=VALUES(name)");
-            $stmt->bind_param("ss", $phone_number, $customer_name);
-            $stmt->execute();
-            $stmt->close();
-        }
-
-        // Redirect to billing.php with phone parameter
-        header("Location: billing.php?phone=" . urlencode($phone_number));
-        exit;
+}
+// REMOVE FROM CART LOGIC
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
+    $remove_index = intval($_POST['remove_index']);
+    if (isset($_SESSION['cart'][$remove_index])) {
+        unset($_SESSION['cart'][$remove_index]);
+        $_SESSION['cart'] = array_values($_SESSION['cart']); // reindex the array
+        $message = "Item removed from cart.";
     }
 }
 
@@ -187,7 +168,7 @@ $stmt->close();
   .btn-success { background: #28a745; color: #fff; }
   .btn-primary { background: #007bff; color: #fff; }
   .btn-secondary { background: #6c757d; color: #fff; }
-  .btn-danger { background: #dc3545; color: #fff; font-size: 12px; padding: 4px 8px; }
+  .btn-danger { background: #dc3545; color: #fff; font-size: 12px; padding: 4px 8px; width:100%;}
 
   button:hover { opacity: 0.9; }
 
@@ -221,7 +202,9 @@ $stmt->close();
   }
 
   strong { font-weight: 600; }
-
+#phone{
+display:none;
+}
   /* Mobile stacking */
   @media (max-width: 768px) {
     .container-flex { flex-direction: column; }
@@ -240,7 +223,7 @@ $stmt->close();
     <!-- Add Item to Cart Form -->
     <form method="POST">
       <h4>Sell Item</h4>
-      <?php if($message && !($phone_checked)): ?>
+      <?php if($message ): ?>
         <div class="message"><?= htmlspecialchars($message) ?></div>
       <?php endif; ?>
 
@@ -259,40 +242,23 @@ $stmt->close();
 
       <button type="submit" name="add_item" class="btn-success">Add to Cart</button>
     </form>
+    <?php if (!empty($_SESSION['cart'])): ?>
+    <div id="customerinfo">
 
-    <!-- Phone Number Form -->
-    <form method="POST">
-      <h4>Customer Phone Number</h4>
-      <?php if ($message && $phone_checked): ?>
-        <div class="message"><?= htmlspecialchars($message) ?></div>
-      <?php endif; ?>
-
-      <label for="phone">Phone Number (10 digits)</label>
-      <input
-        type="text"
-        name="phone"
-        id="phone"
-        value="<?= htmlspecialchars($phone_number) ?>"
-        maxlength="10"
-        pattern="\d{10}"
-        required
-        <?= $phone_checked && !$need_name_input ? 'readonly' : '' ?>
-      />
-
-      <?php if ($phone_checked && !$need_name_input): ?>
-        <div><strong>Customer Name:</strong> <?= htmlspecialchars($customer_name) ?></div>
-        <button type="submit" name="proceed_billing" class="btn-primary">Proceed to Billing</button>
-      <?php elseif ($need_name_input): ?>
-        <label for="customer_name">Enter Customer Name</label>
-        <input type="text" name="customer_name" id="customer_name" required />
-        <button type="submit" name="proceed_billing" class="btn-primary">Proceed to Billing</button>
-      <?php else: ?>
-        <button type="submit" name="phone_submit" class="btn-secondary">Next</button>
-      <?php endif; ?>
-    </form>
-
+      <h4> Select the type of customer </h4>
+      <button onclick="newcustomer()"> new customer</button>
+      <button onclick="phone()"> old cutomer</button>
+        </div>
+        <div id="phone">
+          <form  method="post">
+            <label for="phonenumber">phone number:</label><br>
+            <input type="number" name="phonenumber" id="phone_number">
+            <button type="submit">billing</button>
+            <button type="button"onclick="back()">back</button>
+          </form>
+        </div>
+        <?php endif;?>
   </div>
-
   <div class="right-column">
     <h4>Current Bill</h4>
     <?php if (!empty($_SESSION['cart'])): ?>
@@ -308,12 +274,18 @@ $stmt->close();
             $total += $line_total;
           ?>
             <tr>
-              <td><?= htmlspecialchars($item['item_name']) ?></td>
-              <td><?= $item['quantity'] ?></td>
-              <td>Rs.<?= $item['price'] ?></td>
-              <td>Rs.<?= $line_total ?></td>
-              <td><a href="?remove=<?= $index ?>" class="btn-danger">Remove</a></td>
-            </tr>
+  <td><?= htmlspecialchars($item['item_name']) ?></td>
+  <td><?= $item['quantity'] ?></td>
+  <td>Rs.<?= $item['price'] ?></td>
+  <td>Rs.<?= $line_total ?></td>
+  <td>
+    <form method="post" onsubmit="return confirm('Are you sure you want to remove this item?');">
+      <input type="hidden" name="remove_index" value="<?= $index ?>">
+      <button class="btn-danger" type="submit" name="remove_item">Remove</button>
+    </form>
+  </td>
+</tr>
+
           <?php endforeach; ?>
           <tr>
             <td colspan="3"><strong>Total</strong></td>
@@ -327,6 +299,22 @@ $stmt->close();
   </div>
 
 </div>
-
+<script>
+  function phone()
+  {
+    document.getElementById("phone").style.display="inline";
+    document.getElementById("customerinfo").style.display="none";
+  }
+  function back()
+  {
+    document.getElementById("phone").style.display="none";
+    document.getElementById("customerinfo").style.display="inline";
+  }
+  function newcustomer(){
+    window.open("new_customer.php","_blank","width=600,height=600,top=20,left=200");
+    document.getElementById("phone").style.display="inline";
+    document.getElementById("customerinfo").style.display="none";
+  }
+</script>
 </body>
 </html>

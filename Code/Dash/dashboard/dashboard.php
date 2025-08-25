@@ -25,9 +25,7 @@ if ($role == 'admin') {
     $q3 = $conn->query("SELECT COUNT(DISTINCT bill_id) AS orders FROM sold_list WHERE company_id = $company_id AND sale_date >= '$start_date'");
     $total_orders = $q3->fetch_assoc()['orders'] ?? 0;
 
-    $q4 = $conn->query("SELECT SUM(quantity) AS total_returns FROM returned_list WHERE company_id = $company_id AND return_date >= '$start_date'");
-    $total_returns = $q4->fetch_assoc()['total_returns'] ?? 0;
-
+    
     $labels = [];
     $salesData = [];
     for ($i = 6; $i >= 0; $i--) {
@@ -74,7 +72,7 @@ if ($role == 'admin') {
     #full {
       padding-left: 105px;
       padding-top: 85px;
-      font-family: Arial, sans-serif;
+      
       background-color: #f9f9f9;
     }
 
@@ -207,7 +205,7 @@ if ($role == 'admin') {
     <?php if ($role == 'admin'): ?>
       <div class="content" id="content">
         <div class="row mb-3">
-          <div style="width:23.5%;">
+          <div style="width:31.5%;">
             <a href="../report/sales.php">
               <div class="card">
                 <h5>Total Sales</h5>
@@ -215,7 +213,7 @@ if ($role == 'admin') {
               </div>
             </a>
           </div>
-          <div style="width:23.5%;">
+          <div style="width:31.5%;">
             <a href="../report/profit.php">
               <div class="card">
                 <h5>Total Profit</h5>
@@ -223,19 +221,11 @@ if ($role == 'admin') {
               </div>
             </a>
           </div>
-          <div style="width:23.5%;">
+          <div style="width:31.5%;">
             <a href="../report/orders.php">
               <div class="card">
                 <h5>Total Orders</h5>
                 <h3><?php echo $total_orders; ?></h3>
-              </div>
-            </a>
-          </div>
-          <div style="width:23.5%;">
-            <a href="../report/return.php">
-              <div class="card">
-                <h5>Total Returns</h5>
-                <h3><?php echo $total_returns; ?></h3>
               </div>
             </a>
           </div>
