@@ -215,5 +215,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       document.querySelector('.btn-save').style.display = 'inline-block';
     }
   </script>
+  <?php include('../fixedphp/footer.php') ?>
 </body>
 </html>

@@ -245,5 +245,6 @@ if (!$result) {
       </table>
     </div>
   </div>
+  <?php include('../fixedphp/footer.php') ?>
 </body>
 </html>

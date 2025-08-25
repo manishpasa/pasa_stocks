@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         isset($_POST['phone']) && isset($_POST['email']) && 
         isset($_POST['company_code']) && isset($_POST['company_name']) &&
         isset($_POST['company_location']) && isset($_POST['company_number']) && 
-        isset($_POST['number_of_employees'])
+        
     ) {
         $firstname = $_POST['first_name'];
         $lastname = $_POST['last_name'];
@@ -18,13 +18,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $phone = $_POST['phone'];
         $email = $_POST['email'];
         $company_code = $_POST['company_code'];
-        $password = $_POST['password']; // You can hash this if needed
-        $company_name = $_POST['company_name'];
-$company_location = $_POST['company_location'];
-$company_number = $_POST['company_number'];
-$number_of_employees = $_POST['number_of_employees'];
+        
+        // Hash password securely
+        $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-$issolo = ($number_of_employees == 1) ? 1 : 0;
+        $company_name = $_POST['company_name'];
+        $company_location = $_POST['company_location'];
+        $company_number = $_POST['company_number'];
+        
 
         // Check for existing company code
         $checkCompanyCode = "SELECT * FROM company WHERE company_code = '$company_code'";
@@ -33,30 +34,31 @@ $issolo = ($number_of_employees == 1) ? 1 : 0;
             echo "<script>alert('This company code is already taken. Please choose another one.');</script>";
             exit();
         }
-$sql_company = "INSERT INTO company (company_code, company_name, location, contact_number, total_employees) 
-                VALUES ('$company_code', '$company_name', '$company_location', '$company_number', '$number_of_employees')";
+
+        $sql_company = "INSERT INTO company (company_code, company_name, location, contact_number) 
+                        VALUES ('$company_code', '$company_name', '$company_location', '$company_number')";
 
         if ($conn->query($sql_company) === TRUE) {
-
             // Insert into employee table with role as admin
-            $sql_employee = "INSERT INTO employee (emp_name, role, email, password, phone,DOB, company_code, join_date,issolo)
-                             VALUES ('$emp_name', 'admin', '$email', '$password', '$phone','$dob', '$company_code', CURDATE(),'$issolo')";
+            $sql_employee = "INSERT INTO employee (emp_name, role, email, password, phone, DOB, company_code, join_date)
+                             VALUES ('$emp_name', 'admin', '$email', '$hashedPassword', '$phone', '$dob', '$company_code', CURDATE())";
 
             if ($conn->query($sql_employee) === TRUE) {
                 header("location:login.php");
                 exit(); 
             } else {
-                echo "<script>alert('Error while inserting employee,try again')</script";
+                echo "<script>alert('Error while inserting employee, try again')</script>";
             }
         } else {
-            echo "<script>alert('Error while inserting company, try again ')</script";
+            echo "<script>alert('Error while inserting company, try again ')</script>";
         }
     } else {
-        echo "<script>alert('Please fill in all fields.')</script";
+        echo "<script>alert('Please fill in all fields.')</script>";
     }
 }
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -70,12 +72,14 @@ $conn->close();
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 95vh;
         }
         .container {
             width: 400px;
             background-color: white;
-            padding: 20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 10px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -120,7 +124,24 @@ $conn->close();
 .radio-label {
     font-weight: bold;
     margin-right: 10px;
+}.dob-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
 }
+
+.dob-row label {
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.dob-row input {
+    flex: 1;
+}
+
 
     </style>
 </head>
@@ -132,27 +153,29 @@ $conn->close();
             <div id="personal" class="step active">
                 <input type="text" name="first_name" id="first_name" placeholder="First Name" required>
                 <input type="text" name="last_name" id="last_name" placeholder="Last Name" required>
-                <p style="text-align:left;">D.O.B.:</p>
-                <input type="date" name="dob" id="dob" required>
+                <div class="dob-row">
+    <label for="dob">D.O.B.:</label>
+    <input type="date" name="dob" id="dob" required>
+</div>
+
                 <input type="tel" name="phone" id="phone" placeholder="Phone Number" required>
                 <input type="email" name="email" id="email" placeholder="Email" required>
-                <input type="text" name="company_code" id="company_code" placeholder="Company Code" required>
                 <input type="password" name="password" id="password" placeholder="Password" required>
-                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+              <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
                 <p class="error" id="error-message">Please fill all fields correctly.</p>
                 <input type="button" value="Next" onclick="nextStep()">
                 <div class="link">
                     <p>Already have an account? <a href="login.php">Login</a></p>
                 </div>
             </div>
-
+            
             <!-- Step 2: Company Details -->
             <div id="company-step" class="step">
                 <h2>Company Details</h2>
+                <input type="text" name="company_code" id="company_code" placeholder="Company Code" required>
                 <input type="text" name="company_name" placeholder="Company Name" required>
                 <input type="text" name="company_location" placeholder="Company Location" required>
                 <input type="tel" name="company_number" placeholder="Company Number" required>
-                <input type="number" name="number_of_employees" placeholder="Number of Employees" required>
                     <input type="button" value="Back" onclick="prevStep()">
                 <input type="submit" value="Sign Up">
             </div>
@@ -163,7 +186,7 @@ $conn->close();
         function nextStep() {
             let fields = [
                 "first_name", "last_name", "dob", "phone",
-                "email", "company_code", "password", "confirm_password"
+                "email",  "password", "confirm_password"
             ];
             
             let allFilled = true;

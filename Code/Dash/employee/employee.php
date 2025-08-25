@@ -296,5 +296,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_employee'])) {
       </table>
     </div>
   </div>
+  <?php include('../fixedphp/footer.php') ?>
 </body>
 </html>

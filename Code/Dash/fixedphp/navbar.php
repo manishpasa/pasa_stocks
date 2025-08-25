@@ -172,7 +172,7 @@ $stmt->close();
             <h5>Confirm Logout</h5>
             <p>Are you sure you want to log out?</p>
             <div class="custom-popup-buttons">
-                <a href="../../Sign/logout.php" class="custom-btn custom-btn-danger">Yes, Logout</a>
+                <a href="../../index.php" class="custom-btn custom-btn-danger">Yes, Logout</a>
                 <button class="custom-btn custom-btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
             </div>
         </div>

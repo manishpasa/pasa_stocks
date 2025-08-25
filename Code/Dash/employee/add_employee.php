@@ -176,5 +176,6 @@ $user_role = $_SESSION['role'];
       </form>
     </div>
   </div>
+  <?php include('../fixedphp/footer.php') ?>
 </body>
 </html>

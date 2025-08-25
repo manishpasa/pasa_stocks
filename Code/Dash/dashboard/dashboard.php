@@ -345,6 +345,6 @@ if ($role == 'admin') {
     document.getElementById('content').classList.toggle('shift');
   }
 </script>
-
+<?php include('../fixedphp/footer.php') ?>
 </body>
 </html>

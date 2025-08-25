@@ -316,5 +316,6 @@ display:none;
     document.getElementById("customerinfo").style.display="none";
   }
 </script>
+<?php include('../fixedphp/footer.php') ?>
 </body>
 </html>

@@ -274,5 +274,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       document.getElementById('cost_per_unit').value = (totalCost / quantity).toFixed(3);
     }
   </script>
+  <?php include('../fixedphp/footer.php') ?>
 </body>
 </html>

@@ -220,5 +220,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       document.getElementById('saveBtn').style.display = 'inline-block';
     }
   </script>
+  <?php include('../fixedphp/footer.php') ?>
 </body>
 </html>

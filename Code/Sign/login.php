@@ -13,12 +13,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {
         $employee = $result->fetch_assoc();
-        if ($password == $employee['password']) {
+        if (password_verify($password, $employee['password']))  {
             $_SESSION['id'] = $employee['emp_id'];
             $_SESSION['company_code'] = $employee['company_code'];
             $_SESSION['name']=$employee['emp_name'];
             $_SESSION['phone']=$employee['phone'];
-            $_SESSION['issolo']=$employee['issolo'];
             $_SESSION['role'] = $employee['role'];
             $_SESSION['last_activity'] = time();
             $_SESSION['expire_time'] = 14400;
@@ -65,7 +64,7 @@ $conn->close();
             margin: 50px auto;
             background-color: white;
             padding: 20px;
-            margin-top:15%;
+            margin-top:150px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -99,16 +98,17 @@ $conn->close();
 </head>
 <body>
     <div class="container">
+        
         <h2>Login</h2>
         <form  method="POST">
-            <input type="text" name="company_code"id="company-code" placeholder="company code" required>
-            <input type="text" name="number" id="number" placeholder="number" required>
+            <input type="text" name="company_code"id="company-code" placeholder="Company Code" required>
+            <input type="text" name="number" id="number" placeholder="Number" required>
             <input type="password" name="password" id="password" placeholder="Password" required>
             <input type="submit" value="Login"><br> 
         </form>
         
-        <div class="link"><a href="../pass/forgot_password.php">forgot password?</a>
-            <p>Don't have an account? <a href="signup.php">Sign Up</a></p>
+        <div class="link"><a href="../pass/forgot_password.php">Forgot password?</a>
+            <p>New here? <a href="signup.php">Create an account.</a></p>
         </div>
     </div>
 

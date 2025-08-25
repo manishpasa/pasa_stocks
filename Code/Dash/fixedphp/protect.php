@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Redirect if not logged in
 if (!isset($_SESSION['id'])) {
-    header("Location: ../../Sign/login.php");
+    header("Location: ../../index.php");
     exit();
 }
 
@@ -13,7 +13,7 @@ if (!isset($_SESSION['id'])) {
 if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > $_SESSION['expire_time'])) {
     session_unset();
     session_destroy();
-    header("Location: ../../Sign/login.php?message=Session Expired. Please log in again.");
+    header("Location: ../../index.php?message=Session Expired. Please log in again.");
     exit();
 }
 

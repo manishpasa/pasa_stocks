@@ -1,6 +1,6 @@
   .custom-sidebar-wrapper {
     --sidebar-width: 220px;
-    --sidebar-collapsed-width: 80px; /* Increased from 70px for better visibility */
+    --sidebar-collapsed-width: 70px; /* Increased from 70px for better visibility */
     --primary-color: #695CFE;
     --sidebar-bg: #fff;
     --sidebar-collapsed-bg: #f8f9fa; /* Lighter background for collapsed state */

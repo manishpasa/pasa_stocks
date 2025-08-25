@@ -209,5 +209,6 @@ $monthOptions = $conn->query("SELECT DISTINCT DATE_FORMAT(sale_date, '%Y-%m') as
       <div class="alert alert-info">No sales data found for this month.</div>
     <?php endif; ?>
   </div>
+  <?php include('../fixedphp/footer.php') ?>
 </body>
 </html>

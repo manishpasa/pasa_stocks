@@ -327,6 +327,6 @@ new Chart(ctx, {
   }
 });
 </script>
-
+<?php include('../fixedphp/footer.php') ?>
 </body>
 </html>
