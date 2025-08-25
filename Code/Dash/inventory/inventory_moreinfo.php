@@ -49,176 +49,135 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="../style/darkmode.css">
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Inventory Item Details</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <style>
     body {
       background: #f8f9fa;
       font-family: Arial, sans-serif;
       margin: 0;
       min-height: 100vh;
-      overflow-x: hidden;
-    }
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 24px;
-      cursor: pointer;
-      color: #007bff;
-      font-weight: bold;
     }
 
-    /* Content styles */
     .content {
-      margin-left: 0;
-      padding: 30px 40px;
-      margin-top:0px;
-      transition: margin-left 0.3s ease;
+      padding: 90px 40px 40px 120px;
       min-height: 100vh;
     }
-    .content.shift { margin-left: 250px; }
 
-    /* Header */
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 30px;
-    }
-    .menu-btn {
-      background: #007bff;
-      border: none;
-      color: white;
-      padding: 10px 14px;
-      font-size: 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .menu-btn:hover {
-      background: #0056b3;
-    }
-    .header h2 {
-      margin: 0;
-      color: #007bff;
-      font-weight: 700;
-      letter-spacing: 1px;
+      margin-bottom: 25px;
     }
 
-    /* Form styles */
-    form {
-      max-width: 450px;
-      background: white;
-      padding: 20px 25px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgb(0 123 255 / 0.15);
-      color: #222;
-      margin: 0 auto;
+    .header h2 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #333;
     }
+
+    form {
+      max-width: 500px;
+      background: white;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin: auto;
+    }
+
     label {
       display: block;
-      margin-top: 18px;
-      margin-bottom: 6px;
+      margin: 15px 0 6px;
       font-weight: 600;
-      color: #0056b3;
+      color: #333;
     }
+
     input {
       width: 100%;
-      padding: 12px 14px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 2px solid #007bff;
-      transition: border-color 0.3s ease;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
     }
+
     input:focus:not([readonly]) {
+      border-color: #007bff;
       outline: none;
-      border-color: #0056b3;
-      box-shadow: 0 0 8px #0056b3aa;
+      box-shadow: 0 0 6px #007bff55;
     }
+
     input[readonly] {
-      background: #e9f0ff;
+      background: #f1f3f5;
       color: #555;
-      border-color: #cbd6f4;
       cursor: not-allowed;
     }
+
     .buttons {
-      margin-top: 30px;
+      margin-top: 25px;
       display: flex;
       justify-content: space-between;
       gap: 15px;
     }
+
     button {
       flex: 1;
-      padding: 12px 0;
+      padding: 10px;
       border: none;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 15px;
       cursor: pointer;
       color: white;
-      user-select: none;
-      transition: background 0.3s ease;
+      transition: background 0.2s ease;
     }
+
     #editBtn {
       background: #007bff;
-      box-shadow: 0 6px 20px rgb(0 123 255 / 0.4);
     }
+
     #editBtn:hover {
       background: #0056b3;
-      box-shadow: 0 8px 24px rgb(0 86 179 / 0.6);
     }
+
     #saveBtn {
       background: #28a745;
       display: none;
-      box-shadow: 0 6px 20px rgb(40 167 69 / 0.4);
-    }
-    #saveBtn:hover {
-      background: #1e7e34;
-      box-shadow: 0 8px 24px rgb(30 126 52 / 0.6);
-    }
-    .error {
-      color: #dc3545;
-      font-weight: 700;
-      text-align: center;
-      margin-top: 15px;
-    }
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 25px;
-      color: #007bff;
-      font-weight: 600;
-      text-decoration: none;
-      user-select: none;
-    }
-    .back-link:hover {
-      text-decoration: underline;
-      color: #0056b3;
     }
 
-.content {
-  padding-left:85px;
-    padding-top:75px;
-}#backbtn{
- margin-left:30%;
- margin-top:15px;
- padding:10px;
-  text-decoration:none;
-  background-color:black;
-}
+    #saveBtn:hover {
+      background: #1e7e34;
+    }
+
+    #backbtn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 20px;
+      background: #444;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      text-align: center;
+      width: fit-content;
+      transition: background 0.2s ease;
+    }
+
+    #backbtn:hover {
+      background: #000;
+    }
+
+    .error {
+      color: #dc3545;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 15px;
+    }
   </style>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-  
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
 
@@ -246,13 +205,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="button" id="editBtn" onclick="enableEdit()">Edit</button>
         <button type="submit" id="saveBtn">Save</button>
       </div>
-      
-      <a href="inventory.php"><button type="button" id="backbtn">back to inventory </button></a>
     </form>
+
+    <a href="inventory.php" id="backbtn">← Back to Inventory</a>
   </div>
 
   <script>
-   
     function enableEdit() {
       document.getElementById('item_name').readOnly = false;
       document.getElementById('price').readOnly = false;

@@ -14,231 +14,230 @@ $stmt->bind_result($email, $profile_pic, $email_verified);
 $stmt->fetch();
 $stmt->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Your Profile - PasaStocks</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <style>.profile-container {
+  <style>
+    body {
+      background: #f8f9fa;
+      font-family: Arial, sans-serif;
+      padding-left: 85px;
+      padding-top: 20px;
+    }
+
+    .profile-container {
       max-width: 500px;
-      margin: 50px auto;
-      margin-top:60 px;
-      padding: 30px;
+      margin: 40px auto;
       background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       text-align: center;
     }
+
+    h3 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    /* Profile picture */
     .profile-pic {
       width: 130px;
       height: 130px;
       border-radius: 50%;
-      background-color: #eaeaea;
+      background: #e9ecef;
+      border: 3px solid #007bff;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: auto;
-      font-size: 40px;
-      color: #aaa;
+      font-size: 42px;
+      color: #888;
       cursor: pointer;
-      border: 3px solid #007bff;
+      overflow: hidden;
     }
+    .profile-pic img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Info fields */
+    .field {
+      margin-top: 18px;
+      text-align: left;
+    }
+    .field label {
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .field input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #f8f9fa;
+      color: #555;
+    }
+    .field input[readonly] {
+      cursor: not-allowed;
+    }
+
+    /* Verification icons */
+    .verify-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .verify-status img {
+      height: 18px;
+    }
+
+    /* Alerts */
+    .alert {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+    }
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      margin-top: 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: #007bff;
+      color: white;
+    }
+    .btn-primary:hover { background: #0056b3; }
+    .btn-secondary {
+      background: #444;
+      color: white;
+    }
+    .btn-secondary:hover { background: #000; }
+
+    /* Popup */
     .popup-overlay {
       display: none;
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      inset: 0;
+      background: rgba(0,0,0,0.6);
       justify-content: center;
       align-items: center;
       z-index: 9999;
     }
     .popup-box {
-      background: #fff;
+      background: white;
       padding: 20px;
       border-radius: 10px;
       width: 300px;
       text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    body { background-color: #f8f9fa; padding-left:85px;
-    padding-top:15px;}
-    .content { margin-left: 0; padding: 20px; transition: margin-left 0.3s ease; }
-    .content.shift { margin-left: 250px; }
-    .card { box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: none; border-radius: 10px; }
-    .close-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px; }
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .menu-btn { margin-right: 10px; }
-    body { background-color: #f8f9fa; }
-
-
-/* Cards (sales, profit, orders, returns) */
-.card {
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  border: none;
-  border-radius: 10px;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-  cursor: pointer;
-}
-.card:hover {
-  box-shadow: 0 5px 15px rgba(0,123,255,0.4);
-  transform: translateY(-5px);
-}
-
-/* Close button */
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-/* Header */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-/* Buttons */
-.btn {
-  transition: filter 0.3s ease, background-color 0.3s ease;
-  cursor: pointer;
-}
-.btn:hover {
-  filter: brightness(90%);
-}
-
-.alert {
-  width: 100%;
-  max-width: 500px;
-  margin: 20px auto;
-  padding: 10px 15px;
-  border-radius: 5px;
-}
- .img-container:hover .hover-text {
-    opacity: 1;
-  }
-   .img-container {
-    position: relative;
-    display: inline-block;
-  }
-
-  .img-container img {
-    display: block;
-  }
-
-  .hover-text {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    color: white;
-    background: rgba(0,0,0,0.6);
-    padding: 5px 10px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    border-radius: 3px;
-    font-size: 14px;
-  } 
-  .form-control {
-  border-radius: 8px;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-.form-control:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
-}
-
+    .popup-box input[type=file] {
+      margin-top: 10px;
+      width: 100%;
+    }
   </style>
 </head>
-<body class="bg-light">
-  
+<body>
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
-<div class="profile-container">
-  <h3>👤 Profile</h3>
 
-  <!-- Profile Picture -->
-  <div class="profile-pic" onclick="showPicPopup()">
-  <?php if ($profile_pic && $profile_pic !== 'default.png'): ?>
-    <img src="uploads/<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-  <?php else: ?>
-    +
-  <?php endif; ?>
-</div>
+  <div class="profile-container">
+    <h3>👤 Profile</h3>
 
-  <!-- User Info -->
-   <div class="container mt-4" style="max-width: 600px;">
-  <div class="mb-3">
-    <label class="form-label"><strong>Name:</strong></label>
-    <input type="text" class="form-control" value="<?php echo $name ?>" readonly>
-  </div>
-  
-  <div class="mb-3">
-  <label class="form-label"><strong>Email:</strong></label>
-  <div class="d-flex align-items-center gap-2">
-    <input type="email" class="form-control" value="<?php echo $email ?>" readonly style="max-width: 85%;">
-    
-    <?php if (!$email_verified): ?>
-      <div class="d-flex align-items-center text-danger" title="Email not verified">
-        <img src="../../../image/not_verified.png" alt="Not Verified" height="18px">
+    <!-- Profile Picture -->
+    <div class="profile-pic" onclick="showPicPopup()">
+      <?php if ($profile_pic && $profile_pic !== 'default.png'): ?>
+        <img src="uploads/<?php echo htmlspecialchars($profile_pic); ?>" alt="Profile">
+      <?php else: ?>
+        +
+      <?php endif; ?>
+    </div>
+
+    <!-- User Info -->
+    <div class="field">
+      <label>Name:</label>
+      <input type="text" value="<?php echo $name ?>" readonly>
+    </div>
+
+    <div class="field">
+      <label>Email:</label>
+      <input type="email" value="<?php echo $email ?>" readonly>
+      <div class="verify-status">
+        <?php if (!$email_verified): ?>
+          <img src="../../../image/not_verified.png" alt="Not Verified" title="Email not verified">
+        <?php else: ?>
+          <img src="../../../image/verified.png" alt="Verified" title="Email verified">
+        <?php endif; ?>
       </div>
-    <?php else: ?>
-      <div class="d-flex align-items-center text-success" title="Email verified">
-        <img src="../../../image/verified.png" alt="Verified" height="18px">
-      </div>
+    </div>
+
+    <div class="field">
+      <label>Phone No.:</label>
+      <input type="text" value="<?php echo $number ?>" readonly>
+    </div>
+
+    <div class="field">
+      <label>Role:</label>
+      <input type="text" value="<?php echo $erole ?>" readonly>
+    </div>
+
+    <!-- Alerts -->
+    <?php if (isset($_GET['success'])): ?>
+      <div class="alert alert-success"><?php echo htmlspecialchars($_GET['success']); ?></div>
+    <?php elseif (isset($_GET['error'])): ?>
+      <div class="alert alert-error"><?php echo htmlspecialchars($_GET['error']); ?></div>
     <?php endif; ?>
-  </div>
-</div>
 
-
-  <div class="mb-3">
-    <label class="form-label"><strong>Phone No.:</strong></label>
-    <input type="text" class="form-control" value="<?php echo $number ?>" readonly>
+    <!-- Back Button -->
+    <a href="../dashboard/dashboard.php" class="btn btn-secondary">← Back to Dashboard</a>
   </div>
 
-  <div class="mb-3">
-    <label class="form-label"><strong>Role:</strong></label>
-    <input type="text" class="form-control" value="<?php echo $erole ?>" readonly>
+  <!-- Popup -->
+  <div class="popup-overlay" id="picPopup">
+    <div class="popup-box">
+      <h5>Update Profile Picture</h5>
+      <form action="upload_pic.php" method="POST" enctype="multipart/form-data">
+        <input type="file" name="profile_image" accept="image/*" required>
+        <button type="submit" class="btn btn-primary">Upload</button>
+      </form>
+      <button class="btn btn-secondary" onclick="hidePicPopup()">Cancel</button>
+    </div>
   </div>
 
-  <!-- Success/Error Messages -->
-  <?php if (isset($_GET['success'])): ?>
-    <div class="alert alert-success text-center mt-3"><?php echo htmlspecialchars($_GET['success']); ?></div>
-  <?php elseif (isset($_GET['error'])): ?>
-    <div class="alert alert-danger text-center mt-3"><?php echo htmlspecialchars($_GET['error']); ?></div>
-  <?php endif; ?>
-
-  <!-- Back Button -->
-  <a href="../dashboard/dashboard.php" class="btn btn-secondary mt-3">← Back to Dashboard</a>
-</div>
-
-
-<!-- Popup for Picture Upload -->
-<div class="popup-overlay" id="picPopup">
-  <div class="popup-box">
-    <h5>Update Profile Picture</h5>
-    <form action="upload_pic.php" method="POST" enctype="multipart/form-data">
-      <input type="file" name="profile_image" accept="image/*" class="form-control mt-2" required>
-      <button type="submit" class="btn btn-primary btn-sm mt-3">Upload</button>
-    </form>
-    <button class="btn btn-secondary btn-sm mt-2" onclick="hidePicPopup()">Cancel</button>
-  </div>
-</div>
-
-<script>
-  function showPicPopup() {
-    document.getElementById('picPopup').style.display = 'flex';
-  }
-  function hidePicPopup() {
-    document.getElementById('picPopup').style.display = 'none';
-  }
-</script>
- 
+  <script>
+    function showPicPopup() {
+      document.getElementById('picPopup').style.display = 'flex';
+    }
+    function hidePicPopup() {
+      document.getElementById('picPopup').style.display = 'none';
+    }
+  </script>
 </body>
 </html>

@@ -32,52 +32,106 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $company_id, $company_id);
 $stmt->execute();
 $result = $stmt->get_result();
-?>
-
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Inventory Items - PasaStocks</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../style/darkmode.css">
 <style>
-  /* Reuse styles from your UI */
   body {
-    padding-left:85px;
-    padding-top:75px;
+    padding-left: 85px;
+    padding-top: 75px;
     background-color: #f8f9fa;
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
   }
-  
-  @media (max-width: 991.98px) {
-    .sidebar {
-      left: -250px;
-    }
-    .sidebar.show {
-      left: 0;
-    }
-    .content {
-      margin-left: 0 !important;
-    }
-    .content.shift {
-      margin-left: 250px !important;
-    }
+
+  .content {
+    padding: 20px;
+    max-width: 1200px;
   }
-  table thead th {
+
+  h2 {
+    margin-bottom: 20px;
+    color: #007bff;
+    font-weight: 600;
+  }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  thead th {
     background-color: #007bff;
-    color: white;
+    color: #fff;
+    text-align: left;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  tbody td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+
+  tbody tr:hover {
+    background: #f9fafb;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  /* Responsive stacked table */
+  @media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+
+    thead {
+      display: none;
+    }
+
+    tbody tr {
+      margin-bottom: 12px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      padding: 10px;
+    }
+
+    tbody td {
+      border: none;
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
+
+    tbody td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: #555;
+    }
   }
 </style>
 </head>
 <body>
-  
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
-<!-- Content -->
-<div class="content" id="content">
-  <h2>Inventory Items</h2>
-  <div class="table-responsive">
-    <table class="table table-striped table-bordered align-middle">
+
+  <div class="content" id="content">
+    <h2>Inventory Items</h2>
+    <table>
       <thead>
         <tr>
           <th>Item ID</th>
@@ -93,13 +147,13 @@ $result = $stmt->get_result();
         <?php if ($result->num_rows > 0):
           while ($row = $result->fetch_assoc()): ?>
             <tr>
-              <td><?= $row['item_id'] ?></td>
-              <td><?= htmlspecialchars($row['item_name']) ?></td>
-              <td><?= number_format($row['cost_price'], 2) ?></td>
-              <td><?= number_format($row['price'], 2) ?></td>
-              <td><?= (int)$row['quantity'] ?></td>
-              <td><?= (int)$row['quantity_sold'] ?></td>
-              <td><?= htmlspecialchars($row['category']) ?></td>
+              <td data-label="Item ID"><?= $row['item_id'] ?></td>
+              <td data-label="Item Name"><?= htmlspecialchars($row['item_name']) ?></td>
+              <td data-label="Cost Price"><?= number_format($row['cost_price'], 2) ?></td>
+              <td data-label="Selling Price"><?= number_format($row['price'], 2) ?></td>
+              <td data-label="Quantity Available"><?= (int)$row['quantity'] ?></td>
+              <td data-label="Quantity Sold"><?= (int)$row['quantity_sold'] ?></td>
+              <td data-label="Category"><?= htmlspecialchars($row['category']) ?></td>
             </tr>
           <?php endwhile;
         else: ?>
@@ -110,19 +164,5 @@ $result = $stmt->get_result();
       </tbody>
     </table>
   </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  const sidebar = document.getElementById('sidebar');
-  const content = document.getElementById('content');
-
-  function toggleSidebar() {
-    sidebar.classList.toggle('show');
-    if (window.innerWidth < 992) {
-      content.classList.toggle('shift');
-    }
-  }
-</script>
 </body>
 </html>

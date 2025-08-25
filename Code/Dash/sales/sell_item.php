@@ -106,26 +106,133 @@ $stmt->execute();
 $result_items = $stmt->get_result();
 $stmt->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Simple Sell and Billing</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<title>Simple Sell and Billing - PasaStocks</title>
+<link rel="stylesheet" href="../style/darkmode.css">
 <style>
-  body { padding: 20px; background: #f8f9fa; margin-left:80px;margin-top:70px;}
-  .container-flex { display: flex; gap: 20px; }
-  .left-column { width: 40%; display: flex; flex-direction: column; gap: 20px; }
-  .right-column { width: 60%; background: white; padding: 20px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-  form { background: white; padding: 15px; border-radius: 6px; border: 1px solid #ddd; }
-  .message { color: red; margin-bottom: 10px; }
+  body {
+    margin: 0;
+    padding: 20px;
+    margin-left: 80px;
+    margin-top: 70px;
+    background: #f8f9fa;
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  .container-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .left-column {
+    flex: 1 1 350px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .right-column {
+    flex: 2 1 600px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  h4 {
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #007bff;
+  }
+
+  form {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  select, input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+  }
+
+  .btn-success { background: #28a745; color: #fff; }
+  .btn-primary { background: #007bff; color: #fff; }
+  .btn-secondary { background: #6c757d; color: #fff; }
+  .btn-danger { background: #dc3545; color: #fff; font-size: 12px; padding: 4px 8px; }
+
+  button:hover { opacity: 0.9; }
+
+  .message {
+    color: red;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th, td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  thead th {
+    background: #007bff;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  tbody tr:hover {
+    background: #f9fafb;
+  }
+
+  strong { font-weight: 600; }
+
+  /* Mobile stacking */
+  @media (max-width: 768px) {
+    .container-flex { flex-direction: column; }
+  }
 </style>
 </head>
 <body>
 
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
+
 <div class="container-flex">
 
   <div class="left-column">
@@ -136,22 +243,21 @@ $stmt->close();
       <?php if($message && !($phone_checked)): ?>
         <div class="message"><?= htmlspecialchars($message) ?></div>
       <?php endif; ?>
-      <div class="mb-3">
-        <label for="item_id">Select Item</label>
-        <select name="item_id" id="item_id" class="form-select" required>
-          <option value="">-- Choose Item --</option>
-          <?php while ($row = $result_items->fetch_assoc()): ?>
-            <option value="<?= $row['item_id'] ?>">
-              <?= htmlspecialchars($row['item_name']) ?> (Stock: <?= $row['quantity'] ?> | Rs.<?= $row['price'] ?>)
-            </option>
-          <?php endwhile; ?>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="quantity">Quantity</label>
-        <input type="number" name="quantity" id="quantity" class="form-control" min="1" required />
-      </div>
-      <button type="submit" name="add_item" class="btn btn-success">Add to Cart</button>
+
+      <label for="item_id">Select Item</label>
+      <select name="item_id" id="item_id" required>
+        <option value="">-- Choose Item --</option>
+        <?php while ($row = $result_items->fetch_assoc()): ?>
+          <option value="<?= $row['item_id'] ?>">
+            <?= htmlspecialchars($row['item_name']) ?> (Stock: <?= $row['quantity'] ?> | Rs.<?= $row['price'] ?>)
+          </option>
+        <?php endwhile; ?>
+      </select>
+
+      <label for="quantity">Quantity</label>
+      <input type="number" name="quantity" id="quantity" min="1" required />
+
+      <button type="submit" name="add_item" class="btn-success">Add to Cart</button>
     </form>
 
     <!-- Phone Number Form -->
@@ -160,32 +266,28 @@ $stmt->close();
       <?php if ($message && $phone_checked): ?>
         <div class="message"><?= htmlspecialchars($message) ?></div>
       <?php endif; ?>
-      <div class="mb-3">
-        <label for="phone">Phone Number (10 digits)</label>
-        <input
-          type="text"
-          name="phone"
-          id="phone"
-          value="<?= htmlspecialchars($phone_number) ?>"
-          maxlength="10"
-          pattern="\d{10}"
-          required
-          class="form-control"
-          <?= $phone_checked && !$need_name_input ? 'readonly' : '' ?>
-        />
-      </div>
+
+      <label for="phone">Phone Number (10 digits)</label>
+      <input
+        type="text"
+        name="phone"
+        id="phone"
+        value="<?= htmlspecialchars($phone_number) ?>"
+        maxlength="10"
+        pattern="\d{10}"
+        required
+        <?= $phone_checked && !$need_name_input ? 'readonly' : '' ?>
+      />
 
       <?php if ($phone_checked && !$need_name_input): ?>
         <div><strong>Customer Name:</strong> <?= htmlspecialchars($customer_name) ?></div>
-        <button type="submit" name="proceed_billing" class="btn btn-primary mt-3">Proceed to Billing</button>
+        <button type="submit" name="proceed_billing" class="btn-primary">Proceed to Billing</button>
       <?php elseif ($need_name_input): ?>
-        <div class="mb-3">
-          <label for="customer_name">Enter Customer Name</label>
-          <input type="text" name="customer_name" id="customer_name" class="form-control" required />
-        </div>
-        <button type="submit" name="proceed_billing" class="btn btn-primary mt-3">Proceed to Billing</button>
+        <label for="customer_name">Enter Customer Name</label>
+        <input type="text" name="customer_name" id="customer_name" required />
+        <button type="submit" name="proceed_billing" class="btn-primary">Proceed to Billing</button>
       <?php else: ?>
-        <button type="submit" name="phone_submit" class="btn btn-secondary">Next</button>
+        <button type="submit" name="phone_submit" class="btn-secondary">Next</button>
       <?php endif; ?>
     </form>
 
@@ -194,7 +296,7 @@ $stmt->close();
   <div class="right-column">
     <h4>Current Bill</h4>
     <?php if (!empty($_SESSION['cart'])): ?>
-      <table class="table table-bordered">
+      <table>
         <thead>
           <tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th><th>Remove</th></tr>
         </thead>
@@ -210,7 +312,7 @@ $stmt->close();
               <td><?= $item['quantity'] ?></td>
               <td>Rs.<?= $item['price'] ?></td>
               <td>Rs.<?= $line_total ?></td>
-              <td><a href="?remove=<?= $index ?>" class="btn btn-sm btn-danger">Remove</a></td>
+              <td><a href="?remove=<?= $index ?>" class="btn-danger">Remove</a></td>
             </tr>
           <?php endforeach; ?>
           <tr>

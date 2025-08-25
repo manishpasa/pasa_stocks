@@ -31,57 +31,121 @@ $sql .= " GROUP BY bill_id ORDER BY bill_id DESC";
 
 $sales = $conn->query($sql);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>All Sales - PasaStocks</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <style>
-    body { background-color: #f8f9fa;padding-left:85px;
-    padding-top:75px; }
-    
-    .content {
-      margin-left: 0;
-      margin-top: 20px;
-      padding: 20px;
-      transition: margin-left 0.3s ease;
-    }
-    .content.shift { margin-left: 250px; }
-    .close-btn {
-      position: absolute;
-      top: 10px; right: 10px;
-      cursor: pointer;
-      font-size: 20px;
-    }
-
-
-
-
-  </style>
-  <link rel="stylesheet" href="../style/darkmode.css">
+<meta charset="UTF-8">
+<title>All Sales - PasaStocks</title>
+<link rel="stylesheet" href="../style/darkmode.css">
+<style>
+  body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-left: -35px;
+    padding-top: 75px;
+    min-height: 100vh;
+  }
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  h2 {
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+  .search-form {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  .search-form input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid #007bff;
+    border-radius: 6px 0 0 6px;
+    outline: none;
+  }
+  .search-form input:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 6px #0056b3aa;
+  }
+  .search-form button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    font-weight: 600;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+  }
+  .search-form button:hover {
+    background-color: #0056b3;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  th {
+    background-color: #007bff;
+    color: white;
+    font-weight: 600;
+  }
+  tbody tr:hover {
+    background-color: #e9f7ff;
+  }
+  .btn-action {
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-action:hover {
+    background-color: #0056b3;
+  }
+  .no-results {
+    text-align: center;
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+</style>
 </head>
 <body>
-  <?php include('../fixedphp/sidebar.php') ?>
-  <?php include('../fixedphp/navbar.php') ?>
-<!-- Content -->
-<div class="content" id="content">
+
+<?php include('../fixedphp/sidebar.php'); ?>
+<?php include('../fixedphp/navbar.php'); ?>
+
+<div class="content">
   <h2>All Sales</h2>
 
-  <!-- Search Bar -->
-  <form method="GET" class="mb-4 d-flex" style="max-width: 400px;">
-    <input type="number" name="search" class="form-control me-2" placeholder="Search Bill ID" value="<?php echo $search ?? ''; ?>">
-    <button type="submit" class="btn btn-outline-secondary">Search</button>
+  <form method="GET" class="search-form">
+    <input type="number" name="search" placeholder="Search Bill ID" value="<?php echo $search ?? ''; ?>">
+    <button type="submit">Search</button>
   </form>
 
   <?php if ($sales->num_rows > 0): ?>
-    <table class="table table-bordered table-striped">
-      <thead class="table-light">
+    <table>
+      <thead>
         <tr>
           <th>Bill ID</th>
-          <th>Total Amount</th>
+          <th>Total Amount (Rs.)</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -89,17 +153,18 @@ $sales = $conn->query($sql);
         <?php while ($row = $sales->fetch_assoc()): ?>
           <tr>
             <td><?php echo $row['bill_id']; ?></td>
-            <td>Rs. <?php echo number_format($row['total_amount'], 2); ?></td>
+            <td><?php echo number_format($row['total_amount'], 2); ?></td>
             <td>
-              <a href="bill_details.php?bill_id=<?php echo $row['bill_id']; ?>" class="btn btn-sm btn-info">See More</a>
+              <a href="bill_details.php?bill_id=<?php echo $row['bill_id']; ?>" class="btn-action">See More</a>
             </td>
           </tr>
         <?php endwhile; ?>
       </tbody>
     </table>
   <?php else: ?>
-    <div class="alert alert-warning">No sales found.</div>
+    <div class="no-results">No sales found.</div>
   <?php endif; ?>
+
 </div>
 
 </body>

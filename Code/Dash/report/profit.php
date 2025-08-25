@@ -34,45 +34,89 @@ $profitQuery = $conn->query("
     ORDER BY total_profit DESC
 ");
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Profit Ranking - PasaStocks</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <style>
-    body { background-color: #f8f9fa;padding-left:85px;
-    padding-top:75px; }
-    
-    .content {
-      
-      padding: 20px;
-      transition: margin-left 0.3s ease;
-    }
-    .content.shift { margin-left: 250px; }
-    .close-btn {
-      position: absolute;
-      top: 10px; right: 10px;
-      cursor: pointer;
-      font-size: 20px;
-    }
-    
-  </style>
-  <link rel="stylesheet" href="../style/darkmode.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<meta charset="UTF-8">
+<title>Profit Ranking - PasaStocks</title>
+<link rel="stylesheet" href="../style/darkmode.css">
+<style>
+  body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-left: 0px;
+    padding-top: 75px;
+    min-height: 100vh;
+  }
+  .content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  h2 {
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+  form {
+    margin-bottom: 20px;
+  }
+  select {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 2px solid #007bff;
+    outline: none;
+  }
+  select:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 6px #0056b3aa;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  th {
+    background-color: #007bff;
+    color: white;
+    font-weight: 600;
+  }
+  tbody tr:hover {
+    background-color: #e9f7ff;
+  }
+  tfoot tr {
+    background-color: #f1f3f5;
+    font-weight: bold;
+  }
+  .no-results {
+    text-align: center;
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+</style>
 </head>
 <body>
-  
-  <?php include('../fixedphp/sidebar.php') ?>
-  <?php include('../fixedphp/navbar.php') ?>
-<!-- Content -->
-<div class="content" id="content">
+
+<?php include('../fixedphp/sidebar.php'); ?>
+<?php include('../fixedphp/navbar.php'); ?>
+
+<div class="content">
   <h2>Profit Ranking (<?php echo date("F", mktime(0, 0, 0, $selected_month, 10)); ?>)</h2>
 
-  <form method="GET" class="mb-4">
+  <form method="GET">
     <label for="month">Select Month:</label>
-    <select name="month" id="month" class="form-select w-auto d-inline-block" onchange="this.form.submit()">
+    <select name="month" id="month" onchange="this.form.submit()">
       <?php for ($m = 1; $m <= 12; $m++): ?>
         <option value="<?php echo $m; ?>" <?php if ($m == $selected_month) echo 'selected'; ?>>
           <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
@@ -82,8 +126,8 @@ $profitQuery = $conn->query("
   </form>
 
   <?php if ($profitQuery->num_rows > 0): ?>
-    <table class="table table-bordered table-striped">
-      <thead class="table-light">
+    <table>
+      <thead>
         <tr>
           <th>Rank</th>
           <th>Item</th>
@@ -102,11 +146,9 @@ $profitQuery = $conn->query("
         $total_qty = 0;
         $total_sales = 0;
         $total_profit = 0;
-
         while ($row = $profitQuery->fetch_assoc()):
           $cost_total = $row['cost_price'] * $row['total_qty'];
           $sales_total = $row['price'] * $row['total_qty'];
-
           $total_qty += $row['total_qty'];
           $total_sales += $sales_total;
           $total_profit += $row['total_profit'];
@@ -125,7 +167,7 @@ $profitQuery = $conn->query("
         <?php endwhile; ?>
       </tbody>
       <tfoot>
-        <tr class="table-secondary fw-bold">
+        <tr>
           <td colspan="2">TOTAL</td>
           <td><?php echo $total_qty; ?></td>
           <td colspan="3"></td>
@@ -136,7 +178,7 @@ $profitQuery = $conn->query("
       </tfoot>
     </table>
   <?php else: ?>
-    <div class="alert alert-warning">No sales data available for this month.</div>
+    <div class="no-results">No sales data available for this month.</div>
   <?php endif; ?>
 </div>
 

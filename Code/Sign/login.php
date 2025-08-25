@@ -104,9 +104,6 @@ $conn->close();
             <input type="text" name="company_code"id="company-code" placeholder="company code" required>
             <input type="text" name="number" id="number" placeholder="number" required>
             <input type="password" name="password" id="password" placeholder="Password" required>
-        
-               
-               
             <input type="submit" value="Login"><br> 
         </form>
         

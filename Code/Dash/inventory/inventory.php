@@ -38,77 +38,202 @@ if (!$result) {
     die("Query failed: " . mysqli_error($conn));
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Inventory - Admin Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="../../../Style/table.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+    }
+
+    .content {
+      padding: 90px 40px 40px 120px;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      margin: 0;
+      color: #333;
+      font-size: 1.5rem;
+    }
+
+    /* Search form */
+    .search-box {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .search-input {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .search-button {
+      padding: 8px 15px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .search-button:hover {
+      background: #0056b3;
+    }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    thead {
+      background: #007bff;
+      color: #fff;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    tr:hover td {
+      background: #f1f7ff;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .content {
+        padding: 80px 20px;
+      }
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead {
+        display: none;
+      }
+      tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 10px;
+        background: #fff;
+      }
+      td {
+        border: none;
+        padding: 8px 10px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+      }
+      td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #444;
+      }
+    }
+  </style>
 </head>
 <body>
   
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
+
   <div class="content" id="content">
-   <div class="header">
-  <h2 >Inventory</h2>
-  <form class="search-box" method="GET" style="display:flex; align-items:center; gap:10px;">
-    <input
-      type="text"
-      name="search_name"
-      class="search-input"
-      placeholder="Search by Item Name"
-      value="<?php echo htmlspecialchars($search_name); ?>"
-    />
+    <div class="header">  
+      <h3>Inventory</h3>
+      <form class="search-box" method="GET">
+        <input
+          type="text"
+          name="search_name"
+          class="search-input"
+          placeholder="Search by Item Name"
+          value="<?php echo htmlspecialchars($search_name); ?>"
+        />
 
-    <select name="sort" class="search-input" onchange="this.form.submit()">
-      <option value="item_id" <?php if ($sort_col == 'item_id') echo 'selected'; ?>>Item Code</option>
-      <option value="item_name" <?php if ($sort_col == 'item_name') echo 'selected'; ?>>Item Name</option>
-      <option value="price" <?php if ($sort_col == 'price') echo 'selected'; ?>>Selling Price</option>
-      <option value="cost_price" <?php if ($sort_col == 'cost_price') echo 'selected'; ?>>Cost Price</option>
-      <option value="quantity" <?php if ($sort_col == 'quantity') echo 'selected'; ?>>Quantity Left</option>
-      <option value="quantity_sold" <?php if ($sort_col == 'quantity_sold') echo 'selected'; ?>>Total Sold</option>
-    </select>
+        <select name="sort" class="search-input" onchange="this.form.submit()">
+          <option value="item_id" <?php if ($sort_col == 'item_id') echo 'selected'; ?>>Item Code</option>
+          <option value="item_name" <?php if ($sort_col == 'item_name') echo 'selected'; ?>>Item Name</option>
+          <option value="price" <?php if ($sort_col == 'price') echo 'selected'; ?>>Selling Price</option>
+          <option value="cost_price" <?php if ($sort_col == 'cost_price') echo 'selected'; ?>>Cost Price</option>
+          <option value="quantity" <?php if ($sort_col == 'quantity') echo 'selected'; ?>>Quantity Left</option>
+          <option value="quantity_sold" <?php if ($sort_col == 'quantity_sold') echo 'selected'; ?>>Total Sold</option>
+        </select>
 
-    <select name="order" class="search-input" onchange="this.form.submit()">
-      <option value="asc" <?php if ($sort_order == 'asc') echo 'selected'; ?>>Ascending</option>
-      <option value="desc" <?php if ($sort_order == 'desc') echo 'selected'; ?>>Descending</option>
-    </select>
+        <select name="order" class="search-input" onchange="this.form.submit()">
+          <option value="asc" <?php if ($sort_order == 'asc') echo 'selected'; ?>>Ascending</option>
+          <option value="desc" <?php if ($sort_order == 'desc') echo 'selected'; ?>>Descending</option>
+        </select>
 
-    <button type="submit" class="search-button" hidden>Search</button>
-  </form>
-</div>
-
-
+        <button type="submit" class="search-button" hidden>Search</button>
+      </form>
     </div>
-    <div class="card p-3">
+
+    <div class="card">
       <table>
         <thead>
-  <tr>
-    <th>Item Code</th>
-    <th>Item Name</th>
-    <th>Selling Price</th>
-    <th>Cost Price</th>
-    <th>Quantity Left</th>
-    <th>Total Sold</th>
-    <th>Actions</th>
-  </tr>
-</thead>
+          <tr>
+            <th>Item Code</th>
+            <th>Item Name</th>
+            <th>Selling Price</th>
+            <th>Cost Price</th>
+            <th>Quantity Left</th>
+            <th>Total Sold</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
 
         <tbody>
         <?php if (mysqli_num_rows($result) > 0): ?>
           <?php while ($row = mysqli_fetch_assoc($result)) { ?>
           <tr>
-            <td><?php echo htmlspecialchars($row['item_id']); ?></td>
-            <td><?php echo htmlspecialchars($row['item_name']); ?></td>
-            <td><?php echo htmlspecialchars($row['price']); ?></td>
-            <td><?php echo htmlspecialchars($row['cost_price']); ?></td>
-            <td><?php echo htmlspecialchars($row['quantity']); ?></td>
-            <td><?php echo htmlspecialchars($row['Quantity_sold']); ?></td>
-            <td><a href="inventory_moreinfo.php?code=<?php echo $row['item_id']; ?>">More Info</a></td>
+            <td data-label="Item Code"><?php echo htmlspecialchars($row['item_id']); ?></td>
+            <td data-label="Item Name"><?php echo htmlspecialchars($row['item_name']); ?></td>
+            <td data-label="Selling Price"><?php echo htmlspecialchars($row['price']); ?></td>
+            <td data-label="Cost Price"><?php echo htmlspecialchars($row['cost_price']); ?></td>
+            <td data-label="Quantity Left"><?php echo htmlspecialchars($row['quantity']); ?></td>
+            <td data-label="Total Sold"><?php echo htmlspecialchars($row['Quantity_sold']); ?></td>
+            <td data-label="Actions"><a href="inventory_moreinfo.php?code=<?php echo $row['item_id']; ?>">More Info</a></td>
           </tr>
           <?php } ?>
         <?php else: ?>

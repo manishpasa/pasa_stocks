@@ -6,41 +6,78 @@ $erole=$_SESSION['role'];
 $issolo=$_SESSION['issolo'];
 $company_id = $_SESSION['company_id'];
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>📦 All Returns - PasaStocks</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     body {
-      background: #f4f6f9;padding-left:15px;
-    padding-top:75px;
+      background: #f4f6f9;
+      font-family: "Segoe UI", sans-serif;
+      padding-left: 85px;
+      padding-top: 75px;
+      margin: 0;
     }
-   
-    table {
-      background: white;
-    }.content { margin-left: 0;  transition: margin-left 0.3s ease; }
-    .content.shift { margin-left: 250px; }
-    .card { box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: none; border-radius: 10px; }
-    .close-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px; }
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .menu-btn { margin-right: 10px; }
-    body { background-color: #f8f9fa; }
 
+    .content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h3 {
+      margin-bottom: 20px;
+      color: #007bff;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    th {
+      background: #007bff;
+      color: white;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+
+    tbody tr:hover {
+      background: #f1f9ff;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
-<div class="container">
-  <h3 class="mb-4">📦 All Returned Items</h3>
 
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped align-middle">
-      <thead class="table-light">
+  <div class="content">
+    <h3>📦 All Returned Items</h3>
+
+    <table>
+      <thead>
         <tr>
           <th>Bill ID</th>
           <th>Item</th>
@@ -77,12 +114,10 @@ $company_id = $_SESSION['company_id'];
           endwhile;
         else:
         ?>
-          <tr><td colspan="6" class="text-center text-muted">No returns recorded yet.</td></tr>
+          <tr><td colspan="6" class="empty">No returns recorded yet.</td></tr>
         <?php endif; ?>
       </tbody>
     </table>
   </div>
-</div>
- 
 </body>
 </html>

@@ -50,105 +50,170 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $update->close();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Employee Info</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="../style/darkmode.css">
-    <style>
-        body { background-color: #f8f9fa;margin: 5%; }
-        .content {
-            padding: 20px 85px;
-            min-height: 100vh;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .header h2 {
-            display: inline;
-        }
-        .container-box {
-            background: white;
-            max-width: 500px;
-            margin: auto;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        input {
-            width: 100%;
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-        }
-        .buttons button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-        }
-        .btn-edit {
-            background-color: #ff9800;
-            color: white;
-        }
-        .btn-save {
-            background-color: #4CAF50;
-            color: white;
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Employee Info</title>
+  <link rel="stylesheet" href="../style/darkmode.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+    }
+
+    .content {
+      padding: 90px 40px 40px 120px;
+      min-height: 100vh;
+    }
+
+    .header {display: flex;
+      width:25%;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #333;
+    }
+
+    .container-box {
+      background: #fff;
+      width: 50%;
+      margin: auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #444;
+    }
+
+    input {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      background-color: #fdfdfd;
+    }
+
+    input:read-only {
+      background-color: #f3f3f3;
+      cursor: not-allowed;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .buttons button,
+    .buttons a button {
+      flex: 1;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .btn-edit {
+      background-color: #ff9800;
+      color: #fff;
+    }
+
+    .btn-edit:hover {
+      background-color: #e68900;
+    }
+
+    .btn-save {
+      background-color: #4CAF50;
+      color: white;
+      display: none;
+    }
+
+    .btn-save:hover {
+      background-color: #43a047;
+    }
+
+    .btn-back {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-back:hover {
+      background-color: #565e64;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container-box {
+        padding: 20px;
+        margin: 10px;
+      }
+      .buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-    <?php include('../fixedphp/sidebar.php') ?>
-    <?php include('../fixedphp/navbar.php') ?>
-    <div class="content" id="content">
-        <div class="header">
-            <h2>Employee Info</h2>
-        </div>
-        <div class="container-box">
-            <form method="POST">
-                <label>Full Name</label>
-                <input type="text" name="emp_name" value="<?php echo htmlspecialchars($employee['emp_name']); ?>" readonly>
+  <?php include('../fixedphp/sidebar.php') ?>
+  <?php include('../fixedphp/navbar.php') ?>
 
-                <label>Email</label>
-                <input type="email" name="email" value="<?php echo htmlspecialchars($employee['email']); ?>" readonly>
-
-                <label>Phone</label>
-                <input type="text" name="phone" value="<?php echo htmlspecialchars($employee['phone']); ?>" readonly>
-
-                <label>Date of Birth</label>
-                <input type="date" name="dob" value="<?php echo htmlspecialchars($employee['DOB']); ?>" readonly>
-
-                <label>Company Code</label>
-                <input type="text" name="company_code" value="<?php echo htmlspecialchars($employee['company_code']); ?>" readonly>
-
-                <div class="buttons">
-                    <button type="button" class="btn-edit" onclick="enableEdit()">Edit</button>
-                    <button type="submit" class="btn-save" id="saveBtn">Save</button>
-                    <a href="employee.php"><button type="button" class="btn-back" id="bckBtn">back</button></a>
-                </div>
-            </form>
-        </div>
+  <div class="content" id="content">
+    <div class="header">
+      <h2>Employee Info</h2>
     </div>
-    <script>
-        function enableEdit() {
-            document.querySelectorAll('input:not([name="company_code"])').forEach(input => {
-                input.removeAttribute('readonly');
-            });
-            document.querySelector('.btn-edit').style.display = 'none';
-            document.querySelector('.btn-save').style.display = 'inline-block';
-        }
-    </script>
+
+    <div class="container-box">
+      <form method="POST">
+        <label>Full Name</label>
+        <input type="text" name="emp_name" value="<?php echo htmlspecialchars($employee['emp_name']); ?>" readonly>
+
+        <label>Email</label>
+        <input type="email" name="email" value="<?php echo htmlspecialchars($employee['email']); ?>" readonly>
+
+        <label>Phone</label>
+        <input type="text" name="phone" value="<?php echo htmlspecialchars($employee['phone']); ?>" readonly>
+
+        <label>Date of Birth</label>
+        <input type="date" name="dob" value="<?php echo htmlspecialchars($employee['DOB']); ?>" readonly>
+
+        <label>Company Code</label>
+        <input type="text" name="company_code" value="<?php echo htmlspecialchars($employee['company_code']); ?>" readonly>
+
+        <div class="buttons">
+          <button type="button" class="btn-edit" onclick="enableEdit()">Edit</button>
+          <button type="submit" class="btn-save" id="saveBtn">Save</button>
+          <a href="employee.php"><button type="button" class="btn-back">Back</button></a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function enableEdit() {
+      document.querySelectorAll('input:not([name="company_code"])').forEach(input => {
+        input.removeAttribute('readonly');
+      });
+      document.querySelector('.btn-edit').style.display = 'none';
+      document.querySelector('.btn-save').style.display = 'inline-block';
+    }
+  </script>
 </body>
 </html>

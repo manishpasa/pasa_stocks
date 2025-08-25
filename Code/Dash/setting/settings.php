@@ -31,195 +31,184 @@ $stmt->fetch();
 $stmt->close();
 
 
-?>
-
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Settings - PasaStocks</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Settings - PasaStocks</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            margin-top: -30px;
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f8f9fa;
+    margin-left: 80px;
+    margin-top: 70px;
+    padding: 20px;
+  }
 
-        .container {
-            max-width: 650px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
 
-        .header-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+  .header-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
 
-        .header-row img {
-            height: 24px;
-        }
+  .header-row img {
+    height: 26px;
+    margin-right: 12px;
+    cursor: pointer;
+  }
 
-        .header-title {
-            margin-left: 30%;
-            margin-top: 16px;
-            font-size: 1.75rem;
-            text-align: center;
-        }
+  .header-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #007bff;
+  }
 
-        .card {
-            background-color: #fff;
-            border: 1px solid #dee2e6;
-            border-radius: 0.25rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 1.5rem;
-        }
+  .card {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
 
-        .card-header {
-            background-color: #007bff;
-            color: #fff;
-            padding: 0.75rem 1.25rem;
-            font-weight: 600;
-            font-size: 1.25rem;
-            border-bottom: 1px solid #dee2e6;
-        }
+  .card-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.9rem 1.25rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
 
-        .card-body {
-            padding: 1.25rem;
-        }
+  .card-body {
+    padding: 1.25rem;
+    font-size: 15px;
+  }
 
-        .alert {
-            padding: 0.75rem 1.25rem;
-            margin-bottom: 1rem;
-            border-radius: 0.25rem;
-        }
+  .alert {
+    padding: 0.8rem 1.25rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    font-size: 14px;
+  }
 
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
+  .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
 
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
 
-        .status-badge img {
-            height: 24px;
-            vertical-align: middle;
-        }
+  .status-badge img {
+    height: 22px;
+    vertical-align: middle;
+    margin-left: 10px;
+  }
 
-        .btn-sm {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-            line-height: 1.5;
-            border-radius: 0.2rem;
-            text-decoration: none;
-            margin-left: 0.75rem;
-            color: #007bff;
-            border: 1px solid #007bff;
-            background-color: transparent;
-            cursor: pointer;
-        }
+  .btn-sm {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    margin-left: 10px;
+    color: #007bff;
+    border: 1px solid #007bff;
+    background: transparent;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
 
-        .btn-sm:hover {
-            background-color: #007bff;
-            color: #fff;
-        }
+  .btn-sm:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
 
-        .list-group {
-            border-radius: 0.25rem;
-        }
+  .list-group {
+    display: flex;
+    flex-direction: column;
+  }
 
-        .list-group-item {
-            display: block;
-            padding: 0.75rem 1.25rem;
-            background-color: #fff;
-            border: 1px solid #dee2e6;
-            text-decoration: none;
-            color: #212529;
-        }
+  .list-group-item {
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid #eee;
+    text-decoration: none;
+    color: #212529;
+    transition: 0.2s ease;
+  }
 
-        .list-group-item:hover {
-            background-color: #f8f9fa;
-            color: #007bff;
-        }
+  .list-group-item:hover {
+    background-color: #f1f3f5;
+    color: #007bff;
+    font-weight: 500;
+  }
 
-        .radio-group {
-            margin-top: 1rem;
-            padding: 1rem;
-        }
-
-        .radio-group label {
-            margin-right: 1rem;
-            cursor: pointer;
-        }
-
-        .radio-group input[type="radio"] {
-            margin-right: 0.25rem;
-        }
-    </style>
+  .list-group-item:last-child {
+    border-bottom: none;
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header-row">
-            <div class="text-center">
-                <a href="../dashboard/dashboard.php"><img src="../../../image/leftarrow.png" height="24px" alt="Back"></a>
-            </div>
-            <h2 class="header-title">Settings</h2>
-        </div>
 
-        <?php if (!empty($_SESSION['otp_sent'])): ?>
-            <div class="alert alert-success">
-                <?php echo htmlspecialchars($_SESSION['otp_sent']); unset($_SESSION['otp_sent']); ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (!empty($_SESSION['otp_error'])): ?>
-            <div class="alert alert-danger">
-                <?php echo htmlspecialchars($_SESSION['otp_error']); unset($_SESSION['otp_error']); ?>
-            </div>
-        <?php endif; ?>
-
-        <div class="card">
-            <div class="card-header">Privacy & Security</div>
-            <div class="card-body">
-                <p>
-                    <strong>Email:</strong> <?php echo htmlspecialchars($email); ?>
-                    <span class="status-badge">
-                        <?php if ($email_verified): ?>
-                            <img src="../../../image/tick.png" alt="verified" height="24px">
-                        <?php else: ?>
-                            <img src="../../../image/exclamation.png" alt="not verified" height="24px">
-                            <a href="send_email_verification.php" class="btn-sm">Verify Email</a>
-                        <?php endif; ?>
-                    </span>
-                </p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">Account Settings</div>
-            <div class="list-group">
-                <a href="change_email.php" class="list-group-item">Change Email</a>
-                <a href="change_number.php" class="list-group-item">Change Phone Number</a>
-                <a href="change_password.php" class="list-group-item">Change Password</a>
-            </div>
-           
-        </div>
+  <div class="container">
+    <div class="header-row">
+      <a href="../dashboard/dashboard.php">
+        <img src="../../../image/leftarrow.png" alt="Back">
+      </a>
+      <h2 class="header-title">Settings</h2>
     </div>
 
-   
+    <?php if (!empty($_SESSION['otp_sent'])): ?>
+      <div class="alert alert-success">
+        <?= htmlspecialchars($_SESSION['otp_sent']); unset($_SESSION['otp_sent']); ?>
+      </div>
+    <?php endif; ?>
+
+    <?php if (!empty($_SESSION['otp_error'])): ?>
+      <div class="alert alert-danger">
+        <?= htmlspecialchars($_SESSION['otp_error']); unset($_SESSION['otp_error']); ?>
+      </div>
+    <?php endif; ?>
+
+    <div class="card">
+      <div class="card-header">Privacy & Security</div>
+      <div class="card-body">
+        <p>
+          <strong>Email:</strong> <?= htmlspecialchars($email); ?>
+          <span class="status-badge">
+            <?php if ($email_verified): ?>
+              <img src="../../../image/tick.png" alt="verified">
+            <?php else: ?>
+              <img src="../../../image/exclamation.png" alt="not verified">
+              <a href="send_email_verification.php" class="btn-sm">Verify Email</a>
+            <?php endif; ?>
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Account Settings</div>
+      <div class="list-group">
+        <a href="change_email.php" class="list-group-item">Change Email</a>
+        <a href="change_number.php" class="list-group-item">Change Phone Number</a>
+        <a href="change_password.php" class="list-group-item">Change Password</a>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

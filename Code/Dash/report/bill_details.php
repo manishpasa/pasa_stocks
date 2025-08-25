@@ -46,19 +46,19 @@ $items = $conn->query("
     WHERE s.company_id = $company_id AND s.bill_id = $bill_id
 ");
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Receipt #<?php echo $bill_id; ?> - PasaStocks</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
       background-color: #f8f9fa;
-      padding: 20px;
+      padding-left: 85px;
+      padding-top: 20px;
       font-family: 'Courier New', Courier, monospace;
     }
+
     .receipt {
       max-width: 480px;
       margin: auto;
@@ -67,56 +67,76 @@ $items = $conn->query("
       border: 1px solid #ddd;
       box-shadow: 0 0 10px #ccc;
     }
+
     h2, h4 {
       text-align: center;
       margin-bottom: 15px;
     }
+
     .info-row {
       display: flex;
       justify-content: space-between;
       margin-bottom: 5px;
       font-size: 14px;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 15px;
       font-size: 14px;
     }
+
     th, td {
       border-bottom: 1px solid #ddd;
       padding: 8px 5px;
       text-align: left;
     }
+
     tfoot tr th {
       border-top: 2px solid #333;
       font-weight: bold;
       text-align: right;
       padding-top: 10px;
     }
+
     tfoot tr th[colspan="3"] {
       text-align: right;
     }
-    .text-right {
-      text-align: right;
-    }
+
+    .text-right { text-align: right; }
+
     .buttons {
       margin-top: 20px;
       text-align: center;
     }
-    button, a.btn {
+
+    .btn {
+      display: inline-block;
       min-width: 120px;
       margin: 5px;
+      padding: 10px 15px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      background-color: #007bff;
+      text-decoration: none;
+      text-align: center;
     }
+
+    .btn:hover { background-color: #0056b3; }
+
+    .btn-secondary {
+      background-color: #6c757d;
+    }
+    .btn-secondary:hover { background-color: #5a6268; }
+
     /* Print styling */
     @media print {
-      body {
-        background-color: white;
-        padding: 0;
-      }
-      .buttons {
-        display: none;
-      }
+      body { background-color: white; padding: 0; }
+      .buttons { display: none; }
       .receipt {
         box-shadow: none;
         border: none;
@@ -124,15 +144,10 @@ $items = $conn->query("
         margin: 0;
         padding: 0;
       }
-      table, th, td {
-        border: 1px solid black !important;
-      }
-      th, td {
-        padding: 6px !important;
-      }
+      table, th, td { border: 1px solid black !important; }
+      th, td { padding: 6px !important; }
     }
   </style>
-  <link rel="stylesheet" href="../style/darkmode.css">
 </head>
 <body>
   <div class="receipt">
@@ -143,11 +158,11 @@ $items = $conn->query("
       <div><strong>Date:</strong> <?php echo date('d M Y, H:i', strtotime($bill['bill_date'])); ?></div>
       <div><strong>Employee:</strong> <?php echo htmlspecialchars($emp_name); ?></div>
     </div>
-    <div class="info-row">
-  <div><strong>Customer:</strong> <?php echo htmlspecialchars($customer_name); ?></div>
-  <div></div>
-</div>
 
+    <div class="info-row">
+      <div><strong>Customer:</strong> <?php echo htmlspecialchars($customer_name); ?></div>
+      <div></div>
+    </div>
 
     <?php if ($items->num_rows > 0): ?>
       <table>
@@ -161,16 +176,16 @@ $items = $conn->query("
         </thead>
         <tbody>
           <?php
-          $grand_total = 0;
-          while ($row = $items->fetch_assoc()):
-            $grand_total += $row['total'];
+            $grand_total = 0;
+            while ($row = $items->fetch_assoc()):
+              $grand_total += $row['total'];
           ?>
-          <tr>
-            <td><?php echo htmlspecialchars($row['item_name']); ?></td>
-            <td class="text-right"><?php echo $row['quantity']; ?></td>
-            <td class="text-right"><?php echo number_format($row['price'], 2); ?></td>
-            <td class="text-right"><?php echo number_format($row['total'], 2); ?></td>
-          </tr>
+            <tr>
+              <td><?php echo htmlspecialchars($row['item_name']); ?></td>
+              <td class="text-right"><?php echo $row['quantity']; ?></td>
+              <td class="text-right"><?php echo number_format($row['price'], 2); ?></td>
+              <td class="text-right"><?php echo number_format($row['total'], 2); ?></td>
+            </tr>
           <?php endwhile; ?>
         </tbody>
         <tfoot>
@@ -181,11 +196,13 @@ $items = $conn->query("
         </tfoot>
       </table>
     <?php else: ?>
-      <div class="alert alert-warning mt-3">No items found for this bill.</div>
+      <div style="margin-top: 10px; color: #721c24; background: #f8d7da; padding: 10px; border-radius: 6px; text-align:center;">
+        No items found for this bill.
+      </div>
     <?php endif; ?>
 
     <div class="buttons">
-      <button class="btn btn-primary" onclick="window.print()">🖨️ Print</button>
+      <button onclick="window.print()">🖨️ Print</button>
       <a href="sales.php" class="btn btn-secondary">← Back to Sales</a>
     </div>
   </div>

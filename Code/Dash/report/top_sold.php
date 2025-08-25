@@ -51,70 +51,135 @@ $stmt->bind_param("i", $company_id);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Top Sold Items - PasaStocks</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../style/darkmode.css">
 <style>
-  /* Use your existing styles or minimal overrides here */
   body {
-    padding-left:85px;
-    padding-top:75px;
+    padding-left: 85px;
+    padding-top: 75px;
     background-color: #f8f9fa;
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
   }
-  /* Content */
+
   .content {
-  
-    
+    padding: 20px;
+    max-width: 1200px;
     transition: margin-left 0.3s ease;
   }
-  .content.fullwidth {
-    margin-left: 0;
+
+  h2 {
+    margin-bottom: 20px;
+    color: #007bff;
+    font-weight: 600;
   }
-  /* Responsive sidebar behavior */
-  @media (max-width: 991.98px) {
-    .sidebar {
-      left: -250px;
-    }
-    .sidebar.show {
-      left: 0;
-    }
-    .content {
-      margin-left: 0 !important;
-    }
-    .content.shift {
-      margin-left: 250px !important;
-    }
+
+  /* Rank select */
+  .filter-box {
+    margin-bottom: 20px;
   }
-  table thead th {
+
+  label {
+    font-weight: 600;
+    margin-right: 8px;
+  }
+
+  select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  thead th {
     background-color: #007bff;
-    color: white;
+    color: #fff;
+    text-align: left;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  tbody td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+
+  tbody tr:hover {
+    background: #f9fafb;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  /* Responsive stacked table */
+  @media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+
+    thead {
+      display: none;
+    }
+
+    tbody tr {
+      margin-bottom: 12px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      padding: 10px;
+    }
+
+    tbody td {
+      border: none;
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
+
+    tbody td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: #555;
+    }
   }
 </style>
 </head>
 <body>
-
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
-<!-- Content -->
-<div class="content" id="content">
-  <h2>Top Sold Items</h2>
 
-  <div class="mb-3 w-auto">
-    <label for="rankSelect" class="form-label">Rank By:</label>
-    <select id="rankSelect" class="form-select">
-      <option value="quantity" <?= $rank_by === 'quantity' ? 'selected' : '' ?>>Top Sold by Quantity</option>
-      <option value="price" <?= $rank_by === 'price' ? 'selected' : '' ?>>Top Sold by Price</option>
-      <option value="profit" <?= $rank_by === 'profit' ? 'selected' : '' ?>>Top Sold by Profit</option>
-    </select>
-  </div>
+  <div class="content" id="content">
+    <h2>Top Sold Items</h2>
 
-  <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <div class="filter-box">
+      <label for="rankSelect">Rank By:</label>
+      <select id="rankSelect">
+        <option value="quantity" <?= $rank_by === 'quantity' ? 'selected' : '' ?>>Top Sold by Quantity</option>
+        <option value="price" <?= $rank_by === 'price' ? 'selected' : '' ?>>Top Sold by Price</option>
+        <option value="profit" <?= $rank_by === 'profit' ? 'selected' : '' ?>>Top Sold by Profit</option>
+      </select>
+    </div>
+
+    <table>
       <thead>
         <tr>
           <th>#</th>
@@ -129,11 +194,11 @@ $result = $stmt->get_result();
           $count = 1;
           while ($row = $result->fetch_assoc()): ?>
             <tr>
-              <td><?= $count++; ?></td>
-              <td><?= htmlspecialchars($row['item_name']); ?></td>
-              <td><?= (int)$row['total_quantity']; ?></td>
-              <td><?= number_format($row['total_price'], 2); ?></td>
-              <td><?= number_format($row['total_profit'], 2); ?></td>
+              <td data-label="#"> <?= $count++; ?></td>
+              <td data-label="Item Name"><?= htmlspecialchars($row['item_name']); ?></td>
+              <td data-label="Total Quantity Sold"><?= (int)$row['total_quantity']; ?></td>
+              <td data-label="Total Price (Sale)"><?= number_format($row['total_price'], 2); ?></td>
+              <td data-label="Total Profit"><?= number_format($row['total_profit'], 2); ?></td>
             </tr>
           <?php endwhile;
         else: ?>
@@ -144,30 +209,17 @@ $result = $stmt->get_result();
       </tbody>
     </table>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  const sidebar = document.getElementById('sidebar');
-  const content = document.getElementById('content');
   const rankSelect = document.getElementById('rankSelect');
-
-  function toggleSidebar() {
-    sidebar.classList.toggle('show');
-    if (window.innerWidth < 992) {
-      content.classList.toggle('shift');
-    }
-  }
 
   rankSelect.addEventListener('change', () => {
     const selected = rankSelect.value;
-    // Reload page with selected rank_by as GET parameter
     const url = new URL(window.location.href);
     url.searchParams.set('rank_by', selected);
     window.location.href = url.toString();
   });
 </script>
-
-
 </body>
 </html>
+

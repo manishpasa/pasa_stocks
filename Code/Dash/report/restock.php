@@ -21,52 +21,104 @@ $low_stock_items = $conn->query("SELECT item_name, quantity FROM inventory WHERE
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Restock Items</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    body { background-color: #f8f9fa;padding-left:85px;
-    padding-top:75px; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Restock Items</title>
+<style>
+  body {
+    background-color: #f8f9fa;
+    font-family: "Segoe UI", sans-serif;
+    padding-left: 0px;
+    padding-top: 75px;
+    margin: 0;
+  }
 
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+  }
 
-    .content {
-      margin-left: 0;
-      padding: 20px;
-      transition: margin-left 0.3s ease;
-    }
+  h2 {
+    margin-bottom: 20px;
+    color: #007bff;
+  }
 
-    .content.shift { margin-left: 250px; }
+  .form-inline {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
 
-    .close-btn {
-      position: absolute;
-      top: 10px; right: 10px;
-      cursor: pointer;
-      font-size: 20px;
-    }
+  .form-inline input[type="number"] {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
 
-    h2 { margin-bottom: 20px; }
+  .form-inline button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+  }
 
+  .form-inline button:hover {
+    background-color: #218838;
+  }
 
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
 
-  </style>
-  <link rel="stylesheet" href="../style/darkmode.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #007bff;
+    color: white;
+  }
+
+  tbody tr:hover {
+    background-color: #e9f7ff;
+  }
+
+  .alert {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 12px 15px;
+    border-radius: 5px;
+    border: 1px solid #c3e6cb;
+  }
+</style>
 </head>
 <body>
 
-  <?php include('../fixedphp/sidebar.php') ?>
-  <?php include('../fixedphp/navbar.php') ?>
-<div class="content" id="content">
-  <h2>Low Stock Items ( <?php echo $threshold; ?>)</h2>
+<?php include('../fixedphp/sidebar.php'); ?>
+<?php include('../fixedphp/navbar.php'); ?>
 
-  <form method="GET" class="mb-4 d-flex gap-2">
-    <input type="number" name="threshold" class="form-control" placeholder="Enter quantity threshold" value="<?php echo $threshold; ?>" min="1" required>
-    <button type="submit" class="btn btn-success"hidden>Search</button>
+<div class="content">
+  <h2>Low Stock Items (<?php echo $threshold; ?>)</h2>
+
+  <form method="GET" class="form-inline">
+    <input type="number" name="threshold" placeholder="Enter quantity threshold" value="<?php echo $threshold; ?>" min="1" required>
+    <button type="submit" hidden>Search</button>
   </form>
 
   <?php if ($low_stock_items && $low_stock_items->num_rows > 0): ?>
-    <table class="table table-striped table-bordered">
+    <table>
       <thead>
         <tr>
           <th>Item Name</th>
@@ -83,7 +135,7 @@ $low_stock_items = $conn->query("SELECT item_name, quantity FROM inventory WHERE
       </tbody>
     </table>
   <?php else: ?>
-    <div class="alert alert-success">No items below the quantity of <?php echo $threshold; ?>.</div>
+    <div class="alert">No items below the quantity of <?php echo $threshold; ?>.</div>
   <?php endif; ?>
 </div>
 

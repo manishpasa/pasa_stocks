@@ -29,38 +29,145 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Incorrect password.";
     }
 }
-?>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+?><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Change Phone Number - PasaStocks</title>
 <style>
-  body {
-    background-color: #f8f9fa;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
+
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin-left: 80px; /* adjust for sidebar */
+    margin-top: 70px;  /* adjust for navbar */
+    padding: 20px;
+  }
+
   .form-container {
     max-width: 500px;
     margin: 60px auto;
     padding: 30px;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
+
   .form-container h4 {
     margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #007bff;
+    text-align: center;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #333;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    transition: border 0.2s ease;
+  }
+
+  .form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s ease;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: #007bff;
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: #0056b3;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-left: 15px;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  .alert {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .alert-success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+  }
+
+  .alert-danger {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
   }
 </style>
-<div class="form-container">
-  <h4>Change Phone Number</h4>
-  <form method="POST">
-    <div class="mb-3">
-      <label class="form-label">New Phone Number</label>
-      <input type="text" name="new_number" class="form-control" required>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Current Password</label>
-      <input type="password" name="password" class="form-control" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Update Phone</button>
-    <a href="settings.php"><p style="text-decoration:none;">back</p></a>
-    <?php if ($success): ?><div class="alert alert-success mt-3"><?= $success ?></div><?php endif; ?>
-    <?php if ($error): ?><div class="alert alert-danger mt-3"><?= $error ?></div><?php endif; ?>
-  </form>
-</div>
+</head>
+<body>
+
+  <div class="form-container">
+    <h4>Change Phone Number</h4>
+    <form method="POST">
+      <div class="form-group">
+        <label>New Phone Number</label>
+        <input type="text" name="new_number" required>
+      </div>
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" name="password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Update Phone</button>
+      <a href="settings.php" class="back-link">Back</a>
+
+      <?php if ($success): ?>
+        <div class="alert alert-success"><?= $success ?></div>
+      <?php endif; ?>
+      <?php if ($error): ?>
+        <div class="alert alert-danger"><?= $error ?></div>
+      <?php endif; ?>
+    </form>
+  </div>
+
+</body>
+</html>

@@ -99,147 +99,116 @@ $recentSalesRes = $conn->query("
 
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>📊 Company Report - PasaStocks</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      background-color: #f4f6f9;
-      font-family: "Segoe UI", sans-serif;
-      padding-left:85px;
+<meta charset="UTF-8">
+<title>📊 Company Report - PasaStocks</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body {
+    background-color: #f8f9fa;
+    font-family: "Segoe UI", sans-serif;
+    padding-left:85px;
     padding-top:75px;
-    }
+    margin: 0;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  h2 {
+    color: #007bff;
+    margin-bottom: 30px;
+  }
+  .section {
+    margin-bottom: 3rem;
+  }
 
-    h2, h5 {
-      font-weight: 600;
-    }
+  /* Cards */
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  .card {
+    flex: 1 1 250px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+  .card:hover {
+    box-shadow: 0 5px 15px rgba(0,123,255,0.4);
+    transform: translateY(-2px);
+  }
+  .card h6 {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 10px;
+  }
+  .card h3 {
+    font-size: 28px;
+    color: #333;
+    margin: 0;
+  }
 
-    .card {
-      border: none;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-    }
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  th {
+    background-color: #007bff;
+    color: white;
+  }
+  tbody tr:hover {
+    background-color: #e9f7ff;
+  }
 
-    .card:hover {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-    }
+  /* Responsive Table Wrapper */
+  .table-responsive {
+    overflow-x: auto;
+  }
 
-    .table th {
-      background-color: #f1f1f1;
-    }
-
-    canvas {
-      background-color: white;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.03);
-    }
-
-    .section {
-      margin-bottom: 3rem;
-    }
-
-    .table td, .table th {
-      vertical-align: middle;
-    }
-
-    .card h3 {
-      font-size: 28px;
-      margin-top: 0.3rem;
-    }body { background-color: #f8f9fa; }
-    .container { margin-left: 0;margin-top:30px; padding: 40px;padding-top:40px transition: margin-left 0.3s ease; }
-    .container.shift { margin-left: 250px; }
-    .card { box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: none; border-radius: 10px; }
-    .close-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 20px; }
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .menu-btn { margin-right: 10px; }
-    body { background-color: #f8f9fa; }
-
-
-/* Cards (sales, profit, orders, returns) */
-.card {
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  border: none;
-  border-radius: 10px;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-  cursor: pointer;
-}
-.card:hover {
-  box-shadow: 0 5px 15px rgba(0,123,255,0.4);
-  transform: translateY(-2px);
-}
-
-/* Close button */
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-/* Header */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-.menu-btn {
-  margin-right: 10px;
-  cursor: pointer;
-  background-color: white;
-  border: 1px solid #ccc;
-  color: black;
-  font-size: 18px;
-  height: 35px;
-  width: 40px;
-  border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
-}
-.menu-btn:hover {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
-}
-
-/* Buttons */
-.btn {
-  transition: filter 0.3s ease, background-color 0.3s ease;
-  cursor: pointer;
-}
-.btn:hover {
-  filter: brightness(90%);
-}
-
-
-  </style>
+  canvas {
+    width: 100%;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+</style>
 </head>
 <body>
-  
-  <?php include('../fixedphp/sidebar.php') ?>
-  <?php include('../fixedphp/navbar.php') ?>
-<div class="container py-5">
-  <h2 class="mb-4 text-primary">📊 Company Report</h2>
+
+<?php include('../fixedphp/sidebar.php'); ?>
+<?php include('../fixedphp/navbar.php'); ?>
+
+<div class="container">
+  <h2>📊 Company Report</h2>
 
   <!-- Summary Cards -->
-  <div class="row row-cols-1 row-cols-md-3 g-4 section">
+  <div class="cards">
     <?php foreach ($summary as $key => $value): ?>
-      <div class="col">
-        <div class="card text-center shadow-sm">
-          <div class="card-body">
-            <h6 class="text-muted"><?= ucwords(str_replace('_', ' ', $key)) ?></h6>
-            <h3 class="text-dark"><?= is_numeric($value) ? number_format($value) : $value ?></h3>
-          </div>
-        </div>
+      <div class="card">
+        <h6><?= ucwords(str_replace('_', ' ', $key)) ?></h6>
+        <h3><?= is_numeric($value) ? number_format($value) : $value ?></h3>
       </div>
     <?php endforeach; ?>
   </div>
@@ -253,15 +222,15 @@ $recentSalesRes = $conn->query("
   <div class="section">
     <h5>🔥 Top 5 Sold Items</h5>
     <div class="table-responsive">
-      <table class="table table-bordered table-striped align-middle">
+      <table>
         <thead><tr><th>Item</th><th>Sold Qty</th><th>Total Sales</th><th>Profit</th></tr></thead>
         <tbody>
           <?php while ($row = $topSoldRes->fetch_assoc()): ?>
             <tr>
               <td><?= htmlspecialchars($row['item_name']) ?></td>
               <td><?= $row['qty'] ?></td>
-              <td>Rs. <?= number_format($row['total_sales'], 2) ?></td>
-              <td>Rs. <?= number_format($row['profit'], 2) ?></td>
+              <td>Rs. <?= number_format($row['total_sales'],2) ?></td>
+              <td>Rs. <?= number_format($row['profit'],2) ?></td>
             </tr>
           <?php endwhile; ?>
         </tbody>
@@ -273,7 +242,7 @@ $recentSalesRes = $conn->query("
   <div class="section">
     <h5>⚠️ Low Stock (≤ 5 units)</h5>
     <div class="table-responsive">
-      <table class="table table-bordered table-hover align-middle">
+      <table>
         <thead><tr><th>Item</th><th>Quantity</th><th>Category</th></tr></thead>
         <tbody>
           <?php while ($row = $lowStockRes->fetch_assoc()): ?>
@@ -292,14 +261,14 @@ $recentSalesRes = $conn->query("
   <div class="section">
     <h5>🛒 Recent Purchases</h5>
     <div class="table-responsive">
-      <table class="table table-bordered table-sm table-hover align-middle">
+      <table>
         <thead><tr><th>Item</th><th>Qty</th><th>Cost</th><th>Supplier</th><th>Date</th></tr></thead>
         <tbody>
           <?php while ($row = $recentPurchaseRes->fetch_assoc()): ?>
             <tr>
               <td><?= $row['item_name'] ?></td>
               <td><?= $row['quantity'] ?></td>
-              <td>Rs. <?= number_format($row['cost_price'], 2) ?></td>
+              <td>Rs. <?= number_format($row['cost_price'],2) ?></td>
               <td><?= $row['supplier'] ?></td>
               <td><?= $row['purchase_date'] ?></td>
             </tr>
@@ -313,14 +282,14 @@ $recentSalesRes = $conn->query("
   <div class="section">
     <h5>🧾 Recent Sales</h5>
     <div class="table-responsive">
-      <table class="table table-bordered table-striped table-sm align-middle">
+      <table>
         <thead><tr><th>Item</th><th>Qty</th><th>Total</th><th>Customer</th><th>Date</th></tr></thead>
         <tbody>
           <?php while ($row = $recentSalesRes->fetch_assoc()): ?>
             <tr>
               <td><?= $row['item_name'] ?></td>
               <td><?= $row['quantity'] ?></td>
-              <td>Rs. <?= number_format($row['total'], 2) ?></td>
+              <td>Rs. <?= number_format($row['total'],2) ?></td>
               <td><?= $row['cust_name'] ?></td>
               <td><?= $row['sale_date'] ?></td>
             </tr>
@@ -332,67 +301,31 @@ $recentSalesRes = $conn->query("
 </div>
 
 <script>
-  const ctx = document.getElementById("reportChart").getContext("2d");
-
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: ["Sales", "Purchases", "Profit"],
-      datasets: [{
-        label: "This Month",
-        data: [
-          <?= $summary['total_sales'] ?>,
-          <?= $summary['total_purchases'] ?>,
-          <?= $summary['total_profit'] ?>
-        ],
-        backgroundColor: ["#0d6efd", "#ffc107", "#28a745"]
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function (value) {
-              return 'Rs. ' + value;
-            }
-          }
-        }
-      },
-      plugins: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: "Monthly Summary"
-        }
+const ctx = document.getElementById("reportChart").getContext("2d");
+new Chart(ctx, {
+  type: "bar",
+  data: {
+    labels: ["Sales", "Purchases", "Profit"],
+    datasets: [{
+      label: "This Month",
+      data: [<?= $summary['total_sales'] ?>, <?= $summary['total_purchases'] ?>, <?= $summary['total_profit'] ?>],
+      backgroundColor: ["#0d6efd", "#ffc107", "#28a745"]
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: function(v){return 'Rs. ' + v;} }
       }
+    },
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: "Monthly Summary" }
     }
-  });
-</script> <script>
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('show');
-      document.getElementById('content').classList.toggle('shift');
-    }
-  </script>
-  <div id="logoutPopup" class="popup-overlay">
-  <div class="popup-box">
-    <h5>Confirm Logout</h5>
-    <p>Are you sure you want to log out?</p>
-    <div class="popup-buttons">
-      <a href="../../Sign/logout.php" class="btn btn-danger">Yes, Logout</a>
-      <button class="btn btn-secondary" onclick="hideLogoutPopup()">Cancel</button>
-    </div>
-  </div>
-</div>
-<script>
-  function showLogoutPopup() {
-    document.getElementById('logoutPopup').style.display = 'flex';
   }
-
-  function hideLogoutPopup() {
-    document.getElementById('logoutPopup').style.display = 'none';
-  }
+});
 </script>
 
 </body>

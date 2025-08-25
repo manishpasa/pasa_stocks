@@ -87,88 +87,192 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 }
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Add Inventory - PasaStocks</title>
   <link rel="stylesheet" href="../style/darkmode.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../../../Style/sell.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      background: #f8f9fa;
+      font-family: Arial, sans-serif;
+      padding-left: 85px;
+      padding-top: -10px;
+    }
+
+    .form-container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .form-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 30px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #f8f9fa;
+      color: #555;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 4px rgba(0,123,255,0.3);
+      outline: none;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #007bff;
+      color: #fff;
+    }
+    .btn-primary:hover { background: #0056b3; }
+
+    .btn-success {
+      background: #28a745;
+      color: #fff;
+    }
+    .btn-success:hover { background: #1e7e34; }
+
+    /* Alerts */
+    .alert {
+      margin-bottom: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+    }
+    .alert-danger {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    /* Back link */
+    .form-container a {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: 600;
+    }
+    .form-container a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
-<!-- Main content -->
-<div class="content" id="content">
-  <div class="form-container mt-5 mb-5">
-    <h2 class="text-center mb-4">Add New Inventory</h2>
 
-    <?php if ($success): ?>
-      <div class="alert alert-success"><?php echo $success; ?></div>
-    <?php endif; ?>
+  <!-- Main content -->
+  <div class="content" id="content">
+    <div class="form-container">
+      <h2>Add New Inventory</h2>
 
-    <?php if ($error): ?>
-      <div class="alert alert-danger"><?php echo $error; ?></div>
-    <?php endif; ?>
+      <?php if ($success): ?>
+        <div class="alert alert-success"><?php echo $success; ?></div>
+      <?php endif; ?>
 
-    <form method="POST" novalidate>
-      <div class="form-layout">
+      <?php if ($error): ?>
+        <div class="alert alert-danger"><?php echo $error; ?></div>
+      <?php endif; ?>
 
-        <div>
-           <label for="item_name" class="form-label">Item Name:</label>
-        <input type="text" id="item_name" name="item_name" class="form-control" required />
-      
-        <label for="category" class="form-label">Category:</label>
-        <input type="text" id="category" name="category" class="form-control" required />
-      
-        <label for="supplier" class="form-label">Supplier:</label>
-        <input type="text" id="supplier" name="supplier" class="form-control" required />
-      
-        <label for="total_cost" class="form-label">Total Cost:</label>
-        <input type="number" id="total_cost" name="total_cost" step="0.01" class="form-control" required oninput="calculateCostPerUnit()" />
-      
+      <form method="POST" novalidate>
+        <div class="form-layout">
+
+          <div>
+            <label for="item_name">Item Name:</label>
+            <input type="text" id="item_name" name="item_name" required />
+
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" required />
+
+            <label for="supplier">Supplier:</label>
+            <input type="text" id="supplier" name="supplier" required />
+
+            <label for="total_cost">Total Cost:</label>
+            <input type="number" id="total_cost" name="total_cost" step="0.01" required oninput="calculateCostPerUnit()" />
+          </div>
+
+          <div>
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" required oninput="calculateCostPerUnit()" />
+
+            <label for="cost_per_unit">Cost Per Unit:</label>
+            <input type="text" id="cost_per_unit" readonly />
+
+            <label for="marked_price">Marked Price:</label>
+            <input type="number" id="marked_price" name="marked_price" step="0.01" required />
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required />
+          </div>
         </div>
-       <div>
 
-         <label for="quantity" class="form-label">Quantity:</label>
-         <input type="number" id="quantity" name="quantity" class="form-control" required oninput="calculateCostPerUnit()" />
-      
-        <label for="cost_per_unit" class="form-label">Cost Per Unit:</label>
-        <input type="text" id="cost_per_unit" class="form-control" readonly />
-      
-        <label for="marked_price" class="form-label">Marked Price:</label>
-        <input type="number" id="marked_price" name="marked_price" step="0.01" class="form-control" required />
-        
-        <label for="date" class="form-label">Date:</label>
-        <input type="date" id="date" name="date" class="form-control" required />
-      </div>
-      </div>
+        <div class="btn-group">
+          <button type="submit" name="another" class="btn btn-primary">Add Another Item</button>
+          <button type="submit" name="add" class="btn btn-success">Add Item</button>
+        </div>
+      </form>
 
-      <div class="btn-group">
-        <button type="submit" name="another" class="btn btn-primary flex-fill">Add Another Item</button>
-        <button type="submit" name="add" class="btn btn-success flex-fill">Add Item</button>
+      <div class="text-center">
+        <a href="../inventory/inventory.php">&larr; Back to Inventory</a>
       </div>
-    </form>
-
-    <div class="mt-3 text-center">
-      <a href="../inventory/inventory.php" class="text-decoration-none">&larr; Back to Inventory</a>
     </div>
   </div>
-</div>
 
-</body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  function calculateCostPerUnit() {
-    const totalCost = parseFloat(document.getElementById('total_cost').value) || 0;
-    const quantity = parseFloat(document.getElementById('quantity').value) || 1;
-    document.getElementById('cost_per_unit').value = (totalCost / quantity).toFixed(3);
-  }
-</script>
-<script src="../js/darkmode.js"></script>
+  <script>
+    function calculateCostPerUnit() {
+      const totalCost = parseFloat(document.getElementById('total_cost').value) || 0;
+      const quantity = parseFloat(document.getElementById('quantity').value) || 1;
+      document.getElementById('cost_per_unit').value = (totalCost / quantity).toFixed(3);
+    }
+  </script>
 </body>
 </html>

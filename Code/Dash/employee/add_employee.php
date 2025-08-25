@@ -37,68 +37,144 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 $user_role = $_SESSION['role'];
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Add Employee</title>
-    <link rel="stylesheet" href="../style/darkmode.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <style>
-        body { background-color: #f8f9fa; }
-        .content { margin-left: 0;  padding-left:85px;
-    padding-top:75px;transition: margin-left 0.3s ease; }
-        .content.shift { margin-left: 250px; }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .menu-btn { margin-right: 10px; }
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-    </style>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Add Employee</title>
+  <link rel="stylesheet" href="../style/darkmode.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+    }
+
+    .content {
+      padding: 90px 40px 40px 120px;
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #333;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .form-container p {
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    input, select {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      background-color: #fff;
+    }
+
+    input:focus, select:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    input[type="submit"] {
+      background-color: #4CAF50;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #43a047;
+    }
+
+    /* Alert messages */
+    .alert {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-danger {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .content {
+        padding: 80px 20px;
+      }
+      .form-container {
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-
   <?php include('../fixedphp/sidebar.php') ?>
   <?php include('../fixedphp/navbar.php') ?>
-<div class="content" id="content">
+
+  <div class="content" id="content">
     <div class="header">
-        <div>
-            <h2 style="display:inline;">Add Employee</h2>
-        </div>
+      <h2>Add Employee</h2>
     </div>
 
     <div class="form-container">
-        <?php if (isset($success_msg)) echo '<div class="alert alert-success">'.$success_msg.'</div>'; ?>
-        <?php if (isset($error_msg)) echo '<div class="alert alert-danger">'.$error_msg.'</div>'; ?>
+      <?php if (isset($success_msg)) echo '<div class="alert alert-success">'.$success_msg.'</div>'; ?>
+      <?php if (isset($error_msg)) echo '<div class="alert alert-danger">'.$error_msg.'</div>'; ?>
 
-        <form method="POST">
-            <p class="text-muted">Adding employee under company: <strong><?php echo htmlspecialchars($company_name); ?></strong></p>
-            <input type="text" name="name" class="form-control mb-2" placeholder="Name" required>
-            DOB:<input type="date" name="dob" class="form-control mb-2" required>
-            <input type="tel" name="phone" class="form-control mb-2" placeholder="Phone Number" required>
-            <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
-            <select name="role" class="form-control mb-2" required>
-                <option value="admin">Admin</option>
-                <option value="storekeeper">Storekeeper</option>
-                <option value="cashier" selected>Cashier</option>
-            </select>
-            <input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
-            <input type="submit" class="btn btn-success w-100" value="Add Employee">
-        </form>
+      <form method="POST">
+        <p>Adding employee under company: <strong><?php echo htmlspecialchars($company_name); ?></strong></p>
+
+        <input type="text" name="name" placeholder="Name" required>
+        <label for="dob">DOB:</label>
+        <input type="date" name="dob" required>
+        <input type="tel" name="phone" placeholder="Phone Number" required>
+        <input type="email" name="email" placeholder="Email" required>
+
+        <select name="role" required>
+          <option value="admin">Admin</option>
+          <option value="storekeeper">Storekeeper</option>
+          <option value="cashier" selected>Cashier</option>
+        </select>
+
+        <input type="password" name="password" placeholder="Password" required>
+        <input type="submit" value="Add Employee">
+      </form>
     </div>
-</div>
-
+  </div>
 </body>
 </html>
