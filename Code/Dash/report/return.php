@@ -3,7 +3,6 @@ session_start();
 include '../../db.php';
 require_once __DIR__ . '/../fixedphp/protect.php';
 $erole=$_SESSION['role'];
-$issolo=$_SESSION['issolo'];
 $company_id = $_SESSION['company_id'];
 ?>
 <!DOCTYPE html>

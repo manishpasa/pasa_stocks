@@ -6,7 +6,6 @@ $company_id = $_SESSION['company_id'];
 $erole = $_SESSION['role'];
 $name = $_SESSION['name'];
 $emp_id = $_SESSION['id'];
-$issolo=$_SESSION['issolo'];
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
 $stmt->execute();
@@ -17,16 +16,23 @@ $stmt->close();
 $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m');
 
 // Fetch sales data for selected month
-$sales = $conn->query("
-    SELECT i.item_name,
+$sales_sql = "
+    SELECT i.name,
            SUM(s.quantity) AS total_quantity,
-           SUM(s.quantity * s.price) AS total_revenue
+           SUM(s.quantity * s.sold_price) AS total_revenue
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
     WHERE s.company_id = $company_id AND DATE_FORMAT(s.sale_date, '%Y-%m') = '$month'
     GROUP BY s.item_id
     ORDER BY total_revenue DESC
-");
+";
+
+$sales = $conn->query($sales_sql);
+
+if (!$sales) {
+    die("Sales query failed: " . $conn->error);
+}
+
 
 // Generate list of months with sales
 $monthOptions = $conn->query("SELECT DISTINCT DATE_FORMAT(sale_date, '%Y-%m') as month FROM sold_list WHERE company_id = $company_id ORDER BY month DESC");
@@ -198,7 +204,7 @@ $monthOptions = $conn->query("SELECT DISTINCT DATE_FORMAT(sale_date, '%Y-%m') as
           <?php $rank = 1; while ($row = $sales->fetch_assoc()): ?>
             <tr>
               <td data-label="Rank"><?php echo $rank++; ?></td>
-              <td data-label="Item Name"><?php echo htmlspecialchars($row['item_name']); ?></td>
+              <td data-label="Item Name"><?php echo htmlspecialchars($row['name']); ?></td>
               <td data-label="Total Quantity Sold"><?php echo $row['total_quantity']; ?></td>
               <td data-label="Total Revenue (Rs.)"><?php echo number_format($row['total_revenue'], 2); ?></td>
             </tr>

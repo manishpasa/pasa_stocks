@@ -1,46 +1,48 @@
 <?php
 require_once __DIR__ . '/../fixedphp/protect.php';
-
 include '../../db.php';
+
 $company_id = $_SESSION['company_id'];
-$erole = $_SESSION['role'];
+$bill_id = isset($_GET['bill_id']) ? intval($_GET['bill_id']) : 0;
 
-if (!isset($_GET['bill_id'])) {
-    echo "No bill ID provided.";
-    exit();
+if ($bill_id <= 0) {
+    die("No bill ID provided.");
 }
-$bill_id = intval($_GET['bill_id']);
 
-// Fetch bill info (employee_id, customer_id, bill_date)
-$bill_res = $conn->query("SELECT emp_id, customer_id, bill_date FROM bills WHERE company_id = $company_id AND bill_id = $bill_id");
+// Fetch bill
+$bill_res = $conn->query("SELECT employee_id, customer_id, bill_date FROM bills WHERE company_id = $company_id AND bill_id = $bill_id");
+
+if (!$bill_res) {
+    die("SQL Error: " . $conn->error);
+}
+
 if ($bill_res->num_rows == 0) {
-    echo "Bill not found.";
-    exit();
+    die("Bill not found for company ID $company_id and bill ID $bill_id.");
 }
+
 $bill = $bill_res->fetch_assoc();
 
 // Fetch employee name
 $emp_name = "Unknown";
-if ($bill['emp_id']) {
-    $emp_res = $conn->query("SELECT emp_name FROM employee WHERE emp_id = " . intval($bill['emp_id']));
+if ($bill['employee_id']) {
+    $emp_res = $conn->query("SELECT emp_name FROM employee WHERE emp_id = " . intval($bill['employee_id']));
     if ($emp_res && $emp_res->num_rows > 0) {
         $emp_name = $emp_res->fetch_assoc()['emp_name'];
     }
 }
 
-// Fetch customer name from customer table
-$customer_name = "Walk-in"; // default if no customer found
+// Fetch customer name
+$customer_name = "Walk-in";
 if ($bill['customer_id']) {
     $cust_res = $conn->query("SELECT cust_name FROM customer WHERE customer_id = " . intval($bill['customer_id']));
     if ($cust_res && $cust_res->num_rows > 0) {
-        $cust_row = $cust_res->fetch_assoc();
-        $customer_name = $cust_row['cust_name'];
+        $customer_name = $cust_res->fetch_assoc()['cust_name'];
     }
 }
 
-// Fetch sold items for this bill
+// Fetch items
 $items = $conn->query("
-    SELECT i.item_name, s.quantity, s.price, (s.quantity * s.price) AS total
+    SELECT i.name AS item_name, s.quantity, s.sold_price, (s.quantity * s.sold_price) AS total
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
     WHERE s.company_id = $company_id AND s.bill_id = $bill_id
@@ -49,162 +51,60 @@ $items = $conn->query("
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Receipt #<?php echo $bill_id; ?> - PasaStocks</title>
-  <style>
-    body {
-      background-color: #f8f9fa;
-      padding-left: 85px;
-      padding-top: 20px;
-      font-family: 'Courier New', Courier, monospace;
-    }
-
-    .receipt {
-      max-width: 480px;
-      margin: auto;
-      background: white;
-      padding: 20px 30px;
-      border: 1px solid #ddd;
-      box-shadow: 0 0 10px #ccc;
-    }
-
-    h2, h4 {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 5px;
-      font-size: 14px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-      font-size: 14px;
-    }
-
-    th, td {
-      border-bottom: 1px solid #ddd;
-      padding: 8px 5px;
-      text-align: left;
-    }
-
-    tfoot tr th {
-      border-top: 2px solid #333;
-      font-weight: bold;
-      text-align: right;
-      padding-top: 10px;
-    }
-
-    tfoot tr th[colspan="3"] {
-      text-align: right;
-    }
-
-    .text-right { text-align: right; }
-
-    .buttons {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .btn {
-      display: inline-block;
-      min-width: 120px;
-      margin: 5px;
-      padding: 10px 15px;
-      border-radius: 6px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      color: #fff;
-      background-color: #007bff;
-      text-decoration: none;
-      text-align: center;
-    }
-
-    .btn:hover { background-color: #0056b3; }
-
-    .btn-secondary {
-      background-color: #6c757d;
-    }
-    .btn-secondary:hover { background-color: #5a6268; }
-
-    /* Print styling */
-    @media print {
-      body { background-color: white; padding: 0; }
-      .buttons { display: none; }
-      .receipt {
-        box-shadow: none;
-        border: none;
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      table, th, td { border: 1px solid black !important; }
-      th, td { padding: 6px !important; }
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Receipt #<?php echo $bill_id; ?></title>
+<style>
+body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+.receipt { max-width: 500px; margin: auto; background: #fff; padding: 20px; border: 1px solid #ddd; }
+h2, h4 { text-align: center; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+tfoot th { text-align: right; }
+.buttons { text-align: center; margin-top: 20px; }
+@media print { .buttons { display: none; } }
+</style>
 </head>
 <body>
-  <div class="receipt">
-    <h2>PasaStocks</h2>
-    <h4>Receipt #<?php echo $bill_id; ?></h4>
+<div class="receipt">
+<h2>PasaStocks</h2>
+<h4>Receipt #<?php echo $bill_id; ?></h4>
+<p><strong>Date:</strong> <?php echo date('d M Y, H:i', strtotime($bill['bill_date'])); ?><br>
+<strong>Employee:</strong> <?php echo htmlspecialchars($emp_name); ?><br>
+<strong>Customer:</strong> <?php echo htmlspecialchars($customer_name); ?></p>
 
-    <div class="info-row">
-      <div><strong>Date:</strong> <?php echo date('d M Y, H:i', strtotime($bill['bill_date'])); ?></div>
-      <div><strong>Employee:</strong> <?php echo htmlspecialchars($emp_name); ?></div>
-    </div>
+<?php if ($items && $items->num_rows > 0): ?>
+<table>
+<thead>
+<tr>
+<th>Item</th><th>Qty</th><th>Price</th><th>Total</th>
+</tr>
+</thead>
+<tbody>
+<?php
+$grand_total = 0;
+while ($row = $items->fetch_assoc()) {
+    $grand_total += $row['total'];
+    echo "<tr>
+    <td>".htmlspecialchars($row['item_name'])."</td>
+    <td>".$row['quantity']."</td>
+    <td>".number_format($row['sold_price'],2)."</td>
+    <td>".number_format($row['total'],2)."</td>
+    </tr>";
+}
+?>
+</tbody>
+<tfoot>
+<tr><th colspan="3">Grand Total</th><th><?php echo number_format($grand_total,2); ?></th></tr>
+</tfoot>
+</table>
+<?php else: ?>
+<p>No items found for this bill.</p>
+<?php endif; ?>
 
-    <div class="info-row">
-      <div><strong>Customer:</strong> <?php echo htmlspecialchars($customer_name); ?></div>
-      <div></div>
-    </div>
-
-    <?php if ($items->num_rows > 0): ?>
-      <table>
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th class="text-right">Qty</th>
-            <th class="text-right">Price (Rs.)</th>
-            <th class="text-right">Total (Rs.)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-            $grand_total = 0;
-            while ($row = $items->fetch_assoc()):
-              $grand_total += $row['total'];
-          ?>
-            <tr>
-              <td><?php echo htmlspecialchars($row['item_name']); ?></td>
-              <td class="text-right"><?php echo $row['quantity']; ?></td>
-              <td class="text-right"><?php echo number_format($row['price'], 2); ?></td>
-              <td class="text-right"><?php echo number_format($row['total'], 2); ?></td>
-            </tr>
-          <?php endwhile; ?>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th colspan="3" class="text-right">Grand Total</th>
-            <th class="text-right"><?php echo number_format($grand_total, 2); ?></th>
-          </tr>
-        </tfoot>
-      </table>
-    <?php else: ?>
-      <div style="margin-top: 10px; color: #721c24; background: #f8d7da; padding: 10px; border-radius: 6px; text-align:center;">
-        No items found for this bill.
-      </div>
-    <?php endif; ?>
-
-    <div class="buttons">
-      <button onclick="window.print()">🖨️ Print</button>
-      <a href="sales.php" class="btn btn-secondary">← Back to Sales</a>
-    </div>
-  </div>
+<div class="buttons">
+<button onclick="window.print()">Print</button>
+<a href="sales.php" class="btn">Back</a>
+</div>
+</div>
 </body>
 </html>

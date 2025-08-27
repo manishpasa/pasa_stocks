@@ -18,7 +18,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
           <img src="../../../image/dashboard.png" height="30px" ><span class="custom-text">Dashboard</span>
         </a>
       </li>
-      
       <?php if ($role == 'admin'): ?>
         <li class="custom-sidebar-item">
           <a href="../inventory/inventory.php" class="<?php echo $current_page == 'inventory.php' ? 'active' : ''; ?>">
@@ -76,4 +75,5 @@ $current_page = basename($_SERVER['PHP_SELF']);
     customSidebar.classList.toggle('collapsed');
     document.querySelector('.main')?.classList.toggle('shift');
   });
+  
 </script>

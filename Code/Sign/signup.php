@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         isset($_POST['last_name']) && isset($_POST['dob']) &&
         isset($_POST['phone']) && isset($_POST['email']) && 
         isset($_POST['company_code']) && isset($_POST['company_name']) &&
-        isset($_POST['company_location']) && isset($_POST['company_number']) && 
+        isset($_POST['company_location']) && isset($_POST['company_number'])
         
     ) {
         $firstname = $_POST['first_name'];

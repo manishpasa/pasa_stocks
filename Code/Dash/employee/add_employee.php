@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../fixedphp/protect.php';
 include '../../db.php';
 $emp_id = $_SESSION['id'];
-$issolo=$_SESSION['issolo'];
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
 $stmt->execute();
@@ -22,10 +21,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $phone = $_POST['phone'];
         $email = $_POST['email'];
         $password = $_POST['password'];
+        $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $role = $_POST['role'];
 
         $sql = "INSERT INTO employee (emp_name, email, password, phone, DOB, company_code, role)
-                VALUES ('$name', '$email', '$password', '$phone', '$dob', '$company_code', '$role')";
+                VALUES ('$name', '$email', '$hashedPassword', '$phone', '$dob', '$company_code', '$role')";
         
         if ($conn->query($sql)) {
             $success_msg = "User added successfully!";
@@ -47,13 +47,15 @@ $user_role = $_SESSION['role'];
     body {
       font-family: Arial, sans-serif;
       background-color: #f9f9f9;
-      margin: 0;
+      margin-top: 0;
+      margin-bottom:10px;
     }
 
     .content {
       padding: 90px 40px 40px 120px;
       min-height: 100vh;
       transition: margin-left 0.3s ease;
+      margin-bottom:30px;
     }
 
     .header {

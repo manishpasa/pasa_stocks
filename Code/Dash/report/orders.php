@@ -1,36 +1,25 @@
 <?php
 require_once __DIR__ . '/../fixedphp/protect.php';
-
 include '../../db.php';
-$emp_id = $_SESSION['id'];
 
-$stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
-$stmt->bind_param("i", $emp_id);
-$stmt->execute();
-$stmt->bind_result($profile_pic);
-$stmt->fetch();
-$stmt->close();
 $company_id = $_SESSION['company_id'];
-$erole = $_SESSION['role'];
-$name=$_SESSION['name'];
-$issolo=$_SESSION['issolo'];
-// Search filter
-$search = isset($_GET['search']) ? intval($_GET['search']) : null;
+$search = isset($_GET['search']) ? intval($_GET['search']) : 0;
 
-$sql = "
-    SELECT bill_id, SUM(quantity * price) AS total_amount 
-    FROM sold_list 
-    WHERE company_id = $company_id
-";
+// Make sure sold_price column exists, fallback to `price`
+$sql = "SELECT bill_id, SUM(quantity * COALESCE(sold_price, sold_price)) AS total_amount 
+        FROM sold_list 
+        WHERE company_id = $company_id";
 
-if ($search) {
+if ($search > 0) {
     $sql .= " AND bill_id = $search";
 }
 
 $sql .= " GROUP BY bill_id ORDER BY bill_id DESC";
 
 $sales = $conn->query($sql);
+if (!$sales) die("Sales query failed: " . $conn->error);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -139,7 +128,6 @@ $sales = $conn->query($sql);
     <input type="number" name="search" placeholder="Search Bill ID" value="<?php echo $search ?? ''; ?>">
     <button type="submit">Search</button>
   </form>
-
   <?php if ($sales->num_rows > 0): ?>
     <table>
       <thead>

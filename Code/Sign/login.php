@@ -1,52 +1,51 @@
 <?php
 session_start();
 include '../db.php';
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $number = $_POST['number'];
-    $password = $_POST['password'];
-    $company_code = $_POST['company_code'];
+    $number = trim($_POST['number']);
+    $password = trim($_POST['password']);
+    $company_code = trim($_POST['company_code']);
 
     $stmt = $conn->prepare("SELECT * FROM employee WHERE phone = ? AND company_code = ?");
+    if (!$stmt) { die("Prepare failed: ".$conn->error); }
     $stmt->bind_param("ss", $number, $company_code);
     $stmt->execute();
     $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
+
+    if ($result && $result->num_rows > 0) {
         $employee = $result->fetch_assoc();
-        if (password_verify($password, $employee['password']))  {
+        if (password_verify($password, $employee['password'])) {
             $_SESSION['id'] = $employee['emp_id'];
             $_SESSION['company_code'] = $employee['company_code'];
-            $_SESSION['name']=$employee['emp_name'];
-            $_SESSION['phone']=$employee['phone'];
+            $_SESSION['name'] = $employee['emp_name'];
+            $_SESSION['phone'] = $employee['phone'];
             $_SESSION['role'] = $employee['role'];
             $_SESSION['last_activity'] = time();
             $_SESSION['expire_time'] = 14400;
 
-            // Get company_id
             $stmt2 = $conn->prepare("SELECT * FROM company WHERE company_code = ?");
             $stmt2->bind_param("s", $company_code);
             $stmt2->execute();
             $res_company = $stmt2->get_result();
 
-            if ($res_company->num_rows > 0) {
+            if ($res_company && $res_company->num_rows > 0) {
                 $company = $res_company->fetch_assoc();
                 $_SESSION['company_name'] = $company['company_name'];
                 $_SESSION['company_id'] = $company['company_id'];
             }
-                header("location:../dash/dashboard/dashboard.php");
-            
+
+            header("Location: ../dash/dashboard/dashboard.php");
             exit();
         } else {
             echo "<script>alert('❌ Invalid password.')</script>";
-           
         }
     } else {
-        echo "<script>alert('❌ User not found.')</script>";
+        echo "<script>alert('❌ User not found. Please check number and company code.')</script>";
     }
+
     $stmt->close();
 }
 
-$conn->close();
 ?>
 
 <html >

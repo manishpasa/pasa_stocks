@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../../db.php';
+include '../db.php';
 
 if (!isset($_SESSION['reset_emp_id'])) {
     header("Location: ../Sign/login.php");
@@ -16,6 +16,7 @@ if (empty($entered_otp)) {
     exit();
 }
 
+// Fetch the latest OTP
 $stmt = $conn->prepare("SELECT otp_code FROM email_otp WHERE emp_id = ? ORDER BY created_at DESC LIMIT 1");
 $stmt->bind_param("i", $emp_id);
 $stmt->execute();
@@ -24,6 +25,12 @@ $stmt->fetch();
 $stmt->close();
 
 if ($entered_otp === $otp_code) {
+    // Delete all OTPs for this employee
+    $stmt = $conn->prepare("DELETE FROM email_otp WHERE emp_id = ?");
+    $stmt->bind_param("i", $emp_id);
+    $stmt->execute();
+    $stmt->close();
+
     header("Location: set_new_password.php");
     exit();
 } else {

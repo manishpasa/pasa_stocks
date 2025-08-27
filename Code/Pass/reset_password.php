@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db.php';
+include '../db.php';
 
 // PHPMailer files
 require '../PHPMailer/PHPMailer.php';

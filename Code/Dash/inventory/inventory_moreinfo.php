@@ -2,7 +2,6 @@
 include '../../db.php';
 require_once __DIR__ . '/../fixedphp/protect.php';
 $emp_id = $_SESSION['id'];
-$issolo=$_SESSION['issolo'];
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
 $stmt->execute();

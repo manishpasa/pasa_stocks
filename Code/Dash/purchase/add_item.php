@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../fixedphp/protect.php';
 include '../../db.php';
 $emp_id = $_SESSION['id'];
-$issolo=$_SESSION['issolo'];
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
 $stmt->execute();
@@ -13,80 +12,151 @@ $erole = $_SESSION['role'];
 $name = $_SESSION['name'];
 $success = "";
 $error = "";
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $item_name = $_POST['item_name'];
-    $total_cost = $_POST['total_cost'];
-    $quantity = $_POST['quantity'];
-    $category = $_POST['category'];
-    $supplier = $_POST['supplier'];
-    $date = $_POST['date'];
-    $marked_price = $_POST['marked_price'];
-    $company_id = $_SESSION['company_id'];
+    $item_name    = $_POST['item_name'];
+    $total_cost   = floatval($_POST['total_cost']);
+    $quantity     = intval($_POST['quantity']);
+    $type         = $_POST['type'];
+    $supplier     = $_POST['supplier'];
+    $date         = $_POST['date']; 
+    $marked_price = floatval($_POST['marked_price']);
+    $company_id   = $_SESSION['company_id'];
+    $emp_id       = $_SESSION['id'];
 
-    if ($quantity <= 0) {
-        $error = "Quantity must be greater than zero.";
+    // Handle manufactured/expiry for Food
+    $m_date = ($type === "Food" && !empty($_POST['manufactured_date'])) ? $_POST['manufactured_date'] : null;
+    $e_date = ($type === "Food" && !empty($_POST['expiry_date'])) ? $_POST['expiry_date'] : null;
+
+    if ($quantity <= 0 || $total_cost <= 0) {
+        $error = "Quantity and Total Cost must be greater than zero.";
     } else {
         $cost_per_unit = round($total_cost / $quantity, 3);
 
-        $check_sql = "SELECT * FROM inventory WHERE item_name = ? AND cost_price = ? AND company_id = ?";
-        $check_stmt = $conn->prepare($check_sql);
-        $check_stmt->bind_param("sdi", $item_name, $cost_per_unit, $company_id);
-        $check_stmt->execute();
-        $check_result = $check_stmt->get_result();
+        // 1️⃣ Check for existing batches of this item
+        $stmt = $conn->prepare("SELECT * FROM inventory WHERE name = ? AND company_id = ?");
+        $stmt->bind_param("si", $item_name, $company_id);
+        $stmt->execute();
+        $existing_batches = $stmt->get_result();
+        $stmt->close();
 
-        if ($check_result->num_rows > 0) {
-            // Update existing item quantity
-            $existing = $check_result->fetch_assoc();
-            $item_id = $existing['item_id'];
+        $found = false;
+        $item_id = null;
 
-            $update_sql = "UPDATE inventory SET quantity = quantity + ? WHERE item_id = ?";
-            $update_stmt = $conn->prepare($update_sql);
-            $update_stmt->bind_param("ii", $quantity, $item_id);
-            $update_stmt->execute();
-            $update_stmt->close();
+        if ($existing_batches->num_rows > 0) {
+            while ($batch = $existing_batches->fetch_assoc()) {
+                $batch_id    = $batch['batch_id'];
+                $item_id     = $batch['item_id'];
+                $batch_price = $batch['cost_price'];
+                $batch_mdate = $batch['manufactured_date'];
+                $batch_edate = $batch['expired_date'];
 
-            // Log purchase
-            $insert_purchase = "INSERT INTO purchase_list (item_id, quantity, cost_price, purchase_date, supplier, company_id)
-                                VALUES (?, ?, ?, ?, ?, ?)";
-            $purchase_stmt = $conn->prepare($insert_purchase);
-            $purchase_stmt->bind_param("iidssi", $item_id, $quantity, $cost_per_unit, $date, $supplier, $company_id);
-            $purchase_stmt->execute();
-            $purchase_stmt->close();
+                // ✅ Exact match: price and dates match
+                if ($batch_price == $cost_per_unit && $batch_mdate == $m_date && $batch_edate == $e_date) {
+                    $update_sql = "UPDATE inventory SET quantity = quantity + ? WHERE batch_id = ?";
+                    $upd_stmt = $conn->prepare($update_sql);
+                    $upd_stmt->bind_param("ii", $quantity, $batch_id);
+                    $upd_stmt->execute();
+                    $upd_stmt->close();
+                    $found = true;
+                    break;
+                }
 
-        } else {
-            // Insert new inventory item
-            $insert_inventory = "INSERT INTO inventory (item_name, quantity, cost_price, price, category, company_id)
-                                 VALUES (?, ?, ?, ?, ?, ?)";
-            $inv_stmt = $conn->prepare($insert_inventory);
-            $inv_stmt->bind_param("sidssi", $item_name, $quantity, $cost_per_unit, $marked_price, $category, $company_id);
-
-            if ($inv_stmt->execute()) {
-                $item_id = $conn->insert_id;
-
-                $insert_purchase = "INSERT INTO purchase_list (item_id, quantity, cost_price, purchase_date, supplier, company_id)
-                                    VALUES (?, ?, ?, ?, ?, ?)";
-                $purchase_stmt = $conn->prepare($insert_purchase);
-                $purchase_stmt->bind_param("iidssi", $item_id, $quantity, $cost_per_unit, $date, $supplier, $company_id);
-                $purchase_stmt->execute();
-                $purchase_stmt->close();
-            } else {
-                $error = "Error inserting inventory: " . $inv_stmt->error;
+                // ✅ Price different, date same (or no dates)
+                if ($batch_price != $cost_per_unit && 
+                    (($batch_mdate == $m_date && $batch_edate == $e_date) || ($m_date === null && $e_date === null))) {
+                    $new_price = max($batch_price, $cost_per_unit);
+                    $update_sql = "UPDATE inventory 
+                                   SET quantity = quantity + ?, cost_price = ?, marked_price = ?, updated_at = NOW() 
+                                   WHERE batch_id = ?";
+                    $upd_stmt = $conn->prepare($update_sql);
+                    $upd_stmt->bind_param("iddi", $quantity, $new_price, $marked_price, $batch_id);
+                    $upd_stmt->execute();
+                    $upd_stmt->close();
+                    $found = true;
+                    break;
+                }
             }
-            $inv_stmt->close();
         }
-        $check_stmt->close();
 
-        if (empty($error)) {
+        // 2️⃣ Insert new batch if no match found
+        if (!$found) {
+          if ($item_id === null) {
+        $stmt = $conn->prepare("SELECT MAX(item_id) FROM inventory WHERE company_id = ?");
+        $stmt->bind_param("i", $company_id);
+        $stmt->execute();
+        $stmt->bind_result($max_item_id);
+        $stmt->fetch();
+        $stmt->close();
+
+         if ($max_item_id === null) {
+        $item_id = 1;
+    } else {
+        $item_id = $max_item_id + 1;
+    }// start from 1 if no items
+    }
+            $insert_sql = "INSERT INTO inventory 
+    (item_id, company_id, quantity, cost_price, marked_price, manufactured_date, expired_date, type, name, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+
+$ins_stmt = $conn->prepare($insert_sql);
+$ins_stmt->bind_param("iiiddssss", $item_id, $company_id, $quantity, $cost_per_unit, $marked_price, $m_date, $e_date, $type, $item_name);
+$ins_stmt->execute();
+
+            if ($ins_stmt->affected_rows > 0) {
+                $item_id = $conn->insert_id;
+            } else {
+                $error = "Failed to insert item: " . $ins_stmt->error;
+            }
+            $ins_stmt->close();
+        }
+
+        // 3️⃣ Log purchase
+        if (!$error) {
+            $purchase_sql = "INSERT INTO purchase_list 
+                (item_id, company_id, employee_id, quantity, purchase_date, price, supplier, manufactured_date, expired_date) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $pur_stmt = $conn->prepare($purchase_sql);
+            if (!$pur_stmt) die("Purchase prepare failed: ".$conn->error);
+            $pur_stmt->bind_param("iiisdssss", $item_id, $company_id, $emp_id, $quantity, $date, $cost_per_unit, $supplier, $m_date, $e_date);
+            $pur_stmt->execute();
+            $pur_stmt->close();
+            $success = "Item added successfully!";
+        }
+    }
+
+    // Redirect logic
+    if (!$error) {
+        if (isset($_POST['add'])) {
+            header("Location: ../inventory/inventory.php");
+            exit();
+        } elseif (isset($_POST['another'])) {
+            $success = "Item added successfully. You can add another.";
+        }
+    }
+    
+    
+    // Step 2: Always log purchase
+        $insert_purchase = "INSERT INTO purchase_list 
+            (item_id, company_id, employee_id, quantity, purchase_date, price, supplier, manufactured_date, expired_date) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $purchase_stmt = $conn->prepare($insert_purchase);
+        $purchase_stmt->bind_param(
+            "iiisdssss", 
+            $item_id, $company_id, $emp_id, $quantity, $date, $cost_per_unit, $supplier, $m_date, $e_date
+          );
+          $purchase_stmt->execute();
+          $purchase_stmt->close();
+          
+
+          if (empty($error)) {
             if (isset($_POST['add'])) {
                 header("Location: ../inventory/inventory.php");
                 exit();
-            } elseif (isset($_POST['another'])) {
+              } elseif (isset($_POST['another'])) {
                 $success = "Item added successfully. You can add another.";
+              }
             }
-        }
-    }
-}
+          }
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -100,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       background: #f8f9fa;
       font-family: Arial, sans-serif;
       padding-left: 85px;
-      padding-top: -10px;
+      
     }
 
     .form-container {
@@ -108,6 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       margin: 40px auto;
       background: #fff;
       padding: 30px;
+      margin-top:0px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
@@ -205,6 +276,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       text-decoration: underline;
     }
   </style>
+   <script>
+        function toggleFoodFields() {
+            let type = document.getElementById("type").value;
+            let foodFields = document.getElementById("foodFields");
+
+            if (type === "Food") {
+                foodFields.style.display = "block";
+            } else {
+                foodFields.style.display = "none";
+            }
+        }
+    </script>
 </head>
 <body>
   <?php include('../fixedphp/sidebar.php') ?>
@@ -229,29 +312,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           <div>
             <label for="item_name">Item Name:</label>
             <input type="text" id="item_name" name="item_name" required />
+        <div style="display:flex;">
 
-            <label for="category">Category:</label>
-            <input type="text" id="category" name="category" required />
+          <label>Type:</label>
+          <select name="type" id="type" onchange="toggleFoodFields()" required>
+            <option value="">-- Select Type --</option>
+            <option value="Food">Food</option>
+            <option value="Clothes">Clothes</option>
+            <option value="Electronics">Electronics</option>
+            <option value="accessories">accessories</option>
+            <option value="Other">Other</option>
+          </select><br><br>
+        </div>
 
-            <label for="supplier">Supplier:</label>
-            <input type="text" id="supplier" name="supplier" required />
+        <div id="foodFields" style="display:none;">
+            <label>Manufactured Date:</label>
+            <input type="date" name="manufactured_date"><br><br>
 
-            <label for="total_cost">Total Cost:</label>
-            <input type="number" id="total_cost" name="total_cost" step="0.01" required oninput="calculateCostPerUnit()" />
-          </div>
+            <label>Expiry Date:</label>
+            <input type="date" name="expiry_date"><br><br>
+        </div>
 
-          <div>
-            <label for="quantity">Quantity:</label>
-            <input type="number" id="quantity" name="quantity" required oninput="calculateCostPerUnit()" />
-
-            <label for="cost_per_unit">Cost Per Unit:</label>
-            <input type="text" id="cost_per_unit" readonly />
-
-            <label for="marked_price">Marked Price:</label>
-            <input type="number" id="marked_price" name="marked_price" step="0.01" required />
+        
+        <label for="total_cost">Total Cost:</label>
+        <input type="number" id="total_cost" name="total_cost" step="0.01" required oninput="calculateCostPerUnit()" />
+        
+      </div>
+      
+      <div>
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" required oninput="calculateCostPerUnit()" />
+        
+        <label for="cost_per_unit">Cost Per Unit:</label>
+        <input type="text" id="cost_per_unit" readonly />
+        
+        <label for="marked_price">Marked Price:</label>
+        <input type="number" id="marked_price" name="marked_price" step="0.01" required />
+        
+        <label for="supplier">Supplier:</label>
+        <input type="text" id="supplier" name="supplier" required />
 
             <label for="date">Date:</label>
             <input type="date" id="date" name="date" required />
+
+            
           </div>
         </div>
 

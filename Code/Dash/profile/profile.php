@@ -6,7 +6,6 @@ $emp_id = $_SESSION['id'];
 $name = $_SESSION['name'];
 $erole = $_SESSION['role'];
 $number =$_SESSION['phone'];
-$issolo=$_SESSION['issolo'];
 $stmt = $conn->prepare("SELECT email, profile_pic, email_verified FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
 $stmt->execute();

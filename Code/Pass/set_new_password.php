@@ -6,11 +6,12 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password']);
     $cpassword = trim($_POST['cpassword']);
+    $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $emp_id = $_SESSION['reset_emp_id'];
 
     if ($password === $cpassword) {
         $stmt = $conn->prepare("UPDATE employee SET password = ? WHERE emp_id = ?");
-        $stmt->bind_param("si", $password, $emp_id);
+        $stmt->bind_param("si", $hashedPassword, $emp_id);
         $stmt->execute();
         $stmt->close();
 

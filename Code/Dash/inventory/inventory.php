@@ -2,7 +2,6 @@
 include '../../db.php';
 require_once __DIR__ . '/../fixedphp/protect.php';
 $emp_id = $_SESSION['id'];
-$issolo=$_SESSION['issolo'];
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
 $stmt->execute();
@@ -218,7 +217,6 @@ if (!$result) {
             <th>Selling Price</th>
             <th>Cost Price</th>
             <th>Quantity Left</th>
-            <th>Total Sold</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -228,11 +226,10 @@ if (!$result) {
           <?php while ($row = mysqli_fetch_assoc($result)) { ?>
           <tr>
             <td data-label="Item Code"><?php echo htmlspecialchars($row['item_id']); ?></td>
-            <td data-label="Item Name"><?php echo htmlspecialchars($row['item_name']); ?></td>
-            <td data-label="Selling Price"><?php echo htmlspecialchars($row['price']); ?></td>
+            <td data-label="Item Name"><?php echo htmlspecialchars($row['name']); ?></td>
+            <td data-label="Selling Price"><?php echo htmlspecialchars($row['marked_price']); ?></td>
             <td data-label="Cost Price"><?php echo htmlspecialchars($row['cost_price']); ?></td>
             <td data-label="Quantity Left"><?php echo htmlspecialchars($row['quantity']); ?></td>
-            <td data-label="Total Sold"><?php echo htmlspecialchars($row['Quantity_sold']); ?></td>
             <td data-label="Actions"><a href="inventory_moreinfo.php?code=<?php echo $row['item_id']; ?>">More Info</a></td>
           </tr>
           <?php } ?>

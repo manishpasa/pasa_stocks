@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../fixedphp/protect.php';
 include '../../db.php';
+
 $company_id = $_SESSION['company_id'];
 $role = $_SESSION['role'];
 $name = $_SESSION['name'] ?? 'User';
@@ -16,50 +17,114 @@ $stmt->close();
 $start_date = date('Y-m-d', strtotime('-30 days'));
 
 if ($role == 'admin') {
-    $q1 = $conn->query("SELECT SUM(s.price * s.quantity) AS total_sales FROM sold_list s WHERE s.company_id = $company_id AND s.sale_date >= '$start_date'");
+    // ------------------- Total Sales -------------------
+    $q1 = $conn->query("
+        SELECT SUM(s.sold_price * s.quantity) AS total_sales
+        FROM sold_list s
+        WHERE s.company_id = $company_id 
+        AND s.sale_date >= '$start_date'
+    ");
     $total_sales = $q1->fetch_assoc()['total_sales'] ?? 0;
-
-    $q2 = $conn->query("SELECT SUM((s.price - i.cost_price) * s.quantity) AS profit FROM sold_list s JOIN inventory i ON s.item_id = i.item_id WHERE s.company_id = $company_id AND s.sale_date >= '$start_date'");
+    // ------------------- Total Profit -------------------
+    $q2 = $conn->query("
+        SELECT SUM((s.sold_price - i.cost_price) * s.quantity) AS profit
+        FROM sold_list s
+        JOIN inventory i ON s.item_id = i.item_id
+        WHERE s.company_id = $company_id 
+        AND s.sale_date >= '$start_date'
+    ");
     $total_profit = $q2->fetch_assoc()['profit'] ?? 0;
-
-    $q3 = $conn->query("SELECT COUNT(DISTINCT bill_id) AS orders FROM sold_list WHERE company_id = $company_id AND sale_date >= '$start_date'");
+    // ------------------- Total Orders -------------------
+    $q3 = $conn->query("
+        SELECT COUNT(DISTINCT bill_id) AS orders 
+        FROM sold_list 
+        WHERE company_id = $company_id 
+        AND sale_date >= '$start_date'
+    ");
     $total_orders = $q3->fetch_assoc()['orders'] ?? 0;
 
-    
+    // ------------------- Line Chart: Sales Last 7 Days -------------------
     $labels = [];
     $salesData = [];
     for ($i = 6; $i >= 0; $i--) {
         $date = date('Y-m-d', strtotime("-$i days"));
         $labels[] = date('d M', strtotime($date));
-        $q = $conn->query("SELECT SUM(price * quantity) AS total FROM sold_list WHERE company_id = $company_id AND DATE(sale_date) = '$date'");
+        $q = $conn->query("
+            SELECT SUM(sold_price * quantity) AS total 
+            FROM sold_list 
+            WHERE company_id = $company_id 
+            AND DATE(sale_date) = '$date'
+        ");
         $salesData[] = $q->fetch_assoc()['total'] ?? 0;
     }
 
+    // ------------------- Pie Chart: Top 5 Selling Items -------------------
     $labels_sales_pie = [];
     $data_sales_pie = [];
-    $q = $conn->query("SELECT i.item_name, SUM(s.quantity) AS total_sold FROM sold_list s JOIN inventory i ON s.item_id = i.item_id WHERE s.company_id = $company_id GROUP BY s.item_id ORDER BY total_sold DESC LIMIT 5");
+    $q = $conn->query("
+        SELECT i.name, SUM(s.quantity) AS total_sold 
+        FROM sold_list s
+        JOIN inventory i ON s.item_id = i.item_id
+        WHERE s.company_id = $company_id 
+        GROUP BY s.item_id 
+        ORDER BY total_sold DESC 
+        LIMIT 5
+    ");
     while ($row = $q->fetch_assoc()) {
-        $labels_sales_pie[] = $row['item_name'];
+        $labels_sales_pie[] = $row['name'];
         $data_sales_pie[] = $row['total_sold'];
     }
 
+    // ------------------- Pie Chart: Top 5 Inventory Items -------------------
     $labels_inventory_pie = [];
     $data_inventory_pie = [];
-    $q = $conn->query("SELECT item_name, quantity FROM inventory WHERE company_id = $company_id ORDER BY quantity DESC LIMIT 5");
+    $q = $conn->query("
+        SELECT name, quantity 
+        FROM inventory 
+        WHERE company_id = $company_id 
+        ORDER BY quantity DESC 
+        LIMIT 5
+    ");
     while ($row = $q->fetch_assoc()) {
-        $labels_inventory_pie[] = $row['item_name'];
+        $labels_inventory_pie[] = $row['name'];
         $data_inventory_pie[] = $row['quantity'];
     }
+
 } elseif ($role == 'storekeeper') {
-    $low_stock_items = $conn->query("SELECT item_name, quantity FROM inventory WHERE company_id = $company_id AND quantity < 10 ORDER BY quantity ASC LIMIT 5");
+    // ------------------- Storekeeper: Low Stock -------------------
+    $low_stock_items = $conn->query("
+        SELECT name, quantity 
+        FROM inventory 
+        WHERE company_id = $company_id 
+        AND quantity < 10 
+        ORDER BY quantity ASC 
+        LIMIT 5
+    ");
+
 } elseif ($role == 'cashier') {
+    // ------------------- Cashier: Today’s Sales -------------------
     $today = date('Y-m-d');
-    $q = $conn->query("SELECT SUM(quantity) AS today_sales FROM sold_list WHERE company_id = $company_id AND DATE(sale_date) = '$today'");
+    $q = $conn->query("
+        SELECT SUM(quantity) AS today_sales 
+        FROM sold_list 
+        WHERE company_id = $company_id 
+        AND DATE(sale_date) = '$today'
+    ");
     $today_sales = $q->fetch_assoc()['today_sales'] ?? 0;
 
-    $top_items = $conn->query("SELECT i.item_name, SUM(s.quantity) AS sold FROM sold_list s JOIN inventory i ON s.item_id = i.item_id WHERE s.company_id = $company_id AND DATE(s.sale_date) = '$today' GROUP BY s.item_id ORDER BY sold DESC LIMIT 5");
+    $top_items = $conn->query("
+        SELECT i.name, SUM(s.quantity) AS sold 
+        FROM sold_list s
+        JOIN inventory i ON s.item_id = i.item_id
+        WHERE s.company_id = $company_id 
+        AND DATE(s.sale_date) = '$today'
+        GROUP BY s.item_id 
+        ORDER BY sold DESC 
+        LIMIT 5
+    ");
 }
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -262,7 +327,7 @@ if ($role == 'admin') {
         <ul class="list-group">
           <?php while ($item = $low_stock_items->fetch_assoc()): ?>
             <li class="list-group-item">
-              <?php echo htmlspecialchars($item['item_name']); ?>
+              <?php echo htmlspecialchars($item['name']); ?>
               <span class="badge bg-danger"><?php echo $item['quantity']; ?></span>
             </li>
           <?php endwhile; ?>
@@ -280,7 +345,7 @@ if ($role == 'admin') {
         <ul class="list-group">
           <?php while ($item = $top_items->fetch_assoc()): ?>
             <li class="list-group-item">
-              <?php echo htmlspecialchars($item['item_name']); ?>
+              <?php echo htmlspecialchars($item['name']); ?>
               <span class="badge bg-primary"><?php echo $item['sold']; ?></span>
             </li>
           <?php endwhile; ?>

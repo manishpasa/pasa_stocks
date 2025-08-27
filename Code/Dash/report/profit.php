@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../fixedphp/protect.php';
 include '../../db.php';
 $emp_id = $_SESSION['id'];
-$issolo=$_SESSION['issolo'];
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
 $stmt->execute();
@@ -16,15 +15,14 @@ $name=$_SESSION['name'];
 $selected_month = isset($_GET['month']) ? intval($_GET['month']) : date('n');
 $selected_year = date('Y');
 
-// Profit query for selected month
 $profitQuery = $conn->query("
     SELECT 
-        i.item_name,
-        i.price,
+        i.name,
+        i.marked_price,
         i.cost_price,
         SUM(s.quantity) AS total_qty,
-        (i.price - i.cost_price) AS profit_per_unit,
-        SUM((i.price - i.cost_price) * s.quantity) AS total_profit
+        (i.marked_price - i.cost_price) AS profit_per_unit,
+        SUM((i.marked_price - i.cost_price) * s.quantity) AS total_profit
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
     WHERE s.company_id = $company_id
@@ -33,6 +31,11 @@ $profitQuery = $conn->query("
     GROUP BY s.item_id
     ORDER BY total_profit DESC
 ");
+
+if (!$profitQuery) {
+    die("Profit query failed: " . $conn->error);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -148,16 +151,16 @@ $profitQuery = $conn->query("
         $total_profit = 0;
         while ($row = $profitQuery->fetch_assoc()):
           $cost_total = $row['cost_price'] * $row['total_qty'];
-          $sales_total = $row['price'] * $row['total_qty'];
+          $sales_total = $row['marked_price'] * $row['total_qty'];
           $total_qty += $row['total_qty'];
           $total_sales += $sales_total;
           $total_profit += $row['total_profit'];
         ?>
           <tr>
             <td><?php echo $rank++; ?></td>
-            <td><?php echo htmlspecialchars($row['item_name']); ?></td>
+            <td><?php echo htmlspecialchars($row['name']); ?></td>
             <td><?php echo $row['total_qty']; ?></td>
-            <td>Rs. <?php echo number_format($row['price'], 2); ?></td>
+            <td>Rs. <?php echo number_format($row['marked_price'], 2); ?></td>
             <td>Rs. <?php echo number_format($row['cost_price'], 2); ?></td>
             <td>Rs. <?php echo number_format($cost_total, 2); ?></td>
             <td>Rs. <?php echo number_format($sales_total, 2); ?></td>

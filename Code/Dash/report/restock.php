@@ -1,31 +1,34 @@
 <?php
 require_once __DIR__ . '/../fixedphp/protect.php';
-$erole=$_SESSION['role'];
-$name=$_SESSION['name'];
-$issolo=$_SESSION['issolo'];
 include '../../db.php';
-$emp_id = $_SESSION['id'];
 
+$emp_id = $_SESSION['id'];
+$company_id = $_SESSION['company_id'];
+$role = $_SESSION['role'];
+$threshold = isset($_GET['threshold']) && is_numeric($_GET['threshold']) ? intval($_GET['threshold']) : 10;
+
+// Get employee profile pic
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
 $stmt->execute();
 $stmt->bind_result($profile_pic);
 $stmt->fetch();
 $stmt->close();
-$company_id = $_SESSION['company_id'];
-$role = $_SESSION['role'];
 
-$threshold = isset($_GET['threshold']) && is_numeric($_GET['threshold']) ? intval($_GET['threshold']) : 10;
-
-$low_stock_items = $conn->query("SELECT item_name, quantity FROM inventory WHERE company_id = $company_id AND quantity <= $threshold ORDER BY quantity ASC");
-?><!DOCTYPE html>
+// Use prepared statement for low stock items
+$stmt = $conn->prepare("SELECT name, quantity FROM inventory WHERE company_id = ? AND quantity <= ? ORDER BY quantity ASC");
+$stmt->bind_param("ii", $company_id, $threshold);
+$stmt->execute();
+$low_stock_items = $stmt->get_result();
+$stmt->close();
+?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Restock Items</title>
-<style>
-  body {
+<style> body {
     background-color: #f8f9fa;
     font-family: "Segoe UI", sans-serif;
     padding-left: 0px;
@@ -102,6 +105,7 @@ $low_stock_items = $conn->query("SELECT item_name, quantity FROM inventory WHERE
     border-radius: 5px;
     border: 1px solid #c3e6cb;
   }
+/* ... your existing CSS ... */
 </style>
 </head>
 <body>
@@ -114,10 +118,10 @@ $low_stock_items = $conn->query("SELECT item_name, quantity FROM inventory WHERE
 
   <form method="GET" class="form-inline">
     <input type="number" name="threshold" placeholder="Enter quantity threshold" value="<?php echo $threshold; ?>" min="1" required>
-    <button type="submit" hidden>Search</button>
+    <button type="submit">Search</button>
   </form>
 
-  <?php if ($low_stock_items && $low_stock_items->num_rows > 0): ?>
+  <?php if ($low_stock_items->num_rows > 0): ?>
     <table>
       <thead>
         <tr>
@@ -128,7 +132,7 @@ $low_stock_items = $conn->query("SELECT item_name, quantity FROM inventory WHERE
       <tbody>
         <?php while ($item = $low_stock_items->fetch_assoc()): ?>
           <tr>
-            <td><?php echo htmlspecialchars($item['item_name']); ?></td>
+            <td><?php echo htmlspecialchars($item['name']); ?></td>
             <td><?php echo htmlspecialchars($item['quantity']); ?></td>
           </tr>
         <?php endwhile; ?>

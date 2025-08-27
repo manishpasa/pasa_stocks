@@ -21,9 +21,9 @@ if (!$bill) {
 // Fetch customer info
 $customer = $conn->query("SELECT * FROM customer WHERE customer_id = {$bill['customer_id']}")->fetch_assoc();
 
-// Fetch sold inventory items for this bill
+// Fetch sold items
 $sold_items = $conn->query("
-    SELECT s.*, i.item_name 
+    SELECT s.*, i.name AS item_name
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
     WHERE s.bill_id = $bill_id
@@ -35,6 +35,7 @@ $sold_items = $conn->query("
 <head>
     <title>Receipt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../style/darkmode.css">
     <style>
         .receipt-box {
             max-width: 700px;
@@ -44,8 +45,27 @@ $sold_items = $conn->query("
             border-radius: 10px;
             background: #fff;
         }
+        table th, table td { vertical-align: middle; }
+
+        @media print {
+            /* Hide buttons and links when printing */
+            button, a {
+                display: none !important;
+            }
+
+            body {
+                padding: 0;
+                background: #fff;
+            }
+
+            .receipt-box {
+                border: none;
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="../style/darkmode.css">
 </head>
 <body class="bg-light p-4">
 <div class="receipt-box">
@@ -58,34 +78,37 @@ $sold_items = $conn->query("
        <strong>Date:</strong> <?= date('Y-m-d H:i:s', strtotime($bill['bill_date'])) ?><br>
        <strong>Bill ID:</strong> <?= $bill_id ?></p>
 
-    <?php 
-    if ($sold_items && $sold_items->num_rows > 0):
-    ?>
-    <h4>🛒 Sold Items</h4>
-    <table class="table table-bordered mt-3">
-        <thead>
-            <tr><th>Item</th><th>Qty</th><th>Price (Rs.)</th><th>Total (Rs.)</th></tr>
-        </thead>
-        <tbody>
-            <?php 
-            $grand_total = 0;
-            while($row = $sold_items->fetch_assoc()):
-                $total = $row['quantity'] * $row['price'];
-                $grand_total += $total;
-            ?>
-            <tr>
-                <td><?= htmlspecialchars($row['item_name']) ?></td>
-                <td><?= (int)$row['quantity'] ?></td>
-                <td><?= number_format($row['price'], 2) ?></td>
-                <td><?= number_format($total, 2) ?></td>
-            </tr>
-            <?php endwhile; ?>
-            <tr>
-                <td colspan="3"><strong>Total</strong></td>
-                <td><strong>Rs.<?= number_format($grand_total, 2) ?></strong></td>
-            </tr>
-        </tbody>
-    </table>
+    <?php if ($sold_items && $sold_items->num_rows > 0): ?>
+        <h4>🛒 Sold Items</h4>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Price (Rs.)</th>
+                    <th>Total (Rs.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $grand_total = 0;
+                while($row = $sold_items->fetch_assoc()):
+                    $total = $row['quantity'] * $row['sold_price'];
+                    $grand_total += $total;
+                ?>
+                <tr>
+                    <td><?= htmlspecialchars($row['item_name']) ?></td>
+                    <td><?= (int)$row['quantity'] ?></td>
+                    <td><?= number_format($row['sold_price'], 2) ?></td>
+                    <td><?= number_format($total, 2) ?></td>
+                </tr>
+                <?php endwhile; ?>
+                <tr>
+                    <td colspan="3"><strong>Total</strong></td>
+                    <td><strong>Rs.<?= number_format($grand_total, 2) ?></strong></td>
+                </tr>
+            </tbody>
+        </table>
     <?php else: ?>
         <p>No items found for this bill.</p>
     <?php endif; ?>
