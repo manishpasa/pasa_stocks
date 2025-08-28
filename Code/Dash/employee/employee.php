@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_employee'])) {
     }
 
     th, td {
-      padding: 12px 15px;
+      padding: 10px 5px;
       text-align: left;
       border-bottom: 1px solid #ddd;
       font-size: 14px;

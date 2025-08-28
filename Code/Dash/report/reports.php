@@ -30,8 +30,8 @@ $summary['total_items'] = $res->fetch_assoc()['count'];
 // Total sales & profit (monthly)
 $res = $conn->query("
     SELECT 
-      SUM(s.price * s.quantity) AS total_sales,
-      SUM((s.price - i.cost_price) * s.quantity) AS total_profit
+      SUM(s.sold_price * s.quantity) AS total_sales,
+      SUM((s.sold_price - i.cost_price) * s.quantity) AS total_profit
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
     WHERE s.company_id = $company_id AND MONTH(s.sale_date) = MONTH(CURDATE())
@@ -42,7 +42,7 @@ $summary['total_profit'] = $row['total_profit'] ?? 0;
 
 // Total purchases (monthly)
 $res = $conn->query("
-    SELECT SUM(cost_price * quantity) AS total_purchases
+    SELECT SUM(price * quantity) AS total_purchases
     FROM purchase_list
     WHERE company_id = $company_id AND MONTH(purchase_date) = MONTH(CURDATE())
 ");
@@ -57,9 +57,9 @@ $res = $conn->query("SELECT COUNT(*) AS count FROM employee WHERE company_code =
 $summary['total_employees'] = $res->fetch_assoc()['count'];
 // Top 5 Sold Items
 $topSoldRes = $conn->query("
-    SELECT i.item_name, SUM(s.quantity) AS qty, 
-           SUM(s.price * s.quantity) AS total_sales,
-           SUM((s.price - i.cost_price) * s.quantity) AS profit
+    SELECT i.name, SUM(s.quantity) AS qty, 
+           SUM(s.sold_price * s.quantity) AS total_sales,
+           SUM((s.sold_price - i.cost_price) * s.quantity) AS profit
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
     WHERE s.company_id = $company_id
@@ -70,14 +70,14 @@ $topSoldRes = $conn->query("
 
 // Low Stock Items
 $lowStockRes = $conn->query("
-    SELECT item_name, quantity, category 
+    SELECT name, quantity, type 
     FROM inventory 
     WHERE company_id = $company_id AND quantity <= 5
 ");
 
 // Recent Purchases
 $recentPurchaseRes = $conn->query("
-    SELECT i.item_name, p.quantity, p.cost_price, p.supplier, p.purchase_date
+    SELECT i.name, p.quantity, p.price, p.supplier, p.purchase_date
     FROM purchase_list p
     JOIN inventory i ON p.item_id = i.item_id
     WHERE p.company_id = $company_id
@@ -87,10 +87,10 @@ $recentPurchaseRes = $conn->query("
 
 // Recent Sales
 $recentSalesRes = $conn->query("
-    SELECT i.item_name, s.quantity, (s.price * s.quantity) AS total, c.cust_name, s.sale_date
+    SELECT i.name, s.quantity, (s.sold_price * s.quantity) AS total, s.sale_date
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
-    JOIN customer c ON s.customer_id = c.customer_id
+    
     WHERE s.company_id = $company_id
     ORDER BY s.sale_date DESC
     LIMIT 10
@@ -226,7 +226,7 @@ $recentSalesRes = $conn->query("
         <tbody>
           <?php while ($row = $topSoldRes->fetch_assoc()): ?>
             <tr>
-              <td><?= htmlspecialchars($row['item_name']) ?></td>
+              <td><?= htmlspecialchars($row['name']) ?></td>
               <td><?= $row['qty'] ?></td>
               <td>Rs. <?= number_format($row['total_sales'],2) ?></td>
               <td>Rs. <?= number_format($row['profit'],2) ?></td>
@@ -246,7 +246,7 @@ $recentSalesRes = $conn->query("
         <tbody>
           <?php while ($row = $lowStockRes->fetch_assoc()): ?>
             <tr>
-              <td><?= htmlspecialchars($row['item_name']) ?></td>
+              <td><?= htmlspecialchars($row['name']) ?></td>
               <td><?= $row['quantity'] ?></td>
               <td><?= $row['category'] ?></td>
             </tr>
@@ -265,9 +265,9 @@ $recentSalesRes = $conn->query("
         <tbody>
           <?php while ($row = $recentPurchaseRes->fetch_assoc()): ?>
             <tr>
-              <td><?= $row['item_name'] ?></td>
+              <td><?= $row['name'] ?></td>
               <td><?= $row['quantity'] ?></td>
-              <td>Rs. <?= number_format($row['cost_price'],2) ?></td>
+              <td>Rs. <?= number_format($row['price'],2) ?></td>
               <td><?= $row['supplier'] ?></td>
               <td><?= $row['purchase_date'] ?></td>
             </tr>
@@ -282,14 +282,13 @@ $recentSalesRes = $conn->query("
     <h5>🧾 Recent Sales</h5>
     <div class="table-responsive">
       <table>
-        <thead><tr><th>Item</th><th>Qty</th><th>Total</th><th>Customer</th><th>Date</th></tr></thead>
+        <thead><tr><th>Item</th><th>Qty</th><th>Total</th><th>Date</th></tr></thead>
         <tbody>
           <?php while ($row = $recentSalesRes->fetch_assoc()): ?>
             <tr>
-              <td><?= $row['item_name'] ?></td>
+              <td><?= $row['name'] ?></td>
               <td><?= $row['quantity'] ?></td>
               <td>Rs. <?= number_format($row['total'],2) ?></td>
-              <td><?= $row['cust_name'] ?></td>
               <td><?= $row['sale_date'] ?></td>
             </tr>
           <?php endwhile; ?>

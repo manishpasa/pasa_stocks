@@ -15,17 +15,17 @@ $stmt->close();
 // Query inventory + total quantity sold aggregated from sold_list
 $sql = "SELECT 
             i.item_id,
-            i.item_name,
+            i.name,
             i.cost_price,
-            i.price,
+            i.marked_price,
             i.quantity,
-            i.category,
+            i.type,
             IFNULL(SUM(s.quantity), 0) AS quantity_sold
         FROM inventory i
         LEFT JOIN sold_list s ON i.item_id = s.item_id AND s.company_id = ?
         WHERE i.company_id = ?
         GROUP BY i.item_id
-        ORDER BY i.item_name ASC";
+        ORDER BY i.name ASC";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $company_id, $company_id);
@@ -37,7 +37,6 @@ $result = $stmt->get_result();
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Inventory Items - PasaStocks</title>
-<link rel="stylesheet" href="../style/darkmode.css">
 <style>
   body {
     padding-left: 85px;
@@ -138,7 +137,6 @@ $result = $stmt->get_result();
           <th>Cost Price</th>
           <th>Selling Price</th>
           <th>Quantity Available</th>
-          <th>Quantity Sold</th>
           <th>Category</th>
         </tr>
       </thead>
@@ -147,12 +145,11 @@ $result = $stmt->get_result();
           while ($row = $result->fetch_assoc()): ?>
             <tr>
               <td data-label="Item ID"><?= $row['item_id'] ?></td>
-              <td data-label="Item Name"><?= htmlspecialchars($row['item_name']) ?></td>
+              <td data-label="Item Name"><?= htmlspecialchars($row['name']) ?></td>
               <td data-label="Cost Price"><?= number_format($row['cost_price'], 2) ?></td>
-              <td data-label="Selling Price"><?= number_format($row['price'], 2) ?></td>
+              <td data-label="Selling Price"><?= number_format($row['marked_price'], 2) ?></td>
               <td data-label="Quantity Available"><?= (int)$row['quantity'] ?></td>
-              <td data-label="Quantity Sold"><?= (int)$row['quantity_sold'] ?></td>
-              <td data-label="Category"><?= htmlspecialchars($row['category']) ?></td>
+              <td data-label="Category"><?= htmlspecialchars($row['type']) ?></td>
             </tr>
           <?php endwhile;
         else: ?>

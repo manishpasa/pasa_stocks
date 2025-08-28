@@ -103,7 +103,7 @@ while ($row = $items->fetch_assoc()) {
 
 <div class="buttons">
 <button onclick="window.print()">Print</button>
-<a href="sales.php" class="btn">Back</a>
+<a href="orders.php" class="btn">Back</a>
 </div>
 </div>
 </body>

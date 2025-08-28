@@ -235,7 +235,7 @@ if (!$result) {
           <?php } ?>
         <?php else: ?>
           <tr>
-            <td colspan="7" style="text-align:center;">No items found.</td>
+            <td colspan="6" style="text-align:center;">No items found.</td>
           </tr>
         <?php endif; ?>
         </tbody>

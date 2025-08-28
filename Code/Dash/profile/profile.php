@@ -27,7 +27,7 @@ $stmt->close();
     }
 
     .profile-container {
-      max-width: 500px;
+      width: 500px;
       margin: 40px auto;
       background: white;
       padding: 30px;

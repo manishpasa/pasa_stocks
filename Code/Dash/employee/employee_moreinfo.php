@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     .content {
-      padding: 90px 40px 40px 120px;
+      padding: 55px 40px 40px 120px;
       min-height: 100vh;
     }
 

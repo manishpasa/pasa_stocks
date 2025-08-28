@@ -290,7 +290,7 @@ if ($role == 'admin') {
             <a href="../report/orders.php">
               <div class="card">
                 <h5>Total Orders</h5>
-                <h3><?php echo $total_orders; ?>prders</h3>
+                <h3><?php echo $total_orders; ?> Orders</h3>
               </div>
             </a>
           </div>

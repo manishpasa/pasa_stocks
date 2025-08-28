@@ -30,13 +30,13 @@ if ($rank_by === 'price') {
 
 // Query top sold items aggregated by item
 $sql = " SELECT 
-        i.item_name,
-        i.price,
+        i.name,
+        i.marked_price,
         i.cost_price,
         SUM(s.quantity) AS total_quantity,
-        SUM(s.price * s.quantity) AS total_price,
-        (i.price - i.cost_price) AS profit_per_unit,
-        SUM((i.price - i.cost_price) * s.quantity) AS total_profit
+        SUM(s.sold_price * s.quantity) AS total_price,
+        (i.marked_price - i.cost_price) AS profit_per_unit,
+        SUM((i.marked_price - i.cost_price) * s.quantity) AS total_profit
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
         WHERE s.company_id = ?
@@ -194,7 +194,7 @@ $result = $stmt->get_result();
           while ($row = $result->fetch_assoc()): ?>
             <tr>
               <td data-label="#"> <?= $count++; ?></td>
-              <td data-label="Item Name"><?= htmlspecialchars($row['item_name']); ?></td>
+              <td data-label="Item Name"><?= htmlspecialchars($row['name']); ?></td>
               <td data-label="Total Quantity Sold"><?= (int)$row['total_quantity']; ?></td>
               <td data-label="Total Price (Sale)"><?= number_format($row['total_price'], 2); ?></td>
               <td data-label="Total Profit"><?= number_format($row['total_profit'], 2); ?></td>

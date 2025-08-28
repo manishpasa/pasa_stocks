@@ -65,8 +65,8 @@ function fetchData($conn, $company_id, $type) {
 
     if ($type === 'weekly') {
         $sql = "SELECT DATE(s.sale_date) AS period,
-                       SUM(s.price * s.quantity) AS sales,
-                       SUM((s.price - i.cost_price) * s.quantity) AS profit
+                       SUM(s.sold_price * s.quantity) AS sales,
+                       SUM((s.sold_price - i.cost_price) * s.quantity) AS profit
                 FROM sold_list s
                 JOIN inventory i ON s.item_id = i.item_id
                 WHERE s.company_id = ?
@@ -74,15 +74,15 @@ function fetchData($conn, $company_id, $type) {
                 GROUP BY period";
 
         $sql_purchase = "SELECT DATE(p.purchase_date) AS period,
-                                SUM(p.cost_price * p.quantity) AS purchase_total
+                                SUM(p.price * p.quantity) AS purchase_total
                          FROM purchase_list p
                          WHERE p.company_id = ?
                          AND p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
                          GROUP BY period";
     } elseif ($type === 'monthly') {
         $sql = "SELECT DATE_FORMAT(s.sale_date, '%Y-%m') AS period,
-                       SUM(s.price * s.quantity) AS sales,
-                       SUM((s.price - i.cost_price) * s.quantity) AS profit
+                       SUM(s.sold_price * s.quantity) AS sales,
+                       SUM((s.sold_price - i.cost_price) * s.quantity) AS profit
                 FROM sold_list s
                 JOIN inventory i ON s.item_id = i.item_id
                 WHERE s.company_id = ?
@@ -90,15 +90,15 @@ function fetchData($conn, $company_id, $type) {
                 GROUP BY period";
 
         $sql_purchase = "SELECT DATE_FORMAT(p.purchase_date, '%Y-%m') AS period,
-                                SUM(p.cost_price * p.quantity) AS purchase_total
+                                SUM(p.price * p.quantity) AS purchase_total
                          FROM purchase_list p
                          WHERE p.company_id = ?
                          AND p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 11 MONTH)
                          GROUP BY period";
     } else {
         $sql = "SELECT YEAR(s.sale_date) AS period,
-                       SUM(s.price * s.quantity) AS sales,
-                       SUM((s.price - i.cost_price) * s.quantity) AS profit
+                       SUM(s.sold_price * s.quantity) AS sales,
+                       SUM((s.sold_price - i.cost_price) * s.quantity) AS profit
                 FROM sold_list s
                 JOIN inventory i ON s.item_id = i.item_id
                 WHERE s.company_id = ?
@@ -106,7 +106,7 @@ function fetchData($conn, $company_id, $type) {
                 GROUP BY period";
 
         $sql_purchase = "SELECT YEAR(p.purchase_date) AS period,
-                                SUM(p.cost_price * p.quantity) AS purchase_total
+                                SUM(p.price * p.quantity) AS purchase_total
                          FROM purchase_list p
                          WHERE p.company_id = ?
                          AND p.purchase_date >= DATE_SUB(CURDATE(), INTERVAL 4 YEAR)
