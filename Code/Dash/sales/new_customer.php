@@ -24,9 +24,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>New Customer</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../../../style/font.css">
+    <style>
+        body {
+            margin: -40px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 300px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        label{
+            width: 38%;
+            padding-top:20px;
+        }
+        input[type="text"],input[type="email"],input[type="phone"],textarea{
+            width: 60%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        textarea{
+            height:10px;
+
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .mb-3{
+            display: flex;
+            margin-bottom:10px;
+        }
+    </style>
 </head>
-<body class="p-4 bg-light">
+<body>
     <div class="container">
         <h2>New Customer Details</h2>
         <form method="POST" class="card p-4 shadow-sm">

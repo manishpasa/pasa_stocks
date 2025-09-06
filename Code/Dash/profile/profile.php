@@ -18,10 +18,11 @@ $stmt->close();
 <head>
   <meta charset="UTF-8">
   <title>Your Profile - PasaStocks</title>
+  <link rel="stylesheet" href="../../../style/font.css">
   <style>
     body {
       background: #f8f9fa;
-      font-family: Arial, sans-serif;
+      
       padding-left: 85px;
       padding-top: 20px;
     }

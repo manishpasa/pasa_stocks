@@ -42,10 +42,10 @@ $user_role = $_SESSION['role'];
 <head>
   <meta charset="UTF-8">
   <title>Add Employee</title>
-  <link rel="stylesheet" href="../style/darkmode.css">
+  <link rel="stylesheet" href="../../../style/font.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      
       background-color: #f9f9f9;
       margin-top: 0;
       margin-bottom:10px;

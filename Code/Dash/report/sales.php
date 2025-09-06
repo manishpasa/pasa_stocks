@@ -42,11 +42,10 @@ $monthOptions = $conn->query("SELECT DISTINCT DATE_FORMAT(sale_date, '%Y-%m') as
 <head>
   <meta charset="UTF-8" />
   <title>Sales Summary - PasaStocks</title>
-  <link rel="stylesheet" href="../style/darkmode.css">
+ <link rel="stylesheet" href="../../../style/font.css">
   <style>
     body {
       background-color: #f8f9fa;
-      font-family: "Segoe UI", sans-serif;
       margin: 0;
       padding-left: 85px;
       padding-top: 75px;

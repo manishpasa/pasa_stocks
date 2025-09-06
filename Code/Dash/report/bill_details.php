@@ -53,8 +53,9 @@ $items = $conn->query("
 <head>
 <meta charset="UTF-8">
 <title>Receipt #<?php echo $bill_id; ?></title>
+<link rel="stylesheet" href="../../../style/font.css">
 <style>
-body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+body {  padding: 20px; background: #f5f5f5; }
 .receipt { max-width: 500px; margin: auto; background: #fff; padding: 20px; border: 1px solid #ddd; }
 h2, h4 { text-align: center; }
 table { width: 100%; border-collapse: collapse; margin-top: 10px; }

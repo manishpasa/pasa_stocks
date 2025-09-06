@@ -35,7 +35,7 @@ $sold_items = $conn->query("
 <head>
     <title>Receipt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="../style/darkmode.css">
+    <link rel="stylesheet" href="../../../style/font.css">
     <style>
         .receipt-box {
             max-width: 700px;

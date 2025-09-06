@@ -28,9 +28,9 @@ $stmt->close();
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Restock Items</title>
+<link rel="stylesheet" href="../../../style/font.css">
 <style> body {
     background-color: #f8f9fa;
-    font-family: "Segoe UI", sans-serif;
     padding-left: 0px;
     padding-top: 75px;
     margin: 0;

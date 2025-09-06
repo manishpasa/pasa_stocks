@@ -53,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8" />
   <title>Inventory Item Details</title>
+  <link rel="stylesheet" href="../../../style/font.css">
   <style>
     body {
       background: #f8f9fa;
-      font-family: Arial, sans-serif;
       margin: 0;
       min-height: 100vh;
     }
@@ -91,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     label {
       display: block;
       margin: 15px 0 6px;
-      font-weight: 600;
       color: #333;
     }
 

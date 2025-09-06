@@ -37,12 +37,13 @@ $result = $stmt->get_result();
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Inventory Items - PasaStocks</title>
+<link rel="stylesheet" href="../../../style/font.css">
 <style>
   body {
     padding-left: 85px;
     padding-top: 75px;
     background-color: #f8f9fa;
-    font-family: "Segoe UI", sans-serif;
+    
     margin: 0;
   }
 

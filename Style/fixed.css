@@ -1,0 +1,25 @@
+:root {
+  --bg-color: #E8F1FA;
+  --navbar-color: #2775fb;
+  --btn-color: #0966fe;
+  --btn-hover: #0946fe;
+  --accent-color: #38BDF8;
+  --text-color: #1E293B; /* dark slate for readability */
+}
+body{
+    background-color: var(--bg-color);
+    font-family: 'Poppins', sans-serif;
+    color:var(--text-color);
+}
+nav{
+    background-color: var(--navbar-color);
+}
+button{
+    background-color: var(--btn-color);
+}
+button :hover{
+    background-color: var(--btn-hover);
+}
+*{
+    color:black;
+}

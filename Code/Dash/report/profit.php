@@ -26,6 +26,7 @@ $profitQuery = $conn->query("
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
     WHERE s.company_id = $company_id
+      AND i.company_id= $company_id
       AND MONTH(s.sale_date) = $selected_month
       AND YEAR(s.sale_date) = $selected_year
     GROUP BY s.item_id
@@ -42,11 +43,10 @@ if (!$profitQuery) {
 <head>
 <meta charset="UTF-8">
 <title>Profit Ranking - PasaStocks</title>
-<link rel="stylesheet" href="../style/darkmode.css">
+<link rel="stylesheet" href="../../../style/font.css">
 <style>
   body {
     background-color: #f8f9fa;
-    font-family: Arial, sans-serif;
     margin: 0;
     padding-left: 10px;
     padding-top: 75px;

@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Change Phone Number - PasaStocks</title>
+<link rel="stylesheet" href="../../../style/font.css">
 <style>
   * {
     margin: 0;
@@ -43,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   body {
-    font-family: "Segoe UI", Arial, sans-serif;
+    
     background-color: #f8f9fa;
     margin-left: 80px; /* adjust for sidebar */
     margin-top: 70px;  /* adjust for navbar */

@@ -58,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_employee'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Employee List</title>
   <link rel="stylesheet" href="../../../Style/table.css">
+  <link rel="stylesheet" href="../../../style/font.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
       background-color: #f9f9f9;
       margin: 0;
     }
@@ -104,8 +104,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_employee'])) {
       color: #fff;
       text-decoration: none;
       border-radius: 6px;
-      padding: 8px 15px;
+      padding: 7px 10px;
       text-align: center;
+      margin-top:14px;
       transition: background 0.2s;
     }
 

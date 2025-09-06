@@ -27,13 +27,21 @@ if ($role == 'admin') {
     $total_sales = $q1->fetch_assoc()['total_sales'] ?? 0;
     // ------------------- Total Profit -------------------
     $q2 = $conn->query("
-        SELECT SUM((s.sold_price - i.cost_price) * s.quantity) AS profit
-        FROM sold_list s
-        JOIN inventory i ON s.item_id = i.item_id
+    SELECT 
+        i.name,
+        i.marked_price,
+        s.sold_price,
+        i.cost_price,
+        SUM(s.quantity) AS total_qty,
+        (i.marked_price - i.cost_price) AS profit_per_unit,
+        SUM((i.marked_price - i.cost_price) * s.quantity) AS total_profit
+    FROM sold_list s
+    JOIN inventory i ON s.item_id = i.item_id
         WHERE s.company_id = $company_id 
+        AND i.company_id =$company_id
         AND s.sale_date >= '$start_date'
     ");
-    $total_profit = $q2->fetch_assoc()['profit'] ?? 0;
+    $total_profit = $q2->fetch_assoc()['total_profit'] ?? 0;
     // ------------------- Total Orders -------------------
     $q3 = $conn->query("
         SELECT COUNT(DISTINCT bill_id) AS orders 
@@ -66,6 +74,7 @@ if ($role == 'admin') {
         FROM sold_list s
         JOIN inventory i ON s.item_id = i.item_id
         WHERE s.company_id = $company_id 
+        AND i.company_id =$company_id
         GROUP BY s.item_id 
         ORDER BY total_sold DESC 
         LIMIT 5
@@ -117,6 +126,7 @@ if ($role == 'admin') {
         FROM sold_list s
         JOIN inventory i ON s.item_id = i.item_id
         WHERE s.company_id = $company_id 
+        AND i.company_id =$company_id
         AND DATE(s.sale_date) = '$today'
         GROUP BY s.item_id 
         ORDER BY sold DESC 
@@ -131,7 +141,7 @@ if ($role == 'admin') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
+  <link rel="stylesheet" href="../../../style/font.css">
   <style>
     /* Overall page padding */
     #full {
@@ -297,7 +307,7 @@ if ($role == 'admin') {
         </div>
   
         <div class="row">
-          <div style="width:65%;">
+          <div style="width:97%;height:30%">
             <a href="../report/sales_chart.php">
               <div class="card">
                 <h5>Sales Record (Last 7 Days)</h5>
@@ -305,7 +315,7 @@ if ($role == 'admin') {
               </div>
             </a>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4"style="display:flex; gap:10%;">
             <a href="../report/top_sold.php">
               <div class="card">
                 <h5>Top 5 Selling Items</h5>

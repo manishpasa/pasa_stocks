@@ -11,7 +11,7 @@ $stmt->close();
 $company_id = $_SESSION['company_id'];
 $erole = $_SESSION['role'];
 $name=$_SESSION['name'];
-$valid_columns = ['item_id', 'item_name', 'price', 'cost_price', 'quantity', 'quantity_sold'];
+$valid_columns = ['item_id', 'name', 'marked_price', 'cost_price', 'quantity'];
 $sort_col = $_GET['sort'] ?? 'item_id';
 $sort_order = $_GET['order'] ?? 'asc'; // asc or desc
 $search_name = $_GET['search_name'] ?? '';
@@ -28,7 +28,7 @@ $search_name_esc = mysqli_real_escape_string($conn, $search_name);
 
 $sql = "SELECT * FROM inventory WHERE company_id = '$company_id' AND quantity > 0";
 if ($search_name_esc !== '') {
-    $sql .= " AND item_name LIKE '%$search_name_esc%'";
+    $sql .= " AND name LIKE '%$search_name_esc%'";
 }
 $sql .= " ORDER BY $sort_col $sort_order";
 
@@ -43,6 +43,7 @@ if (!$result) {
   <meta charset="UTF-8">
   <title>Inventory - Admin Dashboard</title>
   <link rel="stylesheet" href="../../../Style/table.css">
+  <link rel="stylesheet" href="../../../style/font.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -192,11 +193,10 @@ if (!$result) {
 
         <select name="sort" class="search-input" onchange="this.form.submit()">
           <option value="item_id" <?php if ($sort_col == 'item_id') echo 'selected'; ?>>Item Code</option>
-          <option value="item_name" <?php if ($sort_col == 'item_name') echo 'selected'; ?>>Item Name</option>
-          <option value="price" <?php if ($sort_col == 'price') echo 'selected'; ?>>Selling Price</option>
+          <option value="name" <?php if ($sort_col == 'name') echo 'selected'; ?>>Item Name</option>
+          <option value="marked_price" <?php if ($sort_col == 'marked_price') echo 'selected'; ?>>Selling Price</option>
           <option value="cost_price" <?php if ($sort_col == 'cost_price') echo 'selected'; ?>>Cost Price</option>
           <option value="quantity" <?php if ($sort_col == 'quantity') echo 'selected'; ?>>Quantity Left</option>
-          <option value="quantity_sold" <?php if ($sort_col == 'quantity_sold') echo 'selected'; ?>>Total Sold</option>
         </select>
 
         <select name="order" class="search-input" onchange="this.form.submit()">

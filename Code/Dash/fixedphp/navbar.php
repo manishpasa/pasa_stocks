@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../fixedphp/protect.php';
 
-
 $emp_id = $_SESSION['id'];
 $stmt = $conn->prepare("SELECT profile_pic FROM employee WHERE emp_id = ?");
 $stmt->bind_param("i", $emp_id);
@@ -13,6 +12,8 @@ $stmt->close();
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="../../../style/sidebar.css">
+    <link rel="stylesheet" href="../../../style/font.css">
     <style>
         * {
             margin: 0;
@@ -21,15 +22,14 @@ $stmt->close();
         }
         
         .custom-navbar {
-            text-decoration:none;
             background-color: #f8f9fa;
             padding: 0 1rem;
             position: fixed;
             top: 0;
-            left: 65px;
+            left: 0px;
             right: 0;
             height: 55px;
-            width: calc(100% - 65px);
+            width: 100%; 
             z-index: 1050;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             display: flex;
@@ -99,6 +99,7 @@ $stmt->close();
         .custom-btn-danger:hover {
             background-color: #c82333;
             border-color: #bd2130;
+            color: #fff;
         }
 
         .custom-btn-secondary {
@@ -150,15 +151,51 @@ $stmt->close();
             border-radius: 50%;
             object-fit: cover;
         }
+
+        .menu-toggle-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }/* Navbar Toggle Button (inside navbar left corner) */
+.navbar-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  margin-right: 12px; /* space between logo and button */
+  transition: transform 0.2s ease;
+}
+
+.navbar-toggle-btn img {
+  height: 24px;
+  width: 24px;
+}
+
+.navbar-toggle-btn:hover {
+  transform: scale(1.1);
+}
+
     </style>
 </head>
 <body>
     <nav class="custom-navbar">
         <div class="custom-d-flex">
-            <a href="../dashboard/dashboard.php"style="text-decoration:none; color:black;" ><span class="custom-navbar-brand"><h3 >📦 <?php echo $_SESSION['company_name']?></h3></span></a>
+            <button id="navbarToggleBtn" class="menu-toggle-btn">
+                <img src="../../../image/menu.png" height="25px" />
+            </button>
+
+            <a href="../dashboard/dashboard.php" style="text-decoration:none; color:black;">
+                <span class="custom-navbar-brand"><h3>📦 <?php echo $_SESSION['company_name']?></h3></span>
+            </a>
         </div>
+
         <div class="custom-profile-container">
-            <img src="../profile/uploads/<?php echo htmlspecialchars($profile_pic); ?>" class="custom-profile-img" id="profileBtn" alt="Profile" onerror="this.src='../../../image/profile.png';"> 
+            <img src="../profile/uploads/<?php echo htmlspecialchars($profile_pic); ?>" 
+                 class="custom-profile-img" id="profileBtn" 
+                 alt="Profile" onerror="this.src='../../../image/profile.png';"> 
             <div class="custom-dropdown-menu" id="profileDropdown">
                 <a href="../profile/profile.php">My Profile</a>
                 <a href="../setting/settings.php">Settings</a>
@@ -177,28 +214,39 @@ $stmt->close();
             </div>
         </div>
     </div>
+<script>
+    // Sidebar toggle from navbar button
+    const customSidebar = document.getElementById('customSidebar');
+    const navbarToggleBtn = document.getElementById('navbarToggleBtn');
 
-    <script>
-        function showLogoutPopup() {
-            document.getElementById('logoutPopup').style.display = 'flex';
+    function toggleSidebar() {
+        customSidebar.classList.toggle('collapsed');
+        document.querySelector('.main')?.classList.toggle('shift');
+    }
+
+    navbarToggleBtn.addEventListener('click', toggleSidebar);
+
+    // Profile dropdown
+    const profileBtn = document.getElementById('profileBtn');
+    const dropdown = document.getElementById('profileDropdown');
+
+    profileBtn.addEventListener('click', () => {
+        dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
         }
+    });
 
-        function hideLogoutPopup() {
-            document.getElementById('logoutPopup').style.display = 'none';
-        }
+    function showLogoutPopup() {
+        document.getElementById('logoutPopup').style.display = 'flex';
+    }
 
-        const profileBtn = document.getElementById('profileBtn');
-        const dropdown = document.getElementById('profileDropdown');
-
-        profileBtn.addEventListener('click', () => {
-            dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.style.display = 'none';
-            }
-        });
-    </script>
+    function hideLogoutPopup() {
+        document.getElementById('logoutPopup').style.display = 'none';
+    }
+</script>
 </body>
 </html>

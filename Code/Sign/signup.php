@@ -64,10 +64,11 @@ $conn->close();
 <html lang="en">
 <head>
     <title>Sign Up</title>
+    <link rel="stylesheet" href="../../../style/font.css">
     <style>
         body {
             scroll-behavior: smooth;
-            font-family: Arial, sans-serif;
+            
             background-color: #f4f4f4;
             display: flex;
             justify-content: center;

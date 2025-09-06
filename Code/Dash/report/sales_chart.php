@@ -160,10 +160,10 @@ foreach (['weekly', 'monthly', 'yearly'] as $period) {
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Sales, Profit & Purchase Charts - PasaStocks</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="../../../style/font.css">
 <style>
   body {
     background-color: #f8f9fa;
-    font-family: "Segoe UI", sans-serif;
     padding-left: 85px;
     padding-top: 75px;
     margin: 0;

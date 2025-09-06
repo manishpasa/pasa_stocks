@@ -112,9 +112,9 @@ $stmt->close();
 <head>
 <meta charset="UTF-8" />
 <title>Simple Sell and Billing - PasaStocks</title>
-<link rel="stylesheet" href="../style/darkmode.css">
+<link rel="stylesheet" href="../../../style/font.css">
 <style>
-body { background:#f8f9fa; font-family:"Segoe UI",sans-serif; }
+body { background:#f8f9fa; }
 .container-flex { display:flex; flex-wrap:wrap; gap:20px; }
 .left-column { flex:1 1 350px; max-width:400px; display:flex; flex-direction:column; gap:20px; }
 .right-column { flex:2 1 600px; background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
@@ -233,7 +233,7 @@ function back() {
   document.getElementById("customerinfo").style.display="inline";
 }
 function newcustomer(){
-  window.open("new_customer.php","_blank","width=600,height=600,top=20,left=200");
+  window.open("new_customer.php","_blank","width=1000,height=1000,top=20,left=200");
   document.getElementById("phone").style.display="inline";
   document.getElementById("customerinfo").style.display="none";
 }

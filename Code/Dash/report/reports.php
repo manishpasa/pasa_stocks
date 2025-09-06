@@ -34,7 +34,9 @@ $res = $conn->query("
       SUM((s.sold_price - i.cost_price) * s.quantity) AS total_profit
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
-    WHERE s.company_id = $company_id AND MONTH(s.sale_date) = MONTH(CURDATE())
+    WHERE s.company_id = $company_id 
+    AND i.company_id = $company_id 
+    AND MONTH(s.sale_date) = MONTH(CURDATE())
 ");
 $row = $res->fetch_assoc();
 $summary['total_sales'] = $row['total_sales'] ?? 0;
@@ -44,7 +46,8 @@ $summary['total_profit'] = $row['total_profit'] ?? 0;
 $res = $conn->query("
     SELECT SUM(price * quantity) AS total_purchases
     FROM purchase_list
-    WHERE company_id = $company_id AND MONTH(purchase_date) = MONTH(CURDATE())
+    WHERE company_id = $company_id 
+    AND MONTH(purchase_date) = MONTH(CURDATE())
 ");
 $summary['total_purchases'] = $res->fetch_assoc()['total_purchases'] ?? 0;
 
@@ -63,6 +66,7 @@ $topSoldRes = $conn->query("
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
     WHERE s.company_id = $company_id
+    AND i.company_id  =$company_id
     GROUP BY s.item_id
     ORDER BY qty DESC
     LIMIT 5
@@ -81,6 +85,7 @@ $recentPurchaseRes = $conn->query("
     FROM purchase_list p
     JOIN inventory i ON p.item_id = i.item_id
     WHERE p.company_id = $company_id
+    ANd i.company_id =$company_id
     ORDER BY p.purchase_date DESC
     LIMIT 10
 ");
@@ -90,8 +95,8 @@ $recentSalesRes = $conn->query("
     SELECT i.name, s.quantity, (s.sold_price * s.quantity) AS total, s.sale_date
     FROM sold_list s
     JOIN inventory i ON s.item_id = i.item_id
-    
     WHERE s.company_id = $company_id
+    AND i.company_id = $company_id
     ORDER BY s.sale_date DESC
     LIMIT 10
 ");
@@ -105,10 +110,10 @@ $recentSalesRes = $conn->query("
 <title>📊 Company Report - PasaStocks</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="../../../style/font.css">
 <style>
   body {
     background-color: #f8f9fa;
-    font-family: "Segoe UI", sans-serif;
     padding-left:85px;
     padding-top:75px;
     margin: 0;
@@ -211,7 +216,6 @@ $recentSalesRes = $conn->query("
       </div>
     <?php endforeach; ?>
   </div>
-
   <!-- Chart -->
   <div class="section">
     <canvas id="reportChart" height="120"></canvas>
@@ -248,7 +252,7 @@ $recentSalesRes = $conn->query("
             <tr>
               <td><?= htmlspecialchars($row['name']) ?></td>
               <td><?= $row['quantity'] ?></td>
-              <td><?= $row['category'] ?></td>
+              <td><?= $row['type'] ?></td>
             </tr>
           <?php endwhile; ?>
         </tbody>

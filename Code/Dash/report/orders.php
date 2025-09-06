@@ -25,11 +25,10 @@ if (!$sales) die("Sales query failed: " . $conn->error);
 <head>
 <meta charset="UTF-8">
 <title>All Sales - PasaStocks</title>
-<link rel="stylesheet" href="../style/darkmode.css">
+<link rel="stylesheet" href="../../../style/font.css">
 <style>
   body {
     background-color: #f8f9fa;
-    font-family: Arial, sans-serif;
     margin: 0;
     padding-left: -35px;
     padding-top: 75px;

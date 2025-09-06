@@ -50,13 +50,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <html >
 <head>
+    <link rel="stylesheet" href="../../../style/font.css">
     <title>Login Page</title>
     <style>
+        :root {
+  --bg-color: #F4F8FB;
+  --navbar-color: #1E3A8A;
+  --btn-color: #2563EB;
+  --btn-hover: #1D4ED8;
+  --accent-color: #38BDF8;
+  --text-color: #1E293B; /* dark slate for readability */
+}
         body {
-            font-family: Arial, sans-serif;
+            
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: var(--bg-color);
         }
         .container {
             width: 300px;
@@ -75,25 +84,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 10px;
             margin: 10px 0;
             border-radius: 4px;
-            border: 1px solid #ccc;
+            border: 1px solid white;
         }
         input[type="submit"] {
             width: 100%;
             padding: 10px;
-            background-color: #4CAF50;
+            background-color: var(--btn-color);
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
         input[type="submit"]:hover {
-            background-color: #45a049;
+            background-color: var(--btn-hover);
         }
         .link {
             text-align: center;
             margin-top: 10px;
         }
-    </style>
+        a{
+            color:var(--text-color);
+            text-decoration:none;
+        }
+        </style>
 </head>
 <body>
     <div class="container">
@@ -106,8 +119,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="submit" value="Login"><br> 
         </form>
         
-        <div class="link"><a href="../pass/forgot_password.php">Forgot password?</a>
-            <p>New here? <a href="signup.php">Create an account.</a></p>
+        <div class="link">
+            <a href="../pass/forgot_password.php">Forgot password?</a>
+            <p>New here? <a href="signup.php">Create an account.</a>
+        <br><br>
+    <a href="../index.php">Back to Homepage</a></p>
+
         </div>
     </div>
 
